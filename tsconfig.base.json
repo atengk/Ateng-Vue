@@ -32,7 +32,7 @@
 
     /* ====== 输出 ====== */
     "sourceMap": true,
-    "noEmit": true
+    "noEmit": false
   },
   "exclude": [
     "node_modules",

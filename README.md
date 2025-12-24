@@ -116,7 +116,7 @@ tsconfig.base.json
 
     /* ====== 输出 ====== */
     "sourceMap": true,
-    "noEmit": true
+    "noEmit": false
   },
   "exclude": [
     "node_modules",
@@ -155,6 +155,54 @@ pnpm install --filter ./apps/web
 }
 ```
 
+-  tsconfig.app.json
+
+```
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+
+    /* linting / 严格性 */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+}
+```
+
+- tsconfig.node.json
+
+```
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["vite.config.ts"]
+}
+```
+
 -  vite.config.ts（alias）
 
 ```
@@ -182,6 +230,18 @@ export default defineConfig({
   "name": "@apps/web",
   // ...
 }
+```
+
+修改 scripts 部分，添加test环境的启动脚本
+
+```
+"scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview",
+    "dev:test": "vite --mode test",
+    "build:test": "vite build --mode test"
+  }
 ```
 
 - env.d.ts
@@ -224,5 +284,4 @@ VITE_API_BASE=http://api.ateng.local:8080
 ```
 VITE_API_BASE=https://api.example.com
 ```
-
 
