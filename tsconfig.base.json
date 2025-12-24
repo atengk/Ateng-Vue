@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    /* ====== 基础 ====== */
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "jsx": "preserve",
+
+    /* ====== 严格性 ====== */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* ====== 工程化 ====== */
+    "baseUrl": ".",
+    "paths": {
+      "@apps/*": ["apps/*"],
+      "@packages/*": ["packages/*"],
+      "@internal/*": ["internal/*"]
+    },
+
+    /* ====== 构建体验 ====== */
+    "useDefineForClassFields": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+
+    /* ====== 输出 ====== */
+    "sourceMap": true,
+    "noEmit": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/dist",
+    "**/node_modules"
+  ]
+}
