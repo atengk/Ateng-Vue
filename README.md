@@ -145,7 +145,8 @@ pnpm install --filter ./apps/web
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "paths": {}
   },
   "references": [
     { "path": "./tsconfig.node.json" },
@@ -161,6 +162,7 @@ pnpm install --filter ./apps/web
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
+    "rootDirs": ["src"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
