@@ -1314,6 +1314,80 @@ const tab = ref<'list' | 'page' | 'detail' | 'delete' | 'create' | 'update' | 'p
 </style>
 ```
 
+### 后端接口参考
+
+接口可能不符合规范，只适合该章节调试使用
+
+```java
+package local.ateng.java.validator.controller;
+
+import cn.hutool.core.util.RandomUtil;
+import com.alibaba.fastjson2.JSONObject;
+import local.ateng.java.validator.entity.UserInfoEntity;
+import local.ateng.java.validator.init.InitData;
+import local.ateng.java.validator.utils.Result;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/user")
+@Slf4j
+public class UserController {
+
+    @GetMapping("/page")
+    public Result page(@RequestParam Map<String, Object> query) {
+        log.info("查询参数：{}", query);
+        JSONObject page = JSONObject.of(
+                "records", new InitData().getList(),
+                "total", RandomUtil.randomInt()
+        );
+        return Result.success(page);
+    }
+
+    @GetMapping("/list")
+    public Result list() {
+        return Result.success(new InitData().getList());
+    }
+
+    @GetMapping("/{id}")
+    public Result get(@PathVariable Long id) {
+        log.info("id={}", id);
+        return Result.success(new InitData().getList().get(0));
+    }
+
+    @PostMapping("/")
+    public Result add(@RequestBody UserInfoEntity user) {
+        log.info("user={}", user);
+        UserInfoEntity userInfoEntity = new InitData().getList().get(0);
+        return Result.success(userInfoEntity.getId());
+    }
+
+    @PutMapping("/{id}")
+    public Result update(@PathVariable Long id, @RequestBody UserInfoEntity user) {
+        log.info("id={}, user={}", id, user);
+        UserInfoEntity userInfoEntity = new InitData().getList().get(0);
+        return Result.success(userInfoEntity.getId());
+    }
+
+    @PatchMapping("/{id}")
+    public Result patch(@PathVariable Long id, @RequestBody UserInfoEntity user) {
+        log.info("id={}, user={}", id, user);
+        UserInfoEntity userInfoEntity = new InitData().getList().get(0);
+        return Result.success(userInfoEntity.getId());
+    }
+
+    @DeleteMapping("/{id}")
+    public Result delete(@PathVariable Long id) {
+        log.info("id={}", id);
+        return Result.success();
+    }
+
+}
+
+```
+
 
 
 ## Request 用法
