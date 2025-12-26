@@ -104,3 +104,26 @@ export function downloadFileForRustFS(): Promise<AxiosResponse<Blob>> {
         raw: true
     })
 }
+
+
+/**
+ * 创建用户（自定义错误处理）
+ */
+export function createUserWithOptions(
+    params: { notify?: boolean },
+    data: {
+        name: string
+        age: number
+    }
+) {
+    return request<void>({
+        url: '/user',
+        method: 'POST',
+
+        params,
+        data,
+
+
+        timeout: 5000
+    })
+}

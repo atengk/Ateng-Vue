@@ -43,9 +43,11 @@ requestInstance.interceptors.response.use(
 
         if (res.code !== '0') {
             if (!config.skipErrorHandler) {
-                console.error(res.msg)
+                console.error(res.msg || '请求失败')
+                //ElMessage.error(res.msg || '请求失败')
             }
-            const error = new Error(res.msg)
+
+            const error = new Error(res.msg || '请求失败')
             ;(error as any).response = res
             return Promise.reject(error)
         }
@@ -53,24 +55,61 @@ requestInstance.interceptors.response.use(
         return res.data
     },
     (error) => {
+        const config = error?.config as RequestConfig | undefined
+
         /**
-         * HTTP 状态码错误处理
+         * 显式跳过错误处理
          */
-        const status = error?.response?.status
-
-        if (status === 401) {
-            console.error('未登录或登录过期')
+        if (config?.skipErrorHandler) {
+            return Promise.reject(error)
         }
 
-        if (status === 403) {
-            console.error('无权限访问')
+        /**
+         * 网络错误（无 response）
+         */
+        if (!error.response) {
+            if (error.message?.includes('Network Error')) {
+                console.error('网络异常，请检查网络连接')
+                //ElMessage.error('网络异常，请检查网络连接')
+            } else if (error.code === 'ECONNABORTED') {
+                console.error('请求超时，请稍后重试')
+                //ElMessage.error('请求超时，请稍后重试')
+            } else {
+                console.error('请求失败，请稍后重试')
+                //ElMessage.error('请求失败，请稍后重试')
+            }
+
+            return Promise.reject(error)
         }
 
-        if (status >= 500) {
-            console.error('服务器异常')
+        /**
+         * HTTP 状态码错误
+         */
+        const status = error.response.status
+
+        switch (status) {
+            case 401:
+                console.error('未登录或登录已过期')
+                //ElMessage.error('未登录或登录已过期')
+                break
+            case 403:
+                console.error('无权限访问')
+                //ElMessage.error('无权限访问')
+                break
+            case 404:
+                console.error('请求的资源不存在')
+                //ElMessage.error('请求的资源不存在')
+                break
+            default:
+                if (status >= 500) {
+                    console.error('服务器异常，请稍后重试')
+                    //ElMessage.error('服务器异常，请稍后重试')
+                } else {
+                    console.error('请求失败')
+                    //ElMessage.error('请求失败')
+                }
         }
 
-        console.error('请求错误:', error)
         return Promise.reject(error)
     }
 )
