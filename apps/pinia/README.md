@@ -1,30 +1,71 @@
-下面给你一套 **Vue 3 + Pinia 的完整、规范用法**，从安装到进阶实践，直接可用（偏工程化，适合你现在这种项目结构）。
+# Pinia
+
+Pinia 是 Vue 官方推出的新一代状态管理方案，也是 Vue 3 时代的默认推荐选择。它基于 Composition API 设计，API 简洁直观，去除了 Vuex 中 mutation 的概念，使状态、计算属性和业务方法高度内聚，更贴近现代函数式与模块化开发方式。同时，Pinia 对 TypeScript 提供了一流支持，类型推导完整，能够显著降低大型项目中的维护成本。
+
+在企业级应用中，Pinia 天然支持模块化拆分，每个 Store 都是一个独立、可组合的状态单元，便于按业务域进行管理和扩展。配合 Vue DevTools，状态变更清晰可追踪，并且可以通过插件机制实现持久化、重置等通用能力，非常适合中大型 Vue 3 项目的状态管理需求。
+
+官网地址：[https://pinia.vuejs.org](https://pinia.vuejs.org/)
 
 ---
 
-## 一、Pinia 是什么 & 为什么用它
+## 创建应用
 
-Pinia 是 **Vue 官方推荐的状态管理库**（替代 Vuex）：
+按照首页工程化创建应用：apps/pinia
 
-* 💡 API 更简单（Composition API 原生风格）
-* ⚡ 天然支持 TypeScript
-* 🧩 模块化（每个 store 就是一个独立模块）
-* 🔥 DevTools 体验好
-* 🚫 没有 mutation 的心智负担
 
----
 
-## 二、安装 Pinia
+## 基础配置
 
-```bash
+安装 pinia 包
+
+```
 pnpm install pinia@3.0.4 --filter @apps/pinia
 ```
 
----
+目录结构
 
-## 三、在 Vue3 中注册 Pinia
+```
+src/
+├─ stores/
+│  ├─ modules/              # 业务域 Store
+│  │  ├─ auth/              # 认证域
+│  │  │  ├─ store.ts
+│  │  │  ├─ types.ts
+│  │  │  └─ index.ts
+│  │  ├─ user/              # 用户域
+│  │  │  ├─ store.ts
+│  │  │  ├─ types.ts
+│  │  │  └─ index.ts
+│  │  ├─ permission/        # 权限域
+│  │  │  ├─ store.ts
+│  │  │  ├─ types.ts
+│  │  │  └─ index.ts
+│  │  └─ xxx/               # 其他业务模块
+│  │
+│  ├─ base/                 # 基础 / 横切 Store
+│  │  ├─ app/               # UI / Layout / Theme
+│  │  │  ├─ store.ts
+│  │  │  ├─ types.ts
+│  │  │  └─ index.ts
+│  │  ├─ dict/              # 字典 / 枚举缓存
+│  │  │  ├─ store.ts
+│  │  │  ├─ types.ts
+│  │  │  └─ index.ts
+│  │
+│  ├─ plugins/              # Pinia 插件
+│  │  ├─ persist.ts
+│  │  └─ reset.ts
+│  │
+│  └─ index.ts              # 统一导出
+```
 
-### 1️⃣ main.ts
+
+
+## Pinia 配置
+
+在 Vue3 中注册 Pinia
+
+main.ts
 
 ```ts
 import { createApp } from 'vue'
@@ -41,130 +82,275 @@ app.mount('#app')
 
 ---
 
-## 四、创建 Store（推荐结构）
 
-### 📁 目录结构（推荐）
 
-```txt
-src/
- ├─ stores/
- │   ├─ user.ts
- │   ├─ app.ts
- │   └─ index.ts
+## 定义 Store
+
+用户 Store 示例 `src/stores/modules/user/`
+
+### types.ts
+
+```ts
+/**
+ * 用户基础信息
+ */
+export interface UserProfile {
+    id: string
+    username: string
+    nickname: string
+    avatar?: string
+    email?: string
+    phone?: string
+}
+
+/**
+ * 用户状态 State
+ */
+export interface UserState {
+    profile: UserProfile | null
+    loaded: boolean
+}
 ```
 
----
-
-## 五、定义 Store（组合式写法，强烈推荐）
-
-### 1️⃣ 用户 Store 示例 `stores/user.ts`
+### store.ts
 
 ```ts
 import {defineStore} from 'pinia'
-import {computed, ref} from "vue";
+import {ref, computed} from 'vue'
+import type {UserProfile} from './types'
 
 export const useUserStore = defineStore('user', () => {
-    // state
-    const token = ref<string>('')
-    const userInfo = ref<any>(null)
+    /**
+     * state
+     */
+    const profile = ref<UserProfile | null>(null)
+    const loaded = ref<boolean>(false)
 
-    // getters
-    const isLogin = computed(() => !!token.value)
+    /**
+     * getters
+     */
+    const hasProfile = computed(() => profile.value !== null)
 
-    // actions
-    function setToken(value: string) {
-        token.value = value
+    /**
+     * actions
+     */
+    function setProfile(user: UserProfile) {
+        profile.value = user
+        loaded.value = true
     }
 
-    function setUserInfo(info: any) {
-        userInfo.value = info
+    function clearProfile() {
+        profile.value = null
+        loaded.value = false
     }
 
-    function logout() {
-        token.value = ''
-        userInfo.value = null
+    /**
+     * 示例：从接口加载用户信息
+     * 注意：不在 Store 内直接处理 UI、副作用
+     */
+    async function fetchProfile() {
+        if (loaded.value) {
+            return
+        }
+
+        // const res = await getUserProfileApi()
+        // setProfile(res.data)
+
+        loaded.value = true
     }
 
     return {
-        token,
-        userInfo,
-        isLogin,
-        setToken,
-        setUserInfo,
-        logout
+        profile,
+        loaded,
+        hasProfile,
+        setProfile,
+        clearProfile,
+        fetchProfile
     }
 })
 ```
 
-📌 特点：
-
-* `ref / computed` 原生 Vue3 写法
-* 没有 `mutation`
-* action 中可直接写 async
-
----
-
-## 六、在组件中使用 Pinia
-
-### 1️⃣ 基础用法
+### index.ts
 
 ```ts
+export * from './store'
+export * from './types'
+```
+
+### 全局 store/index.ts
+
+```ts
+export * from './modules/user'
+export * from './base/app'
+export * from './base/dict'
+export * from './plugins/persist'
+export * from './plugins/reset'
+```
+
+
+
+## 使用 Store
+
+### User.vue
+
+```vue
 <script setup lang="ts">
-import { useUserStore } from '@/stores/user'
+import {storeToRefs} from 'pinia'
+import {useUserStore} from '@/stores'
 
 const userStore = useUserStore()
 
-userStore.setToken('abc123')
-</script>
-```
+/**
+ * 使用 storeToRefs 保持响应性
+ */
+const {profile, loaded} = storeToRefs(userStore)
 
----
-
-### 2️⃣ 解构（⚠️ 正确姿势）
-
-❌ 错误（会丢失响应性）：
-
-```ts
-const { token } = useUserStore()
-```
-
-✅ 正确（使用 `storeToRefs`）：
-
-```ts
-import { storeToRefs } from 'pinia'
-
-const userStore = useUserStore()
-const { token, userInfo, isLogin } = storeToRefs(userStore)
-```
-
----
-
-## 七、异步 Action（非常常见）
-
-```ts
-async function fetchUserInfo() {
-  const res = await getUserInfoApi()
-  userInfo.value = res.data
+/**
+ * 保存用户信息（模拟）
+ */
+function handleSave() {
+  userStore.setProfile({
+    id: '1001',
+    username: 'admin',
+    nickname: '系统管理员',
+    avatar: '',
+    email: 'admin@example.com',
+    phone: '13800000000'
+  })
 }
+
+/**
+ * 获取用户信息
+ */
+async function handleFetch() {
+  await userStore.fetchProfile()
+}
+
+/**
+ * 删除用户信息
+ */
+function handleClear() {
+  userStore.clearProfile()
+}
+</script>
+
+<template>
+  <div style="padding: 16px;">
+    <h2>User Store 完整示例</h2>
+
+    <!-- 操作区 -->
+    <div style="margin-bottom: 12px;">
+      <button @click="handleSave">setProfile</button>
+      <button @click="handleFetch" style="margin-left: 8px;">
+        fetchProfile
+      </button>
+      <button @click="handleClear" style="margin-left: 8px;">
+        clearProfile
+      </button>
+    </div>
+
+    <!-- 状态区 -->
+    <div style="margin-bottom: 12px;">
+      <p><strong>loaded（state）：</strong>{{ loaded }}</p>
+      <p><strong>hasProfile（getter）：</strong>{{ userStore.hasProfile }}</p>
+    </div>
+
+    <!-- 数据展示 -->
+    <div>
+      <p><strong>profile（state）：</strong></p>
+
+      <pre v-if="profile">
+        {{ profile}}
+      </pre>
+
+      <p v-else>暂无用户信息</p>
+    </div>
+
+    <!-- 调试区 -->
+    <div style="margin-top: 16px;">
+      <p><strong>store 实例（调试用）：</strong></p>
+      <pre>
+{{ userStore }}
+      </pre>
+    </div>
+  </div>
+</template>
 ```
 
-组件中：
+### UserView.vue
 
-```ts
-await userStore.fetchUserInfo()
+```vue
+<script setup lang="ts">
+import {storeToRefs} from 'pinia'
+import {useUserStore} from '@/stores'
+
+const userStore = useUserStore()
+
+/**
+ * 使用 storeToRefs 保持响应性
+ */
+const {profile} = storeToRefs(userStore)
+</script>
+
+<template>
+  <div style="padding: 16px;">
+    <h2>User Store 视图示例</h2>
+
+    <div>
+      <pre v-if="profile">
+        {{ profile }}
+      </pre>
+
+      <p v-else>暂无用户信息</p>
+    </div>
+  </div>
+</template>
 ```
 
----
+### App.vue
 
-## 八、Pinia 持久化（localStorage）
+```vue
+<script setup lang="ts">
+import {ref} from 'vue'
+import User from "@/views/User.vue";
+import UserView from "@/views/UserView.vue";
 
-### 方式一：插件（推荐）
+const tab = ref<'user' | 'userView'>('user')
+</script>
+
+<template>
+  <div class="tabs">
+    <button @click="tab = 'user'">User</button>
+    <button @click="tab = 'userView'">UserView</button>
+  </div>
+
+  <User v-if="tab === 'user'"/>
+  <UserView v-else-if="tab === 'userView'"/>
+  <User v-else/>
+</template>
+
+<style scoped>
+.tabs {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tabs button {
+  margin-right: 8px;
+}
+</style>
+```
+
+## 持久化（localStorage）
+
+安装插件
 
 ```bash
-pnpm add pinia-plugin-persistedstate
+pnpm install pinia-plugin-persistedstate@4.7.1 --filter @apps/pinia
 ```
 
-### main.ts 注册
+main.ts 注册
 
 ```ts
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
@@ -173,7 +359,7 @@ const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 ```
 
-### Store 中使用
+Store 中使用
 
 ```ts
 export const useUserStore = defineStore('user', () => {
@@ -189,110 +375,10 @@ export const useUserStore = defineStore('user', () => {
 
 ```ts
 persist: {
-  key: 'user',
-  storage: localStorage,
-  paths: ['token']
+  key: 'user',                 // storage 中的 key（默认是 store.$id）
+  storage: localStorage,       // 使用 localStorage 持久化，可选：localStorage、sessionStorage
+  pick: ['token', 'userInfo'], // 仅持久化 token 和 userInfo
+  omit: ['tempFlag']           // 排除 tempFlag（⚠️与 pick 同时存在时不生效）
 }
 ```
 
----
-
-## 九、多个 Store 相互调用
-
-```ts
-import { useUserStore } from './user'
-
-export const useAppStore = defineStore('app', () => {
-  const userStore = useUserStore()
-
-  function resetAll() {
-    userStore.logout()
-  }
-
-  return { resetAll }
-})
-```
-
----
-
-## 十、Pinia + Router / Axios 常见用法
-
-### Axios 拦截器中使用 Store（⚠️ 重点）
-
-```ts
-import { useUserStore } from '@/stores/user'
-
-const userStore = useUserStore()
-
-axios.interceptors.request.use(config => {
-  if (userStore.token) {
-    config.headers!.Authorization = userStore.token
-  }
-  return config
-})
-```
-
-📌 注意：**必须在 Pinia 注册之后使用**
-
----
-
-## 十一、推荐的最佳实践
-
-✅ Store 只管「状态 & 业务逻辑」
-❌ 不直接写 DOM 相关逻辑
-
-✅ 一个业务域一个 store
-❌ 超级大 store
-
-✅ 命名统一：`useXxxStore`
-✅ Store 名和文件名一致
-
----
-
-## 十二、你这个项目我建议的 Store 划分
-
-结合你之前的项目结构（axios / request 封装）：
-
-```txt
-src/
-├─ stores/
-│  ├─ modules/              # 业务域 Store
-│  │  ├─ auth/              # 认证域
-│  │  │  ├─ store.ts
-│  │  │  ├─ types.ts
-│  │  │  └─ index.ts
-│  │  ├─ user/              # 用户域
-│  │  │  ├─ store.ts
-│  │  │  ├─ types.ts
-│  │  │  └─ index.ts
-│  │  ├─ permission/        # 权限域
-│  │  │  ├─ store.ts
-│  │  │  └─ index.ts
-│  │  └─ xxx/               # 其他业务模块
-│  │
-│  ├─ base/                 # 基础 / 横切 Store
-│  │  ├─ app/               # UI / Layout / Theme
-│  │  │  ├─ store.ts
-│  │  │  └─ index.ts
-│  │  ├─ dict/              # 字典 / 枚举缓存
-│  │  │  ├─ store.ts
-│  │  │  └─ index.ts
-│  │  └─ cache/             # 本地缓存状态
-│  │     └─ store.ts
-│  │
-│  ├─ plugins/              # Pinia 插件
-│  │  ├─ persist.ts
-│  │  └─ reset.ts
-│  │
-│  └─ index.ts              # 统一导出
-```
-
----
-
-如果你愿意，下一步我可以直接帮你：
-
-* 🔹 把 **你现有的 axios/request 封装 + Pinia 登录态**整合好
-* 🔹 给你一个 **登录 → 刷新不丢 token → 权限控制** 的完整示例
-* 🔹 或者 **对比 Vuex，帮你做迁移方案**
-
-你直接说「下一步做哪块」就行 👍
