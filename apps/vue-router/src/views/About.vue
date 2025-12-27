@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import {useRouter} from 'vue-router'
 
-const route = useRoute()
+const router = useRouter()
+
+function goHome() {
+  router.push('/')
+  /*router.push({
+    name: 'Home'
+  })*/
+}
+
 </script>
 
 <template>
-  <div>
-    <h1>About</h1>
-    <p>当前路径：{{ route.path }}</p>
-    <router-link to="/">回首页</router-link>
-  </div>
+  <h1>About 页面</h1>
+  <button @click="goHome">去 Home</button>
 </template>

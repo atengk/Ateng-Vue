@@ -1,27 +1,15 @@
-// router/index.ts
-import { createRouter, createWebHistory } from 'vue-router'
+// src/router/index.ts
+import {createRouter, createWebHistory} from 'vue-router'
+import {setupRouterGuard} from "./guard/permission";
+import routes from './routes' // 静态 + 动态总汇
 
-const routes = [
-    {
-        path: '/',
-        name: 'Home',
-        component: () => import('@/views/Home.vue')
-    },
-    {
-        path: '/about',
-        name: 'About',
-        component: () => import('@/views/About.vue')
-    },
-    {
-        path: '/user/:id',
-        name: 'User',
-        component: () => import('@/views/User.vue')
-    }
-]
 
 const router = createRouter({
     history: createWebHistory(),
     routes
 })
+
+// 注册全局守卫
+setupRouterGuard(router)
 
 export default router
