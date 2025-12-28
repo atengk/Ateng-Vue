@@ -1,6 +1,6 @@
 ![logo](_media/logo.svg ':size=15%')
 
-# 开发技术栈 · 阿腾
+# 前端开发技术栈 · 阿腾
 
 > Powered by 阿腾研发中心
 

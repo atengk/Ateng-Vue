@@ -1,11 +1,24 @@
-- 软件安装
-    - [IntelliJ IDEA](/work/Ateng-Java/doc/install-idea.md)
-    - [JRebel](/work/Ateng-Java/doc/install-plugin-jrebel.md)
+- 网络请求
+    - [Axios](/apps/axios/)
+- 状态管理
+    - [Pinia](/apps/pinia/)
+- Vue 路由
+    - [Vue3 Router](/apps/vue-router/)
+    - [Vue3 Layout](/apps/layout/)
+- Vue
+    - [Vue3基础（待）](/apps/vue3-basic/)
+    - [Vue3组件（待）](/apps/vue3-component/)
 
-- SpringBoot2相关
-    - [发布Maven仓库](/work/Ateng-Java/springboot2/boot2-deploy/)
-    - [Jasypt配置加密](/work/Ateng-Java/springboot2/boot2-jasypt/)
+- 样式
+  - [CSS](/apps/css/)
+  - [SCSS](/apps/scss/)
 
-- 前端
-    - [主页](../)
-    - [axios](../apps/axios/)
+- UI
+  - [Element Plus（待）](/apps/element-plus/)
+
+- 图标
+  - [Apache ECharts（待）](/apps/apache-echarts/)
+  - [Vue3 ECharts（待）](/apps/vue3-echarts/)
+
+- 工具
+  - [Vite（待）](/apps/vite/)
