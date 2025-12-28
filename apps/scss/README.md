@@ -4,6 +4,60 @@
 
 
 
+## 常用语法速查表
+
+| 语法                                        | 说明                                      | 示例                                                         | 使用示例                                                     |
+| ------------------------------------------- | ----------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **变量**                                    | 定义全局变量，统一管理颜色、间距、字体等  | `$primary-color: #409eff;`                                   | `.btn { background-color: $primary-color; }`                 |
+| **嵌套**                                    | 子选择器嵌套父选择器，提高层级清晰度      | `.card { .title { color: $primary-color; } }`                | `.card .title { color: $primary-color; }`                    |
+| **父选择器 &**                              | `&` 代表父选择器，用于伪类或组合选择器    | `.btn { &:hover { opacity: 0.85; } }`                        | `.btn:hover { opacity: 0.85; }`                              |
+| **Mixin**                                   | 可复用样式块，可传参生成不同样式          | `@mixin btn($c){background:$c;padding:6px 12px;}`            | `.btn-primary{@include btn($primary-color);}`                |
+| **函数 @function**                          | 自定义函数返回计算值                      | `@function double($x){@return $x*2;}`                        | `padding: double(8px);`                                      |
+| **条件 @if / @else**                        | 条件判断生成不同样式                      | `@if $mode==dark{color:#fff;}@else{color:#000;}`             | `.title{@if $dark{color:#fff;}@else{color:#000;}}`           |
+| **循环 @for**                               | 批量生成样式类                            | `@for $i from 1 through 3{.m-#{$i}{margin:$i*4px;}}`         | `.m-1{margin:4px;} .m-3{margin:12px;}`                       |
+| **循环 @each**                              | 遍历 Map 或 List 生成动态类               | `$colors:(primary:#409eff,success:#67c23a); @each $name,$c in $colors{.btn-#{$name}{background:$c;}}` | `.btn-primary{background:#409eff;} .btn-success{background:#67c23a;}` |
+| **插值 #{}**                                | 将变量或计算结果动态拼接到选择器或属性    | `.col-#{$i}{width:$i*20%;}`                                  | `.col-1{width:20%;} .col-3{width:60%;}`                      |
+| **运算**                                    | 支持 + - * / 运算，方便计算尺寸和间距     | `padding: $base*2; margin: $gap/2;`                          | `.card{padding:16px; margin:4px;}`                           |
+| **继承 @extend**                            | 占位符样式复用，提高样式统一性            | `%text-base{font-size:14px;color:#333;} .title{@extend %text-base;}` | `.title{font-size:14px;color:#333;}`                         |
+| **模块化 @use / @forward**                  | SCSS 模块化导入，支持命名空间和全局使用   | `@use "./tokens/color" as c; .btn{background:c.$primary-color;}` | 在组件中直接引用全局颜色：`.btn{background:$primary-color;}` |
+| **伪元素 ::before / ::after**               | 用于插入装饰性内容                        | `.card::after{content:"★";}`                                 | 卡片标题后显示装饰符号：`.card::after{content:"★";}`         |
+| **媒体查询嵌套 @media**                     | SCSS 支持嵌套写法，清晰直观               | `.box{@media (max-width:768px){width:100%;}}`                | 小屏幕自适应：`.box{width:100%;}`                            |
+| **颜色函数 color.scale / lighten / darken** | SCSS 官方 sass:color 模块提供动态调色函数 | `@use "sass:color"; background: color.scale($primary-color,$lightness:10%);` | `.btn-light{background:调亮色;}`                             |
+| **占位符 %**                                | 占位符仅用于继承，不生成 CSS              | `%btn-base{padding:6px 12px;} .btn{@extend %btn-base;}`      | 多按钮复用基础样式：`.btn{padding:6px 12px;}`                |
+| **列表 / Map**                              | 用于主题色管理或顺序值管理                | `$colors:(primary:#409eff,success:#67c23a);`                 | 多主题按钮生成：`.btn-#{$key}{background:#{$value};}`        |
+| **注释 // 与 /* */**                        | 单行注释不会输出，块注释可选择输出        | `// 单行注释` `/* 多行注释 */`                               | 在开发中说明用途或屏蔽样式                                   |
+| **动态类名**                                | 循环 + 插值动态生成类名                   | `@for $i from 1 through 5{.level-#{$i}{width:$i*20%;}}`      | 生成不同宽度按钮：`.level-1{width:20%;} ... .level-5{width:100%;}` |
+| **条件循环组合**                            | 嵌套条件和循环，灵活生成样式              | `@for $i from 1 through 5{@if $i%2==0{.even-#{$i}{}}}`       | 生成偶数类：`.even-2{} .even-4{}`                            |
+| **暗黑模式切换**                            | 通过 class 控制 body 或容器的样式切换     | `.dark { body { background:#1f1f1f; color:#eee; } }`         | `document.body.classList.add('dark')` 页面切换暗黑           |
+| **响应式变量**                              | 使用变量配合 @media 实现响应式            | `$gap:16px; @media (max-width:768px){ $gap:8px; }`           | `.container{padding:$gap;}` 在小屏幕自动调整                 |
+| **字体变量**                                | 管理字体大小、字体族                      | `$font-base:14px; $font-title:18px;`                         | `body{font-size:$font-base;} h1{font-size:$font-title;}`     |
+| **圆角变量**                                | 管理全局圆角                              | `$radius-sm:4px; $radius-lg:12px;`                           | `.btn{border-radius:$radius-sm;} .card{border-radius:$radius-lg;}` |
+| **z-index 变量**                            | 层级管理                                  | `$z-modal:1000; $z-dropdown:900;`                            | `.modal{z-index:$z-modal;} .dropdown{z-index:$z-dropdown;}`  |
+| **背景色变量**                              | 管理全局背景色                            | `$bg-light:#f5f7fa; $bg-dark:#1f1f1f;`                       | `body{background-color:$bg-light;} .dark body{background:$bg-dark;}` |
+| **文字颜色变量**                            | 管理全局文字色                            | `$text-light:#fff; $text-dark:#303133;`                      | `.dark body{color:$text-light;}`                             |
+| **工具类 Mixin**                            | 快速生成工具类                            | `@mixin m($top,$right,$bottom,$left){margin:$top $right $bottom $left;}` | `.m-10{@include m(10px,10px,10px,10px);}`                    |
+| **边框 Mixin**                              | 快速生成边框样式                          | `@mixin border($c,$w:1px){border:$w solid $c;}`              | `.card{@include border($primary-color,2px);}`                |
+| **文本溢出 Mixin**                          | 控制文本溢出                              | `@mixin ellipsis{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}` | `.title{@include ellipsis;}`                                 |
+| **Flex Mixin**                              | 快速生成弹性布局                          | `@mixin flex($jc:center,$ai:center){display:flex;justify-content:$jc;align-items:$ai;}` | `.toolbar{@include flex(space-between,center);}`             |
+| **Grid Mixin**                              | 快速生成网格布局                          | `@mixin grid($c){display:grid;grid-template-columns:repeat($c,1fr);}` | `.grid-3{@include grid(3);}`                                 |
+| **百分比运算**                              | 计算布局比例                              | `$col:3; width:$col/12*100%;`                                | `.col-3{width:25%;}`                                         |
+| **函数 lighten/darken**                     | 调整颜色亮度                              | `@use "sass:color"; color.lighten($primary-color,10%)`       | `.btn-light{background:color.lighten($primary-color,10%);}`  |
+| **列表访问**                                | 通过索引访问 List                         | `$list:(10px,20px,30px); padding:nth($list,2);`              | `padding:20px;`                                              |
+| **Map 访问**                                | 通过 key 获取 Map 值                      | `$map:(primary:#409eff); color:map-get($map,primary);`       | `.btn{background:#409eff;}`                                  |
+| **占位符继承组合**                          | 多占位符继承                              | `%base{font-size:14px;} %bold{font-weight:700;} .title{@extend %base;@extend %bold;}` | `.title{font-size:14px;font-weight:700;}`                    |
+| **动画 Mixin**                              | 封装动画                                  | `@mixin transition($prop,$time){transition:$prop $time;}`    | `.btn{@include transition(all,0.3s);}`                       |
+| **响应式字体 Mixin**                        | 根据屏幕大小生成字体                      | `@mixin font-size($size){font-size:$size;} @media (max-width:768px){@include font-size($size*0.8);}` | `h1{@include font-size(20px);}`                              |
+| **占位符 + 条件组合**                       | 根据条件继承占位符                        | `%base{color:#333;} .title{@if $dark{@extend %base;}}`       | `.dark .title{color:#333;}`                                  |
+| **动态背景色**                              | 使用 Map 循环生成主题色                   | `$themes:(primary:#409eff,success:#67c23a); @each $k,$v in $themes{.bg-#{$k}{background:$v;}}` | `.bg-primary{background:#409eff;} .bg-success{background:#67c23a;}` |
+| **按钮主题切换**                            | 根据变量生成多主题按钮                    | `@each $name,$color in $themes{.btn-#{$name}{background:$color;}}` | `.btn-primary{background:#409eff;} .btn-success{background:#67c23a;}` |
+| **暗黑模式按钮**                            | 暗黑模式主题按钮                          | `.dark .btn-primary{background:color.scale($primary-color,$lightness:15%);}` | 页面切换暗黑模式时按钮自动调整颜色                           |
+| **工具类生成**                              | 批量生成 margin/padding 工具类            | `@for $i from 1 through 5{.m-#{$i}{margin:$i*4px;}}`         | `.m-1{margin:4px;} .m-5{margin:20px;}`                       |
+| **动态类名 + 条件组合**                     | 循环 + 条件生成复杂类                     | `@for $i from 1 through 5{@if $i%2==0{.even-#{$i}{}}}`       | `.even-2{} .even-4{}`                                        |
+
+---
+
+
+
 ## 基础配置
 
 安装依赖
