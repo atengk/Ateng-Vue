@@ -1,0 +1,41 @@
+@use "../tokens/color" as *;
+@use "sass:color";
+
+/* 按钮通用样式 */
+.btn {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+
+  &.primary { background-color: $primary-color; }
+  &.success { background-color: $success-color; }
+  &.warning { background-color: $warning-color; }
+  &.error   { background-color: $error-color; }
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+/* 暗黑模式按钮 */
+body.dark {
+  .btn.primary {
+    background-color: color.adjust($primary-color, $lightness: 10%);
+  }
+
+  .btn.success {
+    background-color: color.adjust($success-color, $lightness: 10%);
+  }
+
+  .btn.warning {
+    background-color: color.adjust($warning-color, $lightness: 10%);
+  }
+
+  .btn.error {
+    background-color: color.adjust($error-color, $lightness: 10%);
+  }
+}
+

@@ -15,6 +15,7 @@
 !*.vue
 !*.html
 !*.css
+!*.scss
 !*.gif
 !*.ico
 !*.jpg

@@ -1,0 +1,11 @@
+@use "../tokens/color" as *;
+
+/* 暗黑模式变量 */
+body.dark {
+  background-color: $bg-dark;
+  color: $text-dark;
+}
+
+body.dark a {
+  color: $primary-color;
+}
