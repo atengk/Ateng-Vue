@@ -1,5 +1,132 @@
 # CSS
 
+## 常用语法速查表
+
+| 语法                                      | 说明                    | 示例                                                  | 使用示例                                        |
+| ----------------------------------------- | ----------------------- | ----------------------------------------------------- | ----------------------------------------------- |
+| **选择器**                                | 指定 HTML 元素          | `div {}`                                              | `.card {}` 针对 class `.card`                   |
+| **ID 选择器**                             | 指定唯一元素            | `#header {}`                                          | `#app {}`                                       |
+| **类选择器**                              | 针对 class              | `.btn {}`                                             | `<button class="btn">按钮</button>`             |
+| **标签 + 类**                             | 标签内特定 class        | `button.btn {}`                                       | `<button class="btn">保存</button>`             |
+| **通配符 * **                             | 选择所有元素            | `* { margin:0; padding:0; }`                          | 页面全局重置                                    |
+| **层级选择器 空格**                       | 选择子孙元素            | `.card h1 {}`                                         | 卡片内所有 h1 标题                              |
+| **子选择器 >**                            | 只选择直接子元素        | `.card > h1 {}`                                       | 只选卡片下直接 h1                               |
+| **相邻兄弟 +**                            | 紧跟的兄弟元素          | `h1 + p {}`                                           | 选 h1 后紧跟的 p                                |
+| **通用兄弟 ~**                            | 同一父元素下所有兄弟    | `h1 ~ p {}`                                           | 所有跟随 h1 的 p                                |
+| **伪类 :hover**                           | 鼠标悬停状态            | `.btn:hover {}`                                       | 鼠标移上按钮改变背景                            |
+| **伪类 :active**                          | 元素激活状态            | `.btn:active {}`                                      | 点击按钮时效果                                  |
+| **伪类 :focus**                           | 元素获取焦点            | `input:focus {}`                                      | 输入框聚焦改变边框色                            |
+| **伪类 :nth-child(n)**                    | 第 n 个子元素           | `li:nth-child(2) {}`                                  | 列表第二项特殊样式                              |
+| **伪类 :first-child / :last-child**       | 第一个 / 最后一个子元素 | `li:first-child {}`                                   | 列表首项样式                                    |
+| **伪元素 ::before / ::after**             | 插入内容                | `.card::after { content:"★"; }`                       | 卡片装饰符号                                    |
+| **display**                               | 元素布局方式            | `display:block; display:flex; display:grid;`          | `.toolbar { display:flex; }`                    |
+| **position**                              | 定位类型                | `position:static/relative/absolute/fixed/sticky;`     | `.modal { position:fixed; top:0; }`             |
+| **top/right/bottom/left**                 | 定位偏移                | `top:10px; left:20px;`                                | `.tooltip { top:50%; left:50%; }`               |
+| **z-index**                               | 层级                    | `z-index:1000;`                                       | 弹窗高于背景层                                  |
+| **float / clear**                         | 浮动                    | `float:left; clear:both;`                             | 图片左右浮动排版                                |
+| **overflow**                              | 溢出处理                | `overflow:hidden; overflow:auto;`                     | 卡片内容溢出隐藏                                |
+| **width / height**                        | 宽高                    | `width:200px; height:100px;`                          | 固定尺寸按钮                                    |
+| **max-width / min-width**                 | 最大/最小宽度           | `max-width:100%;`                                     | 图片响应式                                      |
+| **margin / padding**                      | 外边距 / 内边距         | `margin:10px; padding:8px;`                           | 卡片内外间距                                    |
+| **border / border-radius**                | 边框 / 圆角             | `border:1px solid #ccc; border-radius:4px;`           | 卡片圆角边框                                    |
+| **background / background-color**         | 背景                    | `background:#f5f5f5;`                                 | 页面背景色                                      |
+| **color**                                 | 文字颜色                | `color:#333;`                                         | 标题字体颜色                                    |
+| **font-size / font-weight / font-family** | 字体大小、粗细、字体族  | `font-size:14px; font-weight:700; font-family:Arial;` | 按钮字体样式                                    |
+| **text-align / vertical-align**           | 文本水平/垂直对齐       | `text-align:center; vertical-align:middle;`           | 居中标题                                        |
+| **line-height / letter-spacing**          | 行高 / 字间距           | `line-height:1.5; letter-spacing:1px;`                | 排版调整                                        |
+| **white-space**                           | 文本换行控制            | `white-space:nowrap;`                                 | 单行显示溢出文本                                |
+| **text-overflow**                         | 溢出显示                | `text-overflow:ellipsis;`                             | 溢出显示省略号                                  |
+| **flex / flex-direction**                 | 弹性布局                | `display:flex; flex-direction:row/column;`            | 工具栏水平排列                                  |
+| **justify-content**                       | 水平排列方式            | `justify-content:flex-start/center/space-between;`    | 水平居中 `.toolbar { justify-content:center; }` |
+| **align-items**                           | 垂直对齐方式            | `align-items:flex-start/center/stretch;`              | `.toolbar { align-items:center; }`              |
+| **flex-wrap**                             | 是否换行                | `flex-wrap:wrap;`                                     | 多按钮自动换行                                  |
+| **grid / grid-template-columns**          | 网格布局                | `display:grid; grid-template-columns:repeat(3,1fr);`  | 三列卡片布局                                    |
+| **gap**                                   | 网格或 Flex 间距        | `gap:16px;`                                           | 卡片间距                                        |
+| **transition**                            | 过渡效果                | `transition:all 0.3s;`                                | 按钮 hover 动画                                 |
+| **animation / keyframes**                 | 动画                    | `@keyframes fade{0%{opacity:0;}100%{opacity:1;}}`     | `.fade-in{animation:fade 0.5s;}`                |
+| **cursor**                                | 鼠标样式                | `cursor:pointer;`                                     | 按钮鼠标手型                                    |
+| **opacity**                               | 透明度                  | `opacity:0.5;`                                        | 弹窗半透明背景                                  |
+| **visibility**                            | 可见性                  | `visibility:hidden/visible;`                          | 元素隐藏显示                                    |
+| **box-shadow / text-shadow**              | 阴影                    | `box-shadow:0 2px 6px rgba(0,0,0,0.2);`               | 卡片投影效果                                    |
+| **clip / clip-path**                      | 裁剪                    | `clip-path:circle(50% at 50% 50%);`                   | 圆形头像裁剪                                    |
+| **overflow-x / overflow-y**               | 横向/纵向溢出           | `overflow-x:auto; overflow-y:hidden;`                 | 水平滚动容器                                    |
+| **media queries**                         | 响应式                  | `@media (max-width:768px){...}`                       | 移动端调整布局                                  |
+| **visibility / display 切换**             | 元素显示隐藏            | `display:none; visibility:hidden;`                    | 弹窗关闭或隐藏                                  |
+| **position sticky**                       | 粘性定位                | `position:sticky; top:0;`                             | 顶部吸附导航                                    |
+| **object-fit / object-position**          | 图片填充与位置          | `object-fit:cover; object-position:center;`           | 头像裁剪铺满容器                                |
+| **outline**                               | 焦点边框                | `outline:2px solid #409eff;`                          | 输入框 focus 高亮                               |
+| **user-select**                           | 文本可选性              | `user-select:none;`                                   | 禁止文本选中                                    |
+| **pointer-events**                        | 鼠标事件                | `pointer-events:none;`                                | 禁止点击元素                                    |
+| **content**                               | 插入内容                | `content:"★";`                                        | 用 ::before / ::after 插入符号                  |
+| **clip-path / mask**                      | 裁剪/蒙版               | `clip-path:polygon(...);`                             | 卡片裁剪形状                                    |
+| **calc()**                                 | 计算属性值，可进行加减乘除 | `width: calc(100% - 32px);`                              | `.container { width: calc(100% - 32px); }`         |
+| **clamp()**                                | 限制值在最小/首选/最大之间 | `font-size: clamp(12px, 2vw, 20px);`                     | 响应式字体：`h1{font-size:clamp(12px,2vw,20px);}`  |
+| **min() / max()**                          | 取最小值/最大值            | `width: min(50%, 300px);`                                | 卡片最大宽度控制                                   |
+| **CSS Variables**                          | 定义全局变量               | `:root { --primary-color:#409eff; }`                     | `.btn { background-color: var(--primary-color); }` |
+| **var()**                                  | 使用 CSS 变量              | `color: var(--text-color);`                              | `.title { color: var(--text-color); }`             |
+| **flex-grow / flex-shrink**                | 弹性元素放大/缩小比例      | `flex: 1 0 auto;`                                        | `.sidebar{flex-grow:1;}`                           |
+| **flex-basis**                             | 弹性元素初始大小           | `flex-basis:200px;`                                      | `.item{flex-basis:200px;}`                         |
+| **align-self**                             | 单个 Flex 元素垂直对齐     | `align-self:flex-start;`                                 | `.btn{align-self:center;}`                         |
+| **justify-items**                          | Grid 子元素水平对齐        | `justify-items:center;`                                  | `.grid { justify-items:center; }`                  |
+| **align-items**                            | Flex/Grid 子元素垂直对齐   | `align-items:center;`                                    | `.toolbar { align-items:center; }`                 |
+| **justify-content**                        | Flex/Grid 主轴对齐         | `justify-content:space-between;`                         | `.toolbar{justify-content:space-between;}`         |
+| **grid-template-rows**                     | 定义 Grid 行               | `grid-template-rows: 100px auto;`                        | `.grid { grid-template-rows:100px auto; }`         |
+| **grid-template-areas**                    | 命名网格区域               | `grid-template-areas: "header header" "main sidebar";`   | 网格布局命名区域                                   |
+| **grid-area**                              | 元素指定区域               | `.header { grid-area: header; }`                         | 对应上方命名区域                                   |
+| **grid-column / grid-row**                 | 指定列/行跨度              | `grid-column:1/3; grid-row:1/2;`                         | 元素跨列布局                                       |
+| **gap / row-gap / column-gap**             | Grid/Flex 间距             | `gap:16px; row-gap:8px; column-gap:16px;`                | 卡片间距                                           |
+| **object-fit**                             | 图片/视频填充              | `object-fit:cover;`                                      | 头像铺满容器                                       |
+| **object-position**                        | 图片/视频位置              | `object-position:center;`                                | 居中显示                                           |
+| **overflow-wrap / word-wrap**              | 文本换行控制               | `overflow-wrap:break-word;`                              | 文本溢出自动换行                                   |
+| **word-break**                             | 文本换行方式               | `word-break:break-all;`                                  | 长文本单词打断换行                                 |
+| **white-space**                            | 空白符控制                 | `white-space:nowrap;`                                    | 单行显示                                           |
+| **text-overflow**                          | 溢出显示                   | `text-overflow:ellipsis;`                                | 文本省略号                                         |
+| **vertical-align**                         | 垂直对齐                   | `vertical-align:middle;`                                 | 图标和文字对齐                                     |
+| **box-sizing**                             | 盒模型控制                 | `box-sizing:border-box;`                                 | 卡片和输入框尺寸一致                               |
+| **clip-path**                              | 裁剪元素                   | `clip-path:circle(50% at 50% 50%);`                      | 圆形头像                                           |
+| **mask / mask-image**                      | 蒙版                       | `mask-image:url(mask.png);`                              | 图片裁剪或特殊效果                                 |
+| **filter**                                 | CSS 滤镜                   | `filter:blur(4px) brightness(0.8);`                      | 卡片背景模糊                                       |
+| **backdrop-filter**                        | 背景滤镜                   | `backdrop-filter:blur(8px);`                             | 半透明背景模糊                                     |
+| **transition-property**                    | 指定过渡属性               | `transition-property:all;`                               | 按钮 hover 动画                                    |
+| **transition-duration**                    | 过渡时长                   | `transition-duration:0.3s;`                              | `.btn { transition-duration:0.3s; }`               |
+| **transition-timing-function**             | 过渡函数                   | `transition-timing-function:ease-in-out;`                | `.btn:hover{}`                                     |
+| **transition-delay**                       | 过渡延迟                   | `transition-delay:0.1s;`                                 | 动画延迟效果                                       |
+| **animation-name**                         | 动画名称                   | `animation-name:fade;`                                   | `.fade-in{animation-name:fade;}`                   |
+| **animation-duration**                     | 动画时长                   | `animation-duration:0.5s;`                               | `.fade-in{animation-duration:0.5s;}`               |
+| **animation-timing-function**              | 动画函数                   | `animation-timing-function:ease-in-out;`                 | `.fade-in{}`                                       |
+| **animation-iteration-count**              | 循环次数                   | `animation-iteration-count:infinite;`                    | 持续闪烁动画                                       |
+| **animation-delay**                        | 动画延迟                   | `animation-delay:0.2s;`                                  | 延迟播放动画                                       |
+| **keyframes**                              | 动画关键帧                 | `@keyframes fade {0%{opacity:0;}100%{opacity:1;}}`       | `.fade-in{animation:fade 0.5s;}`                   |
+| **pointer-events**                         | 鼠标事件控制               | `pointer-events:none;`                                   | 禁止点击元素                                       |
+| **user-select**                            | 文本选择                   | `user-select:none;`                                      | 禁止文本选中                                       |
+| **outline / outline-offset**               | 焦点边框                   | `outline:2px solid #409eff; outline-offset:2px;`         | 输入框 focus 高亮                                  |
+| **clip**                                   | 裁剪元素                   | `clip:rect(0,100px,100px,0);`                            | 旧版裁剪方法                                       |
+| **list-style / list-style-type**           | 列表样式                   | `list-style:none;`                                       | 去掉 ul li 默认点                                  |
+| **table-layout**                           | 表格布局                   | `table-layout:fixed;`                                    | 表格固定列宽                                       |
+| **caption-side**                           | 表格标题位置               | `caption-side:top;`                                      | 表格标题在上                                       |
+| **vertical-align**                         | 表格单元格对齐             | `vertical-align:middle;`                                 | 单元格内容居中                                     |
+| **resize**                                 | 元素可调整大小             | `resize:both;`                                           | textarea 可拖动                                    |
+| **scroll-behavior**                        | 滚动行为                   | `scroll-behavior:smooth;`                                | 页面滚动平滑                                       |
+| **backface-visibility**                    | 3D 翻转显示                | `backface-visibility:hidden;`                            | 卡片翻转效果                                       |
+| **transform / translate / rotate / scale** | 2D/3D 变换                 | `transform:translate(50%,50%) rotate(45deg);`            | 动画、卡片旋转、平移                               |
+| **perspective**                            | 3D 透视                    | `perspective:1000px;`                                    | 3D 卡片旋转效果                                    |
+| **will-change**                            | 性能优化提示               | `will-change:transform;`                                 | 动画元素 GPU 加速                                  |
+| **mix-blend-mode**                         | 混合模式                   | `mix-blend-mode:multiply;`                               | 图像叠加效果                                       |
+| **isolation**                              | 混合隔离                   | `isolation:isolate;`                                     | 避免混合模式干扰                                   |
+| **scroll-snap-type / scroll-snap-align**   | 滚动捕捉                   | `scroll-snap-type:x mandatory; scroll-snap-align:start;` | 滑动容器捕捉                                       |
+| **clip-path:polygon**                      | 多边形裁剪                 | `clip-path:polygon(0 0,100% 0,100% 100%,0 100%);`        | 自定义裁剪卡片                                     |
+| **columns / column-count / column-gap**    | 多栏布局                   | `columns:2 200px; column-gap:16px;`                      | 新闻列表两栏显示                                   |
+| **writing-mode**                           | 文本方向                   | `writing-mode:vertical-rl;`                              | 中文竖排                                           |
+| **text-orientation**                       | 文本旋转方向               | `text-orientation:upright;`                              | 竖排文字                                           |
+| **accent-color**                           | 表单元素高亮色             | `accent-color:#409eff;`                                  | checkbox / radio 主色                              |
+| **scrollbar-color**                        | 滚动条样式                 | `scrollbar-color:#409eff #f5f5f5;`                       | 自定义滚动条                                       |
+| **scrollbar-width**                        | 滚动条宽度                 | `scrollbar-width:thin;`                                  | 薄滚动条                                           |
+| **contain**                                | 性能优化                   | `contain:layout style paint;`                            | 卡片隔离布局                                       |
+| **overscroll-behavior**                    | 滚动行为                   | `overscroll-behavior:none;`                              | 阻止下拉回弹                                       |
+| **accent-color**                           | 表单高亮色                 | `accent-color:#409eff;`                                  | checkbox/radio 主色                                |
+
+---
+
 
 ## 基础样式
 
