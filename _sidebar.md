@@ -6,8 +6,8 @@
     - [Vue3 Router](/apps/vue-router/)
     - [Vue3 Layout](/apps/layout/)
 - Vue
-    - [Vue3基础（待）](/apps/vue3-basic/)
-    - [Vue3组件（待）](/apps/vue3-component/)
+    - [Vue3基础](/apps/vue3-basic/)
+    - [Vue3组件](/apps/vue3-component/)
     - [TypeScript](/apps/typescript/)
 
 - 样式
@@ -17,7 +17,7 @@
 - UI
   - [Element Plus（待）](/apps/element-plus/)
 
-- 图标
+- 图表
   - [Apache ECharts（待）](/apps/apache-echarts/)
   - [Vue3 ECharts（待）](/apps/vue3-echarts/)
 
