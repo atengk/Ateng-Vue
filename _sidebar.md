@@ -8,6 +8,7 @@
 - Vue
     - [Vue3基础（待）](/apps/vue3-basic/)
     - [Vue3组件（待）](/apps/vue3-component/)
+    - [TypeScript](/apps/typescript/)
 
 - 样式
   - [CSS](/apps/css/)
