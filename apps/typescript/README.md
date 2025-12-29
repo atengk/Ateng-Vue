@@ -1,3205 +1,1973 @@
-# CSS
-
-## 常用语法速查表
-
-| 语法                                      | 说明                    | 示例                                                  | 使用示例                                        |
-| ----------------------------------------- | ----------------------- | ----------------------------------------------------- | ----------------------------------------------- |
-| **选择器**                                | 指定 HTML 元素          | `div {}`                                              | `.card {}` 针对 class `.card`                   |
-| **ID 选择器**                             | 指定唯一元素            | `#header {}`                                          | `#app {}`                                       |
-| **类选择器**                              | 针对 class              | `.btn {}`                                             | `<button class="btn">按钮</button>`             |
-| **标签 + 类**                             | 标签内特定 class        | `button.btn {}`                                       | `<button class="btn">保存</button>`             |
-| **通配符 * **                             | 选择所有元素            | `* { margin:0; padding:0; }`                          | 页面全局重置                                    |
-| **层级选择器 空格**                       | 选择子孙元素            | `.card h1 {}`                                         | 卡片内所有 h1 标题                              |
-| **子选择器 >**                            | 只选择直接子元素        | `.card > h1 {}`                                       | 只选卡片下直接 h1                               |
-| **相邻兄弟 +**                            | 紧跟的兄弟元素          | `h1 + p {}`                                           | 选 h1 后紧跟的 p                                |
-| **通用兄弟 ~**                            | 同一父元素下所有兄弟    | `h1 ~ p {}`                                           | 所有跟随 h1 的 p                                |
-| **伪类 :hover**                           | 鼠标悬停状态            | `.btn:hover {}`                                       | 鼠标移上按钮改变背景                            |
-| **伪类 :active**                          | 元素激活状态            | `.btn:active {}`                                      | 点击按钮时效果                                  |
-| **伪类 :focus**                           | 元素获取焦点            | `input:focus {}`                                      | 输入框聚焦改变边框色                            |
-| **伪类 :nth-child(n)**                    | 第 n 个子元素           | `li:nth-child(2) {}`                                  | 列表第二项特殊样式                              |
-| **伪类 :first-child / :last-child**       | 第一个 / 最后一个子元素 | `li:first-child {}`                                   | 列表首项样式                                    |
-| **伪元素 ::before / ::after**             | 插入内容                | `.card::after { content:"★"; }`                       | 卡片装饰符号                                    |
-| **display**                               | 元素布局方式            | `display:block; display:flex; display:grid;`          | `.toolbar { display:flex; }`                    |
-| **position**                              | 定位类型                | `position:static/relative/absolute/fixed/sticky;`     | `.modal { position:fixed; top:0; }`             |
-| **top/right/bottom/left**                 | 定位偏移                | `top:10px; left:20px;`                                | `.tooltip { top:50%; left:50%; }`               |
-| **z-index**                               | 层级                    | `z-index:1000;`                                       | 弹窗高于背景层                                  |
-| **float / clear**                         | 浮动                    | `float:left; clear:both;`                             | 图片左右浮动排版                                |
-| **overflow**                              | 溢出处理                | `overflow:hidden; overflow:auto;`                     | 卡片内容溢出隐藏                                |
-| **width / height**                        | 宽高                    | `width:200px; height:100px;`                          | 固定尺寸按钮                                    |
-| **max-width / min-width**                 | 最大/最小宽度           | `max-width:100%;`                                     | 图片响应式                                      |
-| **margin / padding**                      | 外边距 / 内边距         | `margin:10px; padding:8px;`                           | 卡片内外间距                                    |
-| **border / border-radius**                | 边框 / 圆角             | `border:1px solid #ccc; border-radius:4px;`           | 卡片圆角边框                                    |
-| **background / background-color**         | 背景                    | `background:#f5f5f5;`                                 | 页面背景色                                      |
-| **color**                                 | 文字颜色                | `color:#333;`                                         | 标题字体颜色                                    |
-| **font-size / font-weight / font-family** | 字体大小、粗细、字体族  | `font-size:14px; font-weight:700; font-family:Arial;` | 按钮字体样式                                    |
-| **text-align / vertical-align**           | 文本水平/垂直对齐       | `text-align:center; vertical-align:middle;`           | 居中标题                                        |
-| **line-height / letter-spacing**          | 行高 / 字间距           | `line-height:1.5; letter-spacing:1px;`                | 排版调整                                        |
-| **white-space**                           | 文本换行控制            | `white-space:nowrap;`                                 | 单行显示溢出文本                                |
-| **text-overflow**                         | 溢出显示                | `text-overflow:ellipsis;`                             | 溢出显示省略号                                  |
-| **flex / flex-direction**                 | 弹性布局                | `display:flex; flex-direction:row/column;`            | 工具栏水平排列                                  |
-| **justify-content**                       | 水平排列方式            | `justify-content:flex-start/center/space-between;`    | 水平居中 `.toolbar { justify-content:center; }` |
-| **align-items**                           | 垂直对齐方式            | `align-items:flex-start/center/stretch;`              | `.toolbar { align-items:center; }`              |
-| **flex-wrap**                             | 是否换行                | `flex-wrap:wrap;`                                     | 多按钮自动换行                                  |
-| **grid / grid-template-columns**          | 网格布局                | `display:grid; grid-template-columns:repeat(3,1fr);`  | 三列卡片布局                                    |
-| **gap**                                   | 网格或 Flex 间距        | `gap:16px;`                                           | 卡片间距                                        |
-| **transition**                            | 过渡效果                | `transition:all 0.3s;`                                | 按钮 hover 动画                                 |
-| **animation / keyframes**                 | 动画                    | `@keyframes fade{0%{opacity:0;}100%{opacity:1;}}`     | `.fade-in{animation:fade 0.5s;}`                |
-| **cursor**                                | 鼠标样式                | `cursor:pointer;`                                     | 按钮鼠标手型                                    |
-| **opacity**                               | 透明度                  | `opacity:0.5;`                                        | 弹窗半透明背景                                  |
-| **visibility**                            | 可见性                  | `visibility:hidden/visible;`                          | 元素隐藏显示                                    |
-| **box-shadow / text-shadow**              | 阴影                    | `box-shadow:0 2px 6px rgba(0,0,0,0.2);`               | 卡片投影效果                                    |
-| **clip / clip-path**                      | 裁剪                    | `clip-path:circle(50% at 50% 50%);`                   | 圆形头像裁剪                                    |
-| **overflow-x / overflow-y**               | 横向/纵向溢出           | `overflow-x:auto; overflow-y:hidden;`                 | 水平滚动容器                                    |
-| **media queries**                         | 响应式                  | `@media (max-width:768px){...}`                       | 移动端调整布局                                  |
-| **visibility / display 切换**             | 元素显示隐藏            | `display:none; visibility:hidden;`                    | 弹窗关闭或隐藏                                  |
-| **position sticky**                       | 粘性定位                | `position:sticky; top:0;`                             | 顶部吸附导航                                    |
-| **object-fit / object-position**          | 图片填充与位置          | `object-fit:cover; object-position:center;`           | 头像裁剪铺满容器                                |
-| **outline**                               | 焦点边框                | `outline:2px solid #409eff;`                          | 输入框 focus 高亮                               |
-| **user-select**                           | 文本可选性              | `user-select:none;`                                   | 禁止文本选中                                    |
-| **pointer-events**                        | 鼠标事件                | `pointer-events:none;`                                | 禁止点击元素                                    |
-| **content**                               | 插入内容                | `content:"★";`                                        | 用 ::before / ::after 插入符号                  |
-| **clip-path / mask**                      | 裁剪/蒙版               | `clip-path:polygon(...);`                             | 卡片裁剪形状                                    |
-| **calc()**                                 | 计算属性值，可进行加减乘除 | `width: calc(100% - 32px);`                              | `.container { width: calc(100% - 32px); }`         |
-| **clamp()**                                | 限制值在最小/首选/最大之间 | `font-size: clamp(12px, 2vw, 20px);`                     | 响应式字体：`h1{font-size:clamp(12px,2vw,20px);}`  |
-| **min() / max()**                          | 取最小值/最大值            | `width: min(50%, 300px);`                                | 卡片最大宽度控制                                   |
-| **CSS Variables**                          | 定义全局变量               | `:root { --primary-color:#409eff; }`                     | `.btn { background-color: var(--primary-color); }` |
-| **var()**                                  | 使用 CSS 变量              | `color: var(--text-color);`                              | `.title { color: var(--text-color); }`             |
-| **flex-grow / flex-shrink**                | 弹性元素放大/缩小比例      | `flex: 1 0 auto;`                                        | `.sidebar{flex-grow:1;}`                           |
-| **flex-basis**                             | 弹性元素初始大小           | `flex-basis:200px;`                                      | `.item{flex-basis:200px;}`                         |
-| **align-self**                             | 单个 Flex 元素垂直对齐     | `align-self:flex-start;`                                 | `.btn{align-self:center;}`                         |
-| **justify-items**                          | Grid 子元素水平对齐        | `justify-items:center;`                                  | `.grid { justify-items:center; }`                  |
-| **align-items**                            | Flex/Grid 子元素垂直对齐   | `align-items:center;`                                    | `.toolbar { align-items:center; }`                 |
-| **justify-content**                        | Flex/Grid 主轴对齐         | `justify-content:space-between;`                         | `.toolbar{justify-content:space-between;}`         |
-| **grid-template-rows**                     | 定义 Grid 行               | `grid-template-rows: 100px auto;`                        | `.grid { grid-template-rows:100px auto; }`         |
-| **grid-template-areas**                    | 命名网格区域               | `grid-template-areas: "header header" "main sidebar";`   | 网格布局命名区域                                   |
-| **grid-area**                              | 元素指定区域               | `.header { grid-area: header; }`                         | 对应上方命名区域                                   |
-| **grid-column / grid-row**                 | 指定列/行跨度              | `grid-column:1/3; grid-row:1/2;`                         | 元素跨列布局                                       |
-| **gap / row-gap / column-gap**             | Grid/Flex 间距             | `gap:16px; row-gap:8px; column-gap:16px;`                | 卡片间距                                           |
-| **object-fit**                             | 图片/视频填充              | `object-fit:cover;`                                      | 头像铺满容器                                       |
-| **object-position**                        | 图片/视频位置              | `object-position:center;`                                | 居中显示                                           |
-| **overflow-wrap / word-wrap**              | 文本换行控制               | `overflow-wrap:break-word;`                              | 文本溢出自动换行                                   |
-| **word-break**                             | 文本换行方式               | `word-break:break-all;`                                  | 长文本单词打断换行                                 |
-| **white-space**                            | 空白符控制                 | `white-space:nowrap;`                                    | 单行显示                                           |
-| **text-overflow**                          | 溢出显示                   | `text-overflow:ellipsis;`                                | 文本省略号                                         |
-| **vertical-align**                         | 垂直对齐                   | `vertical-align:middle;`                                 | 图标和文字对齐                                     |
-| **box-sizing**                             | 盒模型控制                 | `box-sizing:border-box;`                                 | 卡片和输入框尺寸一致                               |
-| **clip-path**                              | 裁剪元素                   | `clip-path:circle(50% at 50% 50%);`                      | 圆形头像                                           |
-| **mask / mask-image**                      | 蒙版                       | `mask-image:url(mask.png);`                              | 图片裁剪或特殊效果                                 |
-| **filter**                                 | CSS 滤镜                   | `filter:blur(4px) brightness(0.8);`                      | 卡片背景模糊                                       |
-| **backdrop-filter**                        | 背景滤镜                   | `backdrop-filter:blur(8px);`                             | 半透明背景模糊                                     |
-| **transition-property**                    | 指定过渡属性               | `transition-property:all;`                               | 按钮 hover 动画                                    |
-| **transition-duration**                    | 过渡时长                   | `transition-duration:0.3s;`                              | `.btn { transition-duration:0.3s; }`               |
-| **transition-timing-function**             | 过渡函数                   | `transition-timing-function:ease-in-out;`                | `.btn:hover{}`                                     |
-| **transition-delay**                       | 过渡延迟                   | `transition-delay:0.1s;`                                 | 动画延迟效果                                       |
-| **animation-name**                         | 动画名称                   | `animation-name:fade;`                                   | `.fade-in{animation-name:fade;}`                   |
-| **animation-duration**                     | 动画时长                   | `animation-duration:0.5s;`                               | `.fade-in{animation-duration:0.5s;}`               |
-| **animation-timing-function**              | 动画函数                   | `animation-timing-function:ease-in-out;`                 | `.fade-in{}`                                       |
-| **animation-iteration-count**              | 循环次数                   | `animation-iteration-count:infinite;`                    | 持续闪烁动画                                       |
-| **animation-delay**                        | 动画延迟                   | `animation-delay:0.2s;`                                  | 延迟播放动画                                       |
-| **keyframes**                              | 动画关键帧                 | `@keyframes fade {0%{opacity:0;}100%{opacity:1;}}`       | `.fade-in{animation:fade 0.5s;}`                   |
-| **pointer-events**                         | 鼠标事件控制               | `pointer-events:none;`                                   | 禁止点击元素                                       |
-| **user-select**                            | 文本选择                   | `user-select:none;`                                      | 禁止文本选中                                       |
-| **outline / outline-offset**               | 焦点边框                   | `outline:2px solid #409eff; outline-offset:2px;`         | 输入框 focus 高亮                                  |
-| **clip**                                   | 裁剪元素                   | `clip:rect(0,100px,100px,0);`                            | 旧版裁剪方法                                       |
-| **list-style / list-style-type**           | 列表样式                   | `list-style:none;`                                       | 去掉 ul li 默认点                                  |
-| **table-layout**                           | 表格布局                   | `table-layout:fixed;`                                    | 表格固定列宽                                       |
-| **caption-side**                           | 表格标题位置               | `caption-side:top;`                                      | 表格标题在上                                       |
-| **vertical-align**                         | 表格单元格对齐             | `vertical-align:middle;`                                 | 单元格内容居中                                     |
-| **resize**                                 | 元素可调整大小             | `resize:both;`                                           | textarea 可拖动                                    |
-| **scroll-behavior**                        | 滚动行为                   | `scroll-behavior:smooth;`                                | 页面滚动平滑                                       |
-| **backface-visibility**                    | 3D 翻转显示                | `backface-visibility:hidden;`                            | 卡片翻转效果                                       |
-| **transform / translate / rotate / scale** | 2D/3D 变换                 | `transform:translate(50%,50%) rotate(45deg);`            | 动画、卡片旋转、平移                               |
-| **perspective**                            | 3D 透视                    | `perspective:1000px;`                                    | 3D 卡片旋转效果                                    |
-| **will-change**                            | 性能优化提示               | `will-change:transform;`                                 | 动画元素 GPU 加速                                  |
-| **mix-blend-mode**                         | 混合模式                   | `mix-blend-mode:multiply;`                               | 图像叠加效果                                       |
-| **isolation**                              | 混合隔离                   | `isolation:isolate;`                                     | 避免混合模式干扰                                   |
-| **scroll-snap-type / scroll-snap-align**   | 滚动捕捉                   | `scroll-snap-type:x mandatory; scroll-snap-align:start;` | 滑动容器捕捉                                       |
-| **clip-path:polygon**                      | 多边形裁剪                 | `clip-path:polygon(0 0,100% 0,100% 100%,0 100%);`        | 自定义裁剪卡片                                     |
-| **columns / column-count / column-gap**    | 多栏布局                   | `columns:2 200px; column-gap:16px;`                      | 新闻列表两栏显示                                   |
-| **writing-mode**                           | 文本方向                   | `writing-mode:vertical-rl;`                              | 中文竖排                                           |
-| **text-orientation**                       | 文本旋转方向               | `text-orientation:upright;`                              | 竖排文字                                           |
-| **accent-color**                           | 表单元素高亮色             | `accent-color:#409eff;`                                  | checkbox / radio 主色                              |
-| **scrollbar-color**                        | 滚动条样式                 | `scrollbar-color:#409eff #f5f5f5;`                       | 自定义滚动条                                       |
-| **scrollbar-width**                        | 滚动条宽度                 | `scrollbar-width:thin;`                                  | 薄滚动条                                           |
-| **contain**                                | 性能优化                   | `contain:layout style paint;`                            | 卡片隔离布局                                       |
-| **overscroll-behavior**                    | 滚动行为                   | `overscroll-behavior:none;`                              | 阻止下拉回弹                                       |
-| **accent-color**                           | 表单高亮色                 | `accent-color:#409eff;`                                  | checkbox/radio 主色                                |
+# TypeScript
 
----
+## TypeScript 基础类型
 
+------
 
-## 基础样式
+### 原始类型（Primitive Types）
 
-### 操作区工具栏
+#### `string / number / boolean`
 
-```
-.toolbar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-}
-```
+这是 **最基础、但最容易被忽视“约束价值”的类型**。
 
-* **toolbar**：工具栏容器，常用于放置按钮、输入框、操作按钮等元素
-* **display: flex**：开启弹性布局，让子元素在一行排列
+使用场景（Vue3 中）
 
-  * **其他常用值**：
+```ts
+import { ref } from 'vue'
 
-    * `inline-flex`：行内弹性布局，元素像 `inline-block`，但子元素是 flex
-* **justify-content: center**：水平方向居中
+const username = ref<string>('admin')
+const age = ref<number>(18)
+const isLogin = ref<boolean>(false)
+```
 
-  * **其他常用值**：
+**关键理解点：**
 
-    * `flex-start`：左对齐（默认值）
-    * `flex-end`：右对齐
-    * `space-between`：两端对齐，中间间距平均
-    * `space-around`：每个子元素间距相等，首尾也有间距
-    * `space-evenly`：每个子元素间距均等
-* **align-items: center**：垂直方向居中
+- `ref<string>` 是在约束 **`.value` 的类型**
+- 赋值错误会在**编码阶段**被拦截，而不是运行时报错
 
-  * **其他常用值**：
+```ts
+username.value = 123 // ❌ TS 报错
+```
 
-    * `flex-start`：顶部对齐
-    * `flex-end`：底部对齐
-    * `stretch`：拉伸填充容器高度（默认值）
-    * `baseline`：按文本基线对齐
-* **gap: 8px**：子元素之间的间距，不需要单独设置 margin
+👉 **TS 的价值：把“可能的 bug”前移到编码期**
 
----
+------
 
-**使用示例**
+#### `null / undefined`
 
-```
-<div class="toolbar">
-    <input class="input" placeholder="请输入关键字" />
-    <button class="btn">查询</button>
-    <button class="btn primary">新增</button>
-</div>
-```
+核心理解
 
----
+- `undefined`：**还没赋值**
+- `null`：**明确表示“没有”**
 
-### 页面容器
+Vue 场景示例（接口数据未加载）
 
-```
-.page-container {
-  padding: 16px;
-  min-height: 100%;
-  box-sizing: border-box;
+```ts
+interface User {
+  id: number
+  name: string
 }
+
+const user = ref<User | null>(null)
+// ❌ 直接使用会报错
+user.value.name
+
+// ✅ 必须做判空
+if (user.value) {
+  console.log(user.value.name)
+}
 ```
 
-* **page-container**：页面内容最外层容器，用于统一内边距和布局
-* **padding: 16px**：内容与容器边缘保持一定距离
-* **min-height: 100%**：保证容器至少撑满可视区域高度
-* **box-sizing: border-box**：包含 padding 在内计算元素宽高
+👉 **TS 强制你“正视数据未就绪的阶段”**
 
-  * **其他常用值**：
+------
 
-    * `content-box`（默认值）：宽高只包含内容，不包含 padding 和 border
+####  `any` —— 逃生舱（不推荐）
 
----
+核心结论
 
-**使用示例**
+> **`any` = 关闭 TypeScript**
 
-```
-<div class="page-container">
-    <div>这里是页面内容</div>
-</div>
+```ts
+const data: any = getData()
+
+data.foo.bar.baz() // TS 不报错，但运行期可能直接炸
 ```
 
----
+在 Vue 项目中什么时候“可以用”
 
-### 卡片容器
+- 第三方库类型极不完整
+- 临时调试
+- 老代码迁移阶段
 
-```
-.card {
-  background-color: #ffffff;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  padding: 16px;
-}
+```ts
+const legacyData: any = window['__OLD_DATA__']
 ```
 
-* **card**：信息分组容器，常用于表单、列表或展示块
-* **background-color: #ffffff**：白底，区分内容区域
-* **border: 1px solid #dcdfe6**：边框，让卡片独立
-* **border-radius: 4px**：圆角，让视觉更柔和
-* **padding: 16px**：内部留白，内容不贴边
+⚠️ **必须有边界，不允许扩散**
 
----
+------
 
-**使用示例**
+####  `unknown` —— 更安全的 `any`
 
-```
-<div class="card">
-    <p>卡片内容</p>
-</div>
-```
+本质区别
 
----
+| 类型      | 能否直接使用       |
+| --------- | ------------------ |
+| `any`     | ✅ 可以             |
+| `unknown` | ❌ 不行，必须先校验 |
 
-### 水平居中容器
+Vue 示例（接口返回不可信数据）
 
-```
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+```ts
+const response = ref<unknown>(null)
+if (typeof response.value === 'string') {
+  console.log(response.value.toUpperCase())
 }
 ```
 
-* **flex-center**：常用于加载中、空状态或弹窗居中
-* **display: flex**：开启弹性布局
+👉 **`unknown` 强迫你“验证数据再使用”**
 
-  * **其他常用值**：
+------
 
-    * `inline-flex`：行内弹性布局
-* **justify-content: center**：水平方向居中
+####  `never` —— 不该发生的情况
 
-  * **其他常用值**：
+核心用途
 
-    * `flex-start`：左对齐
-    * `flex-end`：右对齐
-    * `space-between`：两端对齐，中间间距平均
-    * `space-around`：子元素间距均等
-    * `space-evenly`：子元素间距均等，首尾也有间距
-* **align-items: center**：垂直方向居中
+- **异常**
+- **死分支**
+- **兜底校验（exhaustive check）**
 
-  * **其他常用值**：
+Vue 场景：状态兜底
 
-    * `flex-start`：顶部对齐
-    * `flex-end`：底部对齐
-    * `stretch`：拉伸填充容器高度
-    * `baseline`：按文本基线对齐
+```ts
+type PageStatus = 'loading' | 'success' | 'error'
 
----
+function handleStatus(status: PageStatus) {
+  switch (status) {
+    case 'loading':
+      return '加载中'
+    case 'success':
+      return '成功'
+    case 'error':
+      return '失败'
+    default:
+      const _exhaustive: never = status
+      return _exhaustive
+  }
+}
+```
 
-**使用示例**
+👉 **当你新增状态却忘记处理时，TS 会直接报错**
 
-```
-<div class="flex-center" style="height: 100px; border: 1px solid #ccc;">
-    <span>居中内容</span>
-</div>
-```
+------
 
----
+### 数组与元组
 
-### 输入框基础样式
+#### 数组类型：`string[]` vs `Array<number>`
 
+```ts
+const ids: number[] = [1, 2, 3]
+const names: Array<string> = ['a', 'b']
 ```
-.input {
-  height: 32px;
-  padding: 0 8px;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
+
+实战建议
+
+- **简单场景**：`T[]`
+- **泛型场景 / 工具函数**：`Array<T>`
+
+```ts
+function useList<T>(list: Array<T>) {
+  return list.length
 }
 ```
 
-* **input**：统一输入框样式，保证表单整齐
-* **height: 32px**：固定高度，使表单元素统一
-* **padding: 0 8px**：左右内部留白，内容不贴边
-* **border: 1px solid #dcdfe6**：输入框边框，便于识别
-* **border-radius: 4px**：圆角，让视觉更柔和
+------
 
----
+#### 元组（Tuple）：固定结构的数据
 
-**使用示例**
+典型接口返回值
 
-```
-<input class="input" placeholder="请输入内容" />
+```ts
+type ApiResult = [number, string, boolean]
+const result = ref<ApiResult>([200, 'ok', true])
 ```
 
----
+为什么不用数组？
 
-### 主按钮样式
-
-```
-.btn.primary {
-  background-color: #409eff;
-  color: #ffffff;
-  cursor: pointer;
-  border-radius: 4px;
-  padding: 0 16px;
-  height: 32px;
-}
+```ts
+result.value[0] // number（状态码）
+result.value[1] // string（消息）
+result.value[2] // boolean（成功与否）
 ```
-
-* **btn.primary**：主操作按钮，用于强调关键操作
-* **background-color: #409eff**：按钮背景颜色
 
-  * **其他常用值**：
+👉 **顺序 = 语义，类型系统直接帮你记住**
 
-    * `#ffffff`：普通按钮
-    * `#f56c6c`：危险操作按钮
-* **color: #ffffff**：文字颜色
+------
 
-  * **其他常用值**：
+### 枚举（Enum）
 
-    * `#303133`：深色文字
-* **cursor: pointer**：鼠标悬停时显示小手
-* **border-radius: 4px**：圆角
-* **padding: 0 16px**：左右内边距
-* **height: 32px**：固定高度
+#### 数字枚举 vs 字符串枚举
 
----
+```ts
+enum StatusCode {
+  SUCCESS = 200,
+  ERROR = 500
+}
+enum StatusText {
+  SUCCESS = 'success',
+  ERROR = 'error'
+}
+```
 
-**使用示例**
+项目建议
 
-```
-<button class="btn primary">保存</button>
-```
+| 场景       | 推荐       |
+| ---------- | ---------- |
+| 后端状态码 | 数字枚举   |
+| 前端状态值 | 字符串枚举 |
 
----
+------
 
-### 普通按钮样式
+#### `const enum` 的真实作用
 
-```
-.btn {
-  background-color: #ffffff;
-  color: #303133;
-  cursor: pointer;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  padding: 0 16px;
-  height: 32px;
+```ts
+const enum Role {
+  ADMIN = 'admin',
+  USER = 'user'
 }
 ```
 
-* **btn**：普通按钮，常用于一般操作
-* **background-color: #ffffff**：按钮背景白色
-* **color: #303133**：文字深色
-* **cursor: pointer**：鼠标悬停显示小手
-* **border: 1px solid #dcdfe6**：边框
-* **border-radius: 4px**：圆角
-* **padding: 0 16px**：左右内边距
-* **height: 32px**：固定高度
+特点
 
----
+- **编译后直接被内联**
+- **不生成额外对象**
+- 更小体积、更好性能
 
-**使用示例**
+⚠️ **缺点**：调试时看不到 enum 对象
 
-```
-<button class="btn">取消</button>
-```
+------
 
----
+#### 枚举与后端状态码映射（高频）
 
-### 两端对齐容器
+```ts
+enum ApiCode {
+  OK = 0,
+  FAIL = 1
+}
+const code = ref<ApiCode>(ApiCode.OK)
 
-```
-.flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+if (code.value === ApiCode.OK) {
+  console.log('成功')
 }
 ```
 
-* **flex-between**：常用于标题+操作按钮、表头工具栏
-* **display: flex**：开启弹性布局
+👉 **避免魔法数字，避免硬编码**
 
-  * 其他值：`inline-flex`
-* **justify-content: space-between**：两端对齐，中间间距自动分配
+------
 
-  * 其他值：
+## 对象建模核心（最重要）
 
-    * `flex-start`：左对齐
-    * `flex-end`：右对齐
-    * `center`：水平居中
-    * `space-around`：两边及中间间距均等
-    * `space-evenly`：所有间距均等
-* **align-items: center**：垂直居中
+------
 
-  * 其他值：`flex-start`、`flex-end`、`stretch`、`baseline`
+### 接口（interface）——对象世界的“结构契约”
 
----
+#### 接口的本质
 
-**使用示例**
+> **interface = 对“对象长什么样”的强约束描述**
 
-```
-<div class="flex-between" style="height: 40px; border: 1px solid #ccc;">
-    <span>标题</span>
-    <button class="btn primary">新增</button>
-</div>
-```
+它不是实现逻辑，而是 **定义数据结构的形状**。
 
----
+最典型的使用场景
 
-### 间距类：margin / padding
+- 接口返回数据（DTO）
+- 页面展示模型（VO）
+- 表单数据模型
+- Pinia / Vue 状态对象
 
-```
-.mt-16 { margin-top: 16px; }
-.mb-16 { margin-bottom: 16px; }
-.pt-8  { padding-top: 8px; }
-.pb-8  { padding-bottom: 8px; }
+```ts
+interface User {
+  id: number
+  name: string
+  age: number
+}
+const user = ref<User>({
+  id: 1,
+  name: 'Tom',
+  age: 18
+})
 ```
 
-* **mt-16 / mb-16**：设置元素上/下外边距
-* **pt-8 / pb-8**：设置元素上/下内边距
-* **意义**：统一间距体系，避免每次随意写 px，保证页面整齐
-* **其他常用值**：4px、8px、12px、16px、24px
+👉 **接口是前端与数据之间的“法律文本”**
 
----
+------
 
-**使用示例**
+#### 可选属性 `?` —— 不确定性显式化
 
-```
-<div class="card mt-16 pb-8">
-    <p>内容区域</p>
-</div>
+```ts
+interface User {
+  id: number
+  name: string
+  avatar?: string
+}
 ```
 
----
+含义不是“可能为空”，而是：
 
-### 文本样式
+> **这个字段“可能不存在”**
 
-```
-.text-primary {
-  font-size: 14px;
-  color: #303133;
-}
-.text-secondary {
-  font-size: 12px;
-  color: #909399;
-}
-.text-bold {
-  font-weight: 600;
+Vue 场景（接口字段非必返）
+
+```ts
+if (user.value.avatar) {
+  console.log(user.value.avatar)
 }
 ```
 
-* **text-primary**：主要文字，深色、常用于标题和重点信息
-* **text-secondary**：辅助文字，浅色、常用于描述、提示信息
-* **text-bold**：加粗文字
-* **其他常用值**：
+⚠️ **滥用 `?` 会削弱类型系统的约束力**
+原则：
 
-  * `font-size`: 12px、13px、14px、16px、18px
-  * `color`: 根据设计稿选择深色、浅色、警示色
+- 接口**一定会返回** → 不加 `?`
+- 真实可能缺失 → 才加 `?`
 
----
+------
 
-**使用示例**
+#### 只读属性 `readonly` —— 防止“被意外修改”
 
-```
-<div class="text-primary text-bold">用户管理</div>
-<div class="text-secondary">用于维护系统用户信息</div>
+```ts
+interface User {
+  readonly id: number
+  name: string
+}
+user.value.id = 2 // ❌ TS 报错
 ```
 
----
+适合的字段
 
-### 表格行高与边框
+- 主键 id
+- 创建时间
+- 后端生成、前端只读的数据
 
-```
-.table-row {
-  height: 40px;
-  border-bottom: 1px solid #ebeef5;
+👉 **readonly 是“防御性编程”的一部分**
+
+------
+
+#### 接口继承 —— 结构复用，而不是复制
+
+```ts
+interface BaseEntity {
+  id: number
+  createdAt: string
 }
+
+interface User extends BaseEntity {
+  name: string
+}
 ```
 
-* **table-row**：表格或列表行，统一高度和分隔线
-* **height: 40px**：固定行高，保证表格整齐
-* **border-bottom: 1px solid #ebeef5**：行间分隔线
+Vue 项目价值
 
-  * 其他常用值：
+- 统一基础字段
+- 避免字段定义分散
+- 修改基础结构时，全局同步生效
 
-    * `none`：无边框
-    * `dashed`：虚线
-    * `dotted`：点线
-    * `2px solid #ccc`：加粗分隔线
+👉 **interface 更适合“面向对象结构建模”**
 
----
+------
 
-**使用示例**
+### 类型别名（type）——更强的组合能力
 
-```
-<div class="table-row">
-    <span>用户1</span>
-    <span>管理员</span>
-</div>
-<div class="table-row">
-    <span>用户2</span>
-    <span>普通用户</span>
-</div>
-```
+#### 基本类型别名
 
----
+```ts
+type UserId = number
+type Username = string
+const id: UserId = 1
+```
 
-### 文本溢出省略
+作用不是“换名字”，而是：
 
-```
-.text-ellipsis {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-```
+> **为类型引入语义**
 
-* **text-ellipsis**：当文本过长时显示省略号
-* **overflow: hidden**：隐藏溢出部分
-* **white-space: nowrap**：禁止换行
-* **text-overflow: ellipsis**：显示省略号
+------
 
-  * 其他常用值：
+#### 联合类型 `|` —— 多状态的真实表达
 
-    * `clip`：直接裁切，不显示省略号
-    * `normal`：允许换行
+```ts
+type RequestStatus = 'idle' | 'loading' | 'success' | 'error'
+const status = ref<RequestStatus>('idle')
+```
 
----
+Vue 中的典型用途
 
-**使用示例**
+- 页面状态
+- 接口返回结果
+- 权限、角色、模式切换
 
-```
-<div class="text-ellipsis" style="width: 150px; border: 1px solid #ccc;">
-    这是一段很长的文本，用于演示省略效果
-</div>
+```ts
+if (status.value === 'loading') {
+  // 精确类型判断
+}
 ```
 
----
+👉 **联合类型是“枚举的轻量替代”**
 
-### 图片/头像样式
+------
 
-```
-.avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
+#### 交叉类型 `&` —— 组合，而不是继承
+
+```ts
+type UserBase = {
+  id: number
+  name: string
+}
+
+type UserWithRole = UserBase & {
+  role: 'admin' | 'user'
 }
 ```
 
-* **avatar**：用户头像或圆形图片
-* **width / height**：固定大小
-* **border-radius: 50%**：圆形显示
-* **object-fit: cover**：保持比例填充容器，避免图片变形
+适合场景
 
-  * 其他常用值：
+- 接口返回拼装数据
+- 动态增强对象能力
+- 组合多个模型特性
 
-    * `contain`：完整显示，不裁切
-    * `fill`：拉伸填充
+👉 **`&` 是“类型层面的 mixin”**
 
----
+------
 
-**使用示例**
+#### `type` vs `interface` —— 取舍原则
 
-```
-<img class="avatar" src="user.jpg" alt="头像" />
-```
+核心结论（记住这一句就够了）
 
----
+> **interface 用来“描述对象结构”，type 用来“表达类型关系”**
 
-### 标签/状态标识
+实践中的经验法则
 
-```
-.tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  background-color: #f0f9eb;
-  color: #67c23a;
-}
-```
+- DTO / VO / 表单 / 状态对象 → **interface**
+- 联合类型、交叉类型、工具类型 → **type**
+- 能用 interface 的地方，优先 interface
 
-* **tag**：状态标签或小徽章
-* **display: inline-block**：可以设置宽高又不独占一行
-* **padding: 2px 8px**：内部留白
-* **border-radius: 12px**：圆角，视觉像胶囊
-* **font-size: 12px**：文字大小
-* **background-color / color**：背景色和文字颜色
+👉 **不是谁更高级，而是“谁更合适”**
 
-  * 其他常用值：
+------
 
-    * 红色背景：`#fef0f0` + `#f56c6c`（危险）
-    * 蓝色背景：`#f0f6ff` + `#409eff`（信息）
-    * 灰色背景：`#f5f7fa` + `#909399`（禁用或次要）
+好的，这一节我继续 **严格对齐你前面的写作风格**，不做列表展开、不编号，用“概念 → 场景 → 示例 → 关键理解”的方式来讲。
 
----
+------
 
-**使用示例**
+## 函数与函数类型
 
-```
-<span class="tag">已启用</span>
-<span class="tag" style="background-color:#fef0f0;color:#f56c6c;">已禁用</span>
-```
+------
 
----
+### 函数声明 —— 行为的类型边界
 
-### 弹窗基础容器
+#### 参数类型与返回值类型
 
-```
-.modal {
-  width: 400px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+> **函数是“输入 → 输出”的契约**
+
+TypeScript 的核心价值就在于：
+**让函数的输入和输出都变得可控、可推导、可验证**。
+
+```ts
+function sum(a: number, b: number): number {
+  return a + b
 }
+sum(1, 2)     // ✅
+sum('1', 2)   // ❌ TS 报错
 ```
 
-* **modal**：弹窗内容容器
-* **width: 400px**：固定宽度
-* **background-color: #ffffff**：白底
-* **border-radius: 8px**：圆角
-* **padding: 24px**：内部留白
-* **box-shadow**：投影，悬浮效果
+关键理解点
 
-  * 其他常用值：
+- 参数类型约束 **调用方**
+- 返回值类型约束 **实现方**
 
-    * `0 0 8px rgba(0,0,0,0.1)`：轻投影
-    * `0 4px 16px rgba(0,0,0,0.2)`：重投影
+👉 **函数类型是双向约束，而不是“只给别人看”**
 
----
+------
 
-**使用示例**
+#### 可选参数 `?` 与默认参数
 
-```
-<div class="modal">
-    <h3>弹窗标题</h3>
-    <p>这里是弹窗内容</p>
-    <div class="toolbar">
-        <button class="btn">取消</button>
-        <button class="btn primary">确定</button>
-    </div>
-</div>
+```ts
+function greet(name: string, title?: string): string {
+  return title ? `${title} ${name}` : name
+}
 ```
+
+可选参数的真实含义
 
----
+> **调用时“可以不传”**
 
-### 栅格/列布局
+但在函数体内：
 
+```ts
+title.toUpperCase() // ❌ 可能是 undefined
 ```
-.col-6 {
-  width: 50%;
-  float: left;
-  box-sizing: border-box;
-  padding: 0 8px;
+
+必须先判断。
+
+------
+
+默认参数的区别
+
+```ts
+function greet(name: string, title = '先生'): string {
+  return `${title} ${name}`
 }
 ```
 
-* **col-6**：常用于表单或内容的两列布局
-* **width: 50%**：占据父容器一半宽度
-* **float: left**：浮动排列，实现多列效果
-* **box-sizing: border-box**：宽度包含 padding，避免撑破布局
-* **padding: 0 8px**：列间留白
-* **其他常用值**：
+关键差异
 
-  * `width: 25%`：四列
-  * `width: 33.33%`：三列
-  * `float: right`：右浮动
+- `?` → 类型是 `string | undefined`
+- 默认参数 → 类型始终是 `string`
 
----
+👉 **能用默认值，就不要用可选参数**
 
-**使用示例**
+------
 
-```
-<div class="col-6">
-    <input class="input" placeholder="左侧输入框"/>
-</div>
-<div class="col-6">
-    <input class="input" placeholder="右侧输入框"/>
-</div>
-```
+#### 剩余参数 `...args` —— 不定参数的建模
 
----
+```ts
+function sumAll(...nums: number[]): number {
+  return nums.reduce((a, b) => a + b, 0)
+}
+```
 
-### hover 状态样式
+Vue / 工具函数中的常见场景
 
+```ts
+function emit(event: string, ...args: unknown[]) {
+  // 事件派发
+}
 ```
-.btn:hover {
-  background-color: #66b1ff;
-  border-color: #66b1ff;
+
+当参数结构固定时，可以用元组增强语义
+
+```ts
+function log(...args: [string, number]) {
+  const [msg, code] = args
 }
 ```
 
-* **btn:hover**：鼠标悬停按钮时状态
-* **background-color: #66b1ff**：变亮的背景色
-* **border-color: #66b1ff**：同步边框颜色
-* **其他常用值**：
+👉 **`...args` 不是 `any[]` 的代名词**
 
-  * 改文字颜色：`color: #ffffff`
-  * 改阴影：`box-shadow: 0 2px 8px rgba(0,0,0,0.2)`
+------
 
----
+### 函数类型定义 —— 把“行为”当成类型
 
-**使用示例**
+#### 函数签名的抽象
 
-```
-<button class="btn primary">保存</button>
+```ts
+type Formatter = (value: string) => string
+const upper: Formatter = (v) => v.toUpperCase()
 ```
 
-*鼠标放上去，按钮会变色*
+作用不是“少写代码”，而是：
 
----
+> **统一一类函数的“行为形态”**
 
-### disabled 状态样式
+------
 
-```
-.btn:disabled {
-  background-color: #f5f7fa;
-  color: #c0c4cc;
-  cursor: not-allowed;
-  border-color: #dcdfe6;
+#### 回调函数类型 —— 最常见、也最容易写乱
+
+```ts
+type OnSuccess = (data: string) => void
+function fetchData(onSuccess: OnSuccess) {
+  onSuccess('ok')
 }
 ```
 
-* **btn:disabled**：禁用状态按钮
-* **background-color / color**：灰色，提示不可操作
-* **cursor: not-allowed**：鼠标显示禁止符号
-* **border-color**：边框灰色
-* **其他常用值**：可根据设计稿调整灰色深浅
+Vue 中的真实场景
 
----
+```ts
+type SubmitHandler = (form: FormData) => Promise<void>
+const onSubmit: SubmitHandler = async (form) => {
+  // 表单提交逻辑
+}
+```
 
-**使用示例**
+👉 **回调函数一定要有明确类型，否则会迅速退化成 `any`**
 
-```
-<button class="btn primary" disabled>提交</button>
-```
+------
 
----
+#### 高阶函数 —— 函数“吃函数”
 
-### 浮动/层级控制
+> **高阶函数 = 参数或返回值是函数**
 
-```
-.popup {
-  position: absolute;
-  top: 50px;
-  left: 50px;
-  z-index: 1000;
+```ts
+type Predicate<T> = (value: T) => boolean
+function filterList<T>(
+  list: T[],
+  predicate: Predicate<T>
+): T[] {
+  return list.filter(predicate)
 }
 ```
+
+调用时的体验
 
-* **popup**：常用于下拉菜单、提示框、弹窗
-* **position: absolute**：绝对定位，相对于最近的定位父元素
+```ts
+filterList([1, 2, 3], n => n > 1)
+```
 
-  * 其他常用值：
+关键理解点
 
-    * `relative`：相对定位
-    * `fixed`：固定在窗口
-    * `sticky`：滚动吸附
-* **top / left**：位置偏移
-* **z-index: 1000**：层级控制，值越大越在上层
+- 类型在调用时 **自动推导**
+- 泛型 + 函数类型 = 极强的表达能力
 
----
+👉 **Vue、Pinia、Hooks 的底层，全是高阶函数**
 
-**使用示例**
+------
 
-```
-<div class="popup">弹出内容</div>
-```
+好的，下面这一节我 **完全沿用你刚才的结构与语气**，重点放在「为什么要这样写」而不是堆概念。
 
----
+------
 
-### overflow 控制
+## 联合、断言与类型收窄
 
-```
-.scroll-box {
-  width: 200px;
-  height: 100px;
-  overflow: auto;
-  border: 1px solid #dcdfe6;
-}
-```
+------
 
-* **scroll-box**：超出容器范围显示滚动条
-* **overflow: auto**：需要时出现滚动条
+### 联合类型（Union Types）
 
-  * 其他常用值：
+> **联合类型解决的是：“一个变量，在不同阶段可能长得不一样”**
 
-    * `visible`：默认，内容溢出显示
-    * `hidden`：溢出隐藏
-    * `scroll`：总显示滚动条
-* **width / height**：固定容器大小
-* **border**：边框方便观察
+#### 接口返回值的多状态建模（高频）
 
----
+真实接口往往不是“永远成功”。
 
-**使用示例**
+```ts
+type ApiSuccess<T> = {
+  code: 0
+  data: T
+}
 
-```
-<div class="scroll-box">
-    <p>这是一段很长的文本，用于演示滚动效果。多行内容，多行内容，多行内容，多行内容，多行内容，多行内容。</p>
-</div>
+type ApiFail = {
+  code: 1
+  message: string
+}
+
+type ApiResult<T> = ApiSuccess<T> | ApiFail
 ```
 
----
+Vue3 场景使用
 
-### 弹性换行布局
+```ts
+const result = ref<ApiResult<User> | null>(null)
 
-```
-.flex-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+if (result.value?.code === 0) {
+  result.value.data.name
 }
 ```
 
-* **flex-wrap**：允许子元素换行
-* **display: flex**：开启弹性布局
-* **flex-wrap: wrap**：超出父容器宽度时，自动换到下一行
+关键理解点
 
-  * 其他常用值：
+- **联合类型不是“随便多个类型”**
+- 它是 **业务状态的建模工具**
 
-    * `nowrap`（默认）：不换行
-    * `wrap-reverse`：换行方向反向
-* **gap: 8px**：子元素间距
+👉 **好的联合类型 = 清晰的业务分支**
 
----
+------
 
-**使用示例**
+#### 表单值的多类型处理
 
-```
-<div class="flex-wrap" style="width: 200px; border: 1px solid #ccc;">
-    <button class="btn">按钮1</button>
-    <button class="btn">按钮2</button>
-    <button class="btn">按钮3</button>
-    <button class="btn">按钮4</button>
-</div>
+```ts
+type InputValue = string | number
+const value = ref<InputValue>('')
+
+if (typeof value.value === 'number') {
+  value.value.toFixed(2)
+}
 ```
 
----
+适用场景
 
-### 表单控件 focus 样式
+- 输入框
+- 筛选条件
+- URL 参数
 
-```
-.input:focus {
-  border-color: #409eff;
-  outline: none;
-  box-shadow: 0 0 2px #409eff;
-}
-```
+👉 **只要你在心里想过“这里可能是 A，也可能是 B”——就该用联合类型**
 
-* **:focus**：表单元素获得焦点时状态
-* **border-color: #409eff**：边框高亮
-* **outline: none**：去掉默认浏览器轮廓线
-* **box-shadow: 0 0 2px #409eff**：增加聚焦视觉效果
+------
 
-  * 其他常用值：
+### 类型断言（Type Assertion）
 
-    * `border-color: #67c23a`：成功状态
-    * `border-color: #f56c6c`：错误状态
+> **断言不是“让 TS 闭嘴”，而是“你比 TS 更确定”**
 
----
+#### `as Type` 的合理使用场景
 
-**使用示例**
+DOM 获取是最典型场景之一
 
-```
-<input class="input" placeholder="请输入用户名"/>
+```ts
+const el = document.querySelector('#app') as HTMLDivElement
 ```
 
-*聚焦时边框高亮*
+为什么必须断言？
 
----
+- TS 不知道这个元素一定存在
+- TS 也不知道它的具体类型
 
-### 省略多行文本
+👉 **断言的前提：你有 100% 的确定性**
 
-```
-.text-ellipsis-multi {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+------
+
+#### 非空断言 `!`
+
+```ts
+const input = ref<HTMLInputElement | null>(null)
+
+input.value!.focus()
 ```
 
-* **text-ellipsis-multi**：多行文本超出显示省略号
-* **display: -webkit-box**：弹性盒子布局，用于多行限制
-* **-webkit-line-clamp: 2**：最多显示两行
-* **-webkit-box-orient: vertical**：垂直方向排列
-* **overflow: hidden**：溢出隐藏
+真实含义
 
-  * 其他常用值：
+> **“我保证这里不可能是 null”**
 
-    * `-webkit-line-clamp: 3`：显示三行
-    * `overflow: visible`：显示所有内容
+⚠️ 风险提示
 
----
+- 生命周期不对
+- 条件判断漏写
+- 异步时序错误
 
-**使用示例**
+👉 **`!` 是责任转移，不是安全保证**
 
-```
-<div class="text-ellipsis-multi" style="width: 150px;">
-    这是一段很长的文本，用于演示多行省略效果。多行内容，多行内容，多行内容。
-</div>
-```
+------
 
----
+#### 断言的安全边界（非常重要）
 
-### 常用图标大小和间距
+❌ 错误用法（绕过类型系统）
 
-```
-.icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 4px;
-  vertical-align: middle;
-}
+```ts
+const data = {} as User
+data.name.toUpperCase() // 运行期可能直接炸
 ```
 
-* **icon**：图标或 svg 控件
-* **width / height**：固定大小
-* **margin-right: 4px**：图标和文字或元素间距
-* **vertical-align: middle**：垂直居中对齐文字
+✅ 正确心态
 
-  * 其他常用值：
+- 断言 ≠ 类型转换
+- 断言 ≠ 修复类型设计
 
-    * `width / height: 12px / 24px`：根据设计稿调整
-    * `margin-left`：左侧间距
+👉 **只在“外部世界 → TS 世界”的边界使用断言**
 
----
+例如：
 
-**使用示例**
+- DOM
+- 接口原始数据
+- 第三方库返回值
 
-```
-<span><img class="icon" src="edit.svg" alt="">编辑</span>
-```
+------
 
----
+### 类型收窄（Type Narrowing）
 
-### 按钮分组/组合
+> **TS 的智能，来自“判断之后，类型会变得更具体”**
 
-```
-.btn-group {
-  display: inline-flex;
-}
-.btn-group .btn {
-  border-radius: 0;
-}
-.btn-group .btn:first-child {
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-.btn-group .btn:last-child {
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
+#### `typeof` —— 基础类型收窄
+
+```ts
+function format(value: string | number) {
+  if (typeof value === 'string') {
+    return value.toUpperCase()
+  }
+  return value.toFixed(2)
 }
 ```
 
-* **btn-group**：按钮组合，用于同类操作
-* **display: inline-flex**：水平排列按钮
-* **.btn { border-radius: 0 }**：去掉默认圆角
-* **:first-child / :last-child**：保持组合首尾圆角
+特点
 
-  * 其他常用值：
+- 简单
+- 高频
+- 成本最低
 
-    * 多按钮时可增加 `margin-left: -1px` 避免双边框重叠
+------
 
----
+#### `in` —— 对象结构判断
 
-**使用示例**
+```ts
+type Success = { data: string }
+type Fail = { message: string }
 
-```
-<div class="btn-group">
-    <button class="btn">左</button>
-    <button class="btn primary">中</button>
-    <button class="btn">右</button>
-</div>
+function handle(result: Success | Fail) {
+  if ('data' in result) {
+    console.log(result.data)
+  } else {
+    console.log(result.message)
+  }
+}
 ```
 
----
+适合场景
 
-### 状态提示颜色
+- 接口返回
+- 配置对象
+- 多结构对象
 
-```
-.status-success {
-  color: #67c23a;
-}
-.status-warning {
-  color: #e6a23c;
-}
-.status-error {
-  color: #f56c6c;
+------
+
+#### `instanceof` —— 类实例判断
+
+```ts
+function handleError(err: unknown) {
+  if (err instanceof Error) {
+    console.log(err.message)
+  }
 }
 ```
 
-* **status-success / warning / error**：常用于提示信息、表单校验、状态标签
-* **color**：文字颜色
+Vue 中常见于
 
-  * 其他常用值：
+- `try / catch`
+- 第三方 SDK 错误处理
 
-    * 成功：绿色 `#67c23a`
-    * 警告：橙色 `#e6a23c`
-    * 错误：红色 `#f56c6c`
-    * 信息：蓝色 `#409eff`
+------
 
----
+#### 自定义类型守卫（复杂逻辑必备）
 
-**使用示例**
+> **当判断逻辑复杂到 if 看不懂时，就该抽成类型守卫**
 
-```
-<span class="status-success">操作成功</span>
-<span class="status-warning">警告信息</span>
-<span class="status-error">操作失败</span>
+```ts
+function isSuccess<T>(
+  result: ApiResult<T>
+): result is ApiSuccess<T> {
+  return result.code === 0
+}
 ```
-
----
 
-### 徽章/Badge
+Vue 中的使用体验
 
-```
-.badge {
-  display: inline-block;
-  min-width: 16px;
-  height: 16px;
-  line-height: 16px;
-  padding: 0 4px;
-  font-size: 12px;
-  color: #fff;
-  background-color: #f56c6c;
-  border-radius: 8px;
-  text-align: center;
+```ts
+if (isSuccess(result.value)) {
+  result.value.data.name
 }
 ```
 
-* **badge**：小徽章，常用于数量提示或状态标记
-* **display: inline-block**：允许设置宽高
-* **min-width / height / line-height**：固定大小并垂直居中
-* **padding**：左右内边距
-* **font-size**：文字大小
-* **color / background-color**：文字颜色和背景颜色
-* **border-radius: 8px**：圆角，形成胶囊形
-* **text-align: center**：文字水平居中
+关键价值
 
----
+- 类型逻辑复用
+- 代码更可读
+- TS 推导能力直接拉满
 
-**使用示例**
+👉 **类型守卫是“高级 TS 项目的标配”**
 
-```
-<span>消息 <span class="badge">3</span></span>
-```
+------
 
----
+下面这一节我会 **明显放慢节奏**，因为泛型不是“看懂就会”，而是**要建立正确的设计直觉**。
 
-### Toast/提示框基础样式
+------
 
-```
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 10px 20px;
-  background-color: rgba(0,0,0,0.7);
-  color: #fff;
-  border-radius: 4px;
-  font-size: 14px;
-  z-index: 2000;
-}
-```
+## 泛型（TypeScript 的灵魂）
 
-* **toast**：页面临时提示消息
-* **position: fixed**：固定在页面可视区域
-* **bottom / left / transform**：水平居中、底部偏移
-* **padding**：内部留白
-* **background-color**：半透明黑色背景
-* **color**：文字颜色白色
-* **border-radius**：圆角
-* **font-size**：文字大小
-* **z-index**：显示在最上层
+------
 
-  * 其他常用值：可根据需求调整位置、颜色和透明度
+### 泛型基础
 
----
+> **泛型解决的是：在不知道具体类型的前提下，保持类型信息不丢失**
 
-**使用示例**
+#### 泛型函数（最常见起点）
 
-```
-<div class="toast">保存成功</div>
+```ts
+function useValue<T>(value: T): T {
+  return value
+}
 ```
 
----
+Vue3 中的直观体验
 
-### 列表 hover 高亮
-
-```
-.list-item {
-  padding: 8px 16px;
-  cursor: pointer;
-}
-.list-item:hover {
-  background-color: #f5f7fa;
-}
+```ts
+const name = useValue('admin')   // T 推导为 string
+const age = useValue(18)         // T 推导为 number
 ```
 
-* **list-item**：列表或菜单条目
-* **padding**：内部留白
-* **cursor: pointer**：鼠标悬停显示小手
-* **:hover background-color**：鼠标悬停高亮
+关键理解点
 
-  * 其他常用值：
+- `T` 是**占位符**
+- 调用时由 TS 自动推导
+- **返回值类型与入参保持一致**
 
-    * 高亮色可根据设计稿调整，如 `#e6f7ff`、`#f0f9ff`
+👉 **这就是“类型不丢失”**
 
----
+------
 
-**使用示例**
+#### 泛型接口
 
-```
-<div class="list-item">菜单1</div>
-<div class="list-item">菜单2</div>
-<div class="list-item">菜单3</div>
+```ts
+interface Box<T> {
+  value: T
+}
+const userBox: Box<User> = {
+  value: { id: 1, name: 'Tom' }
+}
 ```
 
----
+适用场景
 
-### 小组件间距规范
+- 接口返回值
+- 状态容器
+- 包装类结构
 
-```
-.component + .component {
-  margin-top: 16px;
+------
+
+#### 泛型类型别名
+
+```ts
+type Wrapper<T> = {
+  data: T
+  loading: boolean
 }
 ```
 
-* **component + component**：相邻组件之间统一间距
-* **margin-top: 16px**：保证垂直间距一致
+Vue 中常见用法
 
-  * 其他常用值：
-
-    * 8px、12px、24px，根据设计稿和布局要求
-* **意义**：保持页面整齐、避免单独给每个组件设置 margin
+```ts
+const state = ref<Wrapper<User>>({
+  data: { id: 1, name: 'Tom' },
+  loading: false
+})
+```
 
----
+👉 **接口与类型别名都能写泛型，区别不在“能不能”，而在“语义”**
 
-**使用示例**
+------
 
-```
-<div class="card">卡片1</div>
-<div class="card">卡片2</div>
-<div class="card">卡片3</div>
-```
+### 泛型约束（让泛型“可用”）
 
----
+> **没有约束的泛型，只能传来又传回**
 
-### 卡片阴影
+#### `extends` 的约束意义
 
-```
-.card-shadow {
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-  border-radius: 4px;
-  background-color: #ffffff;
-  padding: 16px;
+```ts
+function getId<T extends { id: number }>(obj: T) {
+  return obj.id
 }
+getId({ id: 1, name: 'Tom' }) // ✅
+getId({ name: 'Tom' })       // ❌
 ```
 
-* **box-shadow**：投影效果，使卡片悬浮感
+核心价值
 
-  * 其他常用值：
+- 限定 **T 至少具备某些能力**
+- 同时 **不丢失具体类型**
 
-    * `0 1px 3px rgba(0,0,0,0.1)`：轻微投影
-    * `0 4px 16px rgba(0,0,0,0.2)`：明显投影
-* **border-radius**：圆角
-* **background-color**：白色背景
-* **padding**：内部留白
+👉 **约束不是限制，是“能力声明”**
 
----
+------
 
-**使用示例**
+#### 多泛型参数的设计场景
 
-```
-<div class="card-shadow">
-    <p>卡片带阴影效果</p>
-</div>
+```ts
+interface ApiResponse<T, E> {
+  data: T
+  error: E | null
+}
+const res: ApiResponse<User, string> = {
+  data: { id: 1, name: 'Tom' },
+  error: null
+}
 ```
 
----
+什么时候该用多个泛型？
 
-### Tab 样式
+- 输入与输出不是同一类型
+- 成功与失败结构不同
+- 数据与错误需要同时建模
 
-```
-.tab {
-  display: flex;
-  border-bottom: 1px solid #ebeef5;
-}
-.tab-item {
-  padding: 8px 16px;
-  cursor: pointer;
-}
-.tab-item.active {
-  color: #409eff;
-  border-bottom: 2px solid #409eff;
+------
+
+#### 默认泛型参数（提升可用性）
+
+```ts
+interface Result<T = unknown> {
+  data: T
 }
+const r1: Result = { data: null }
+const r2: Result<User> = { data: { id: 1, name: 'Tom' } }
 ```
-
-* **tab**：Tab 容器
-* **display: flex**：水平排列 Tab
-* **border-bottom**：底部边框
-* **tab-item**：单个 Tab
-* **cursor: pointer**：可点击
-* **active**：选中状态
 
-  * 颜色和下边框高亮
+价值点
 
----
+- 简单场景“开箱即用”
+- 复杂场景“逐步增强”
 
-**使用示例**
+👉 **优秀的泛型设计 = 低心智负担**
 
-```
-<div class="tab">
-    <div class="tab-item active">Tab1</div>
-    <div class="tab-item">Tab2</div>
-</div>
-```
+------
 
----
+### 泛型实战（项目里真正用得到的）
 
-### 折叠面板基础样式
+#### 接口返回结构封装（高频）
 
-```
-.collapse {
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-}
-.collapse-header {
-  padding: 10px 16px;
-  cursor: pointer;
-  background-color: #f5f7fa;
+```ts
+interface ApiResult<T> {
+  code: number
+  message: string
+  data: T
 }
-.collapse-body {
-  padding: 16px;
-  display: none;
+function fetchUser(): Promise<ApiResult<User>> {
+  return request('/user')
 }
 ```
 
-* **collapse**：折叠容器
-* **collapse-header**：可点击标题
-* **cursor: pointer**：鼠标手型
-* **collapse-body**：内容区域，默认隐藏
+Vue 中使用
 
-  * `display: block`：展开
+```ts
+const user = ref<User | null>(null)
 
----
-
-**使用示例**
-
+fetchUser().then(res => {
+  user.value = res.data
+})
 ```
-<div class="collapse">
-    <div class="collapse-header">标题</div>
-    <div class="collapse-body">内容</div>
-</div>
-```
 
----
+👉 **泛型让接口返回值“自动适配数据结构”**
 
-### 进度条基础样式
+------
 
-```
-.progress {
-  width: 100%;
-  height: 8px;
-  background-color: #ebeef5;
-  border-radius: 4px;
-  overflow: hidden;
-}
-.progress-bar {
-  height: 100%;
-  background-color: #409eff;
-  width: 50%;
+#### 通用工具函数抽象
+
+```ts
+function first<T>(list: T[]): T | undefined {
+  return list[0]
 }
+const id = first([1, 2, 3])       // number | undefined
+const name = first(['a', 'b'])    // string | undefined
 ```
-
-* **progress**：进度条容器
-* **background-color**：背景色
-* **border-radius**：圆角
-* **overflow: hidden**：隐藏超出部分
-* **progress-bar**：已完成部分
-* **width**：进度百分比
-
----
 
-**使用示例**
+为什么不用 `any[]`？
 
-```
-<div class="progress">
-    <div class="progress-bar"></div>
-</div>
-```
+- 会丢失返回值类型
+- 会破坏后续链式调用的类型推导
 
----
+------
 
-### 带图标按钮
+#### 列表 / 分页模型建模（非常常见）
 
-```
-.btn-icon {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 12px;
-  height: 32px;
+```ts
+interface Page<T> {
+  list: T[]
+  total: number
+  page: number
+  pageSize: number
 }
+const pageData = ref<Page<User>>({
+  list: [],
+  total: 0,
+  page: 1,
+  pageSize: 10
+})
 ```
-
-* **display: inline-flex**：水平排列图标和文字
-* **align-items: center**：垂直居中
-* **gap: 4px**：图标和文字间距
-* **padding / height**：统一大小
 
----
+优势
 
-**使用示例**
+- **一套分页模型，适配所有实体**
+- 自动推导 `list` 中的元素类型
 
-```
-<button class="btn-icon">
-    <img class="icon" src="edit.svg" alt="">编辑
-</button>
-```
+👉 **这是泛型“工程价值”最直观的体现**
 
----
+------
 
-### 分割线
+这一部分我们**不写“玩具函数”**，而是只写 **真实项目里会长期存在的工具函数**，并且**让 TypeScript 真正参与进来**，而不是“JS 外面套一层 TS”。
 
-```
-.divider {
-  border-bottom: 1px solid #ebeef5;
-  margin: 8px 0;
-}
-```
+------
 
-* **divider**：内容分割线
-* **border-bottom**：下边框实现
-* **margin**：上下间距
+## 工具函数使用（Utility Functions）
 
-  * 其他常用值：`margin: 16px 0`
+------
 
----
+### 字符串处理
 
-**使用示例**
+#### 判空（高频）
 
-```
-<div>内容1</div>
-<div class="divider"></div>
-<div>内容2</div>
+```ts
+export function isEmpty(value: unknown): value is '' | null | undefined {
+  return value === '' || value === null || value === undefined
+}
 ```
 
----
+Vue 中使用
 
-### 标签页容器
+```ts
+const keyword = ref<string>('')
 
-```
-.tabs {
-  display: flex;
-  flex-wrap: wrap;
-  border-bottom: 1px solid #ebeef5;
+if (isEmpty(keyword.value)) {
+  console.log('请输入关键字')
 }
-.tab {
-  padding: 8px 16px;
-  cursor: pointer;
-}
-.tab.active {
-  color: #409eff;
-  border-bottom: 2px solid #409eff;
-}
 ```
 
-* **tabs**：标签页外层容器
-* **flex-wrap: wrap**：多行时自动换行
-* **tab**：单个标签
-* **active**：选中状态高亮
+关键点
 
----
+- 使用 **类型守卫** 返回值
+- 判空后，TS 会自动收窄类型
 
-**使用示例**
-
-```
-<div class="tabs">
-    <div class="tab active">标签1</div>
-    <div class="tab">标签2</div>
-</div>
-```
+👉 **不是只返回 boolean，而是“带类型信息的判断”**
 
----
+------
 
-### 悬浮按钮
+#### `trim`（安全版本）
 
-```
-.floating-btn {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background-color: #409eff;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+```ts
+export function safeTrim(value: unknown): string {
+  if (typeof value !== 'string') return ''
+  return value.trim()
 }
+const name = ref<unknown>(' admin ')
+name.value = safeTrim(name.value)
 ```
 
-* **position: fixed**：固定位置
-* **bottom / right**：距离页面边缘
-* **width / height / border-radius**：圆形
-* **display: flex / align-items / justify-content**：图标居中
-* **box-shadow**：悬浮效果
+价值
 
----
+- 防止非字符串直接调用 `.trim()`
+- 接口数据、表单输入都安全
 
-**使用示例**
+------
 
-```
-<div class="floating-btn">+</div>
+#### 字符串截断（带省略号）
+
+```ts
+export function truncate(
+  value: string,
+  maxLength: number
+): string {
+  return value.length > maxLength
+    ? value.slice(0, maxLength) + '...'
+    : value
+}
+truncate('TypeScript is awesome', 10)
 ```
 
----
+👉 **简单函数，明确入参和返回值，不留 any**
 
-### 加载中 Spinner
+------
 
-```
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 4px solid #ebeef5;
-  border-top-color: #409eff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
+### 数值处理
+
+#### 精度处理（避免浮点坑）
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+```ts
+export function toFixed(
+  value: number,
+  digits = 2
+): number {
+  return Number(value.toFixed(digits))
 }
+toFixed(0.1 + 0.2) // 0.3
 ```
 
-* **spinner**：加载动画
-* **border-top-color**：高亮色，形成旋转视觉
-* **animation**：旋转动画
+TS 价值点
 
-  * `1s linear infinite`：持续旋转
+- 明确返回 `number`
+- 不返回字符串，避免二次转换
 
----
+------
 
-**使用示例**
+#### 范围限制（clamp）
 
-```
-<div class="spinner"></div>
+```ts
+export function clamp(
+  value: number,
+  min: number,
+  max: number
+): number {
+  return Math.min(Math.max(value, min), max)
+}
+const page = ref<number>(1)
+page.value = clamp(page.value, 1, 10)
 ```
 
----
+👉 **数值约束 = 业务规则的一部分**
 
-### 卡片折叠内容
+------
 
-```
-.card-collapse .card-body {
-  display: none;
-}
-.card-collapse.active .card-body {
-  display: block;
-}
-```
+### 数组处理
 
-* **card-collapse**：可折叠卡片
-* **display: none / block**：控制内容显示隐藏
-* **active**：展开状态
+#### 去重（保持类型）
 
----
+```ts
+export function unique<T>(list: T[]): T[] {
+  return Array.from(new Set(list))
+}
+const ids = unique([1, 2, 2, 3]) // number[]
+```
 
-**使用示例**
+TS 价值
 
-```
-<div class="card-collapse">
-    <div class="card-header">标题</div>
-    <div class="card-body">折叠内容</div>
-</div>
-```
+- 泛型保证元素类型不丢失
+- 返回值仍然是 `T[]`
 
----
+------
 
-### 进度条带文字
+#### 分组（业务非常常见）
 
-```
-.progress-text {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.progress-text .progress {
-  flex: 1;
+```ts
+export function groupBy<T, K extends keyof any>(
+  list: T[],
+  key: (item: T) => K
+): Record<K, T[]> {
+  return list.reduce((acc, item) => {
+    const groupKey = key(item)
+    acc[groupKey] ||= []
+    acc[groupKey].push(item)
+    return acc
+  }, {} as Record<K, T[]>)
 }
+groupBy(users, user => user.role)
 ```
 
-* **progress-text**：带文字的进度条容器
-* **display: flex**：水平排列进度条和文字
-* **align-items: center**：垂直居中
-* **gap: 8px**：文字和进度条之间间距
-* **flex: 1**：进度条填满剩余空间
+👉 **类型正确的 `Record` 是分组函数的灵魂**
 
----
+------
 
-**使用示例**
+#### 扁平化（有限层级）
 
-```
-<div class="progress-text">
-    <div class="progress">
-        <div class="progress-bar" style="width: 70%;"></div>
-    </div>
-    <span>70%</span>
-</div>
+```ts
+export function flatten<T>(list: T[][]): T[] {
+  return list.reduce((acc, cur) => acc.concat(cur), [])
+}
+flatten([[1, 2], [3, 4]]) // number[]
 ```
 
----
+------
 
-### 分组表单行
+### 对象处理
 
-```
-.form-row {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
+#### 深拷贝（明确边界）
+
+```ts
+export function deepClone<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj))
 }
 ```
 
-* **form-row**：表单一行，常用于多字段布局
-* **display: flex**：水平排列子字段
-* **gap: 16px**：子元素间距
-* **margin-bottom: 16px**：行间距，保证表单整齐
+说明
 
----
+- 只适合 **纯数据对象**
+- 不支持函数 / Date / Map / Set
 
-**使用示例**
+👉 **TS 能约束类型，但拷贝能力是运行时问题**
 
-```
-<div class="form-row">
-    <input class="input" placeholder="姓名"/>
-    <input class="input" placeholder="邮箱"/>
-</div>
-```
+------
 
----
+#### 对象合并（类型安全）
 
-### 表单标签宽度统一
-
-```
-.form-label {
-  display: inline-block;
-  width: 100px;
-  text-align: right;
-  margin-right: 8px;
+```ts
+export function merge<T extends object, U extends object>(
+  target: T,
+  source: U
+): T & U {
+  return Object.assign({}, target, source)
 }
+const merged = merge({ a: 1 }, { b: 'x' })
+// 类型：{ a: number } & { b: string }
 ```
 
-* **form-label**：表单字段标签
-* **display: inline-block**：可设置宽高
-* **width: 100px**：统一宽度
-* **text-align: right**：右对齐，与输入框对齐
-* **margin-right: 8px**：标签和输入框间距
+------
 
----
+#### 安全取值（防止 undefined 炸链）
 
-**使用示例**
-
-```
-<label class="form-label">用户名：</label>
-<input class="input" placeholder="请输入用户名"/>
+```ts
+export function get<T, K extends keyof T>(
+  obj: T,
+  key: K
+): T[K] {
+  return obj[key]
+}
+const userName = get(user, 'name')
 ```
 
----
+👉 **比 `obj?.name` 更适合工具层复用**
 
-### 弹窗遮罩层
+------
 
-```
-.modal-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.4);
-  z-index: 999;
-}
-```
+好，这一节我们**只讲“项目里每天都在用”的工具类型**，不讲百科，不堆概念，所有例子都围绕 **真实 Vue3 + 业务模型**。
 
-* **modal-mask**：遮罩层，防止背景操作
-* **position: fixed / top / left / width / height**：覆盖整个屏幕
-* **background-color**：半透明黑色
-* **z-index: 999**：确保在其他元素之上
+------
 
----
+## 内置工具类型（项目效率神器）
 
-**使用示例**
+------
 
-```
-<div class="modal-mask"></div>
-<div class="modal">
-    弹窗内容
-</div>
-```
+### `Partial<T>` —— 让“完整模型”变成“可选模型”
 
----
+核心含义
 
-### 图片圆角
+> **把 T 的所有属性变成可选**
 
-```
-.img-rounded {
-  border-radius: 8px;
-  object-fit: cover;
+```ts
+interface User {
+  id: number
+  name: string
+  age: number
 }
+type UserPatch = Partial<User>
 ```
-
-* **img-rounded**：常用于卡片图片或头像
-* **border-radius: 8px**：圆角
-* **object-fit: cover**：保持比例填充容器
 
----
+Vue 表单场景
 
-**使用示例**
-
-```
-<img class="img-rounded" src="pic.jpg" alt="图片" width="150" height="100"/>
+```ts
+const form = ref<Partial<User>>({})
 ```
 
----
+关键理解
 
-### 悬浮提示 Tooltip
+- 适合 **编辑表单**
+- 不适合 **最终提交数据**
 
-```
-.tooltip {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-}
-.tooltip .tooltip-text {
-  visibility: hidden;
-  background-color: #303133;
-  color: #fff;
-  text-align: center;
-  padding: 4px 8px;
-  border-radius: 4px;
-  position: absolute;
-  bottom: 125%; /* 显示在上方 */
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  z-index: 1000;
-}
-.tooltip:hover .tooltip-text {
-  visibility: visible;
-}
-```
-
-* **tooltip**：提示容器
-* **position: relative**：定位子元素
-* **cursor: pointer**：鼠标手型
-* **tooltip-text**：提示文字
-* **visibility: hidden / visible**：默认隐藏，悬停显示
-* **position: absolute / bottom / left / transform**：定位提示框
-* **white-space: nowrap**：不换行
+👉 **`Partial` 是“中间态”，不是终态**
 
----
+------
 
-**使用示例**
+### `Required<T>` —— 把“可能缺失”强制补齐
 
+```ts
+type FullUser = Required<User>
 ```
-<div class="tooltip">悬停我
-    <span class="tooltip-text">提示信息</span>
-</div>
-```
 
----
+使用场景
 
-### 水平滚动列表
+- 表单提交前
+- 接口返回后做二次校验
 
-```
-.horizontal-scroll {
-  display: flex;
-  overflow-x: auto;
-  gap: 8px;
-  padding: 8px 0;
+```ts
+function submit(user: Required<User>) {
+  // 可以放心使用所有字段
 }
 ```
+
+👉 **`Required` 是对“完整性”的声明**
 
-* **horizontal-scroll**：水平滚动容器
-* **display: flex**：水平排列
-* **overflow-x: auto**：超出显示滚动条
-* **gap**：元素间距
-* **padding**：上下留白
+------
 
----
+### `Readonly<T>` —— 防止误修改
 
-**使用示例**
+```ts
+type ReadonlyUser = Readonly<User>
+const user = ref<ReadonlyUser>({
+  id: 1,
+  name: 'Tom',
+  age: 18
+})
 
+user.value.age = 20 // ❌ TS 报错
 ```
-<div class="horizontal-scroll">
-    <div class="card">Item1</div>
-    <div class="card">Item2</div>
-    <div class="card">Item3</div>
-</div>
-```
-
----
-
-### 标签堆叠
-
-```
-.tag-stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-```
-
-* **tag-stack**：多个标签水平换行排列
-* **flex-wrap: wrap**：换行
-* **gap: 4px**：标签间距
-
----
-
-**使用示例**
-
-```
-<div class="tag-stack">
-    <span class="tag">标签1</span>
-    <span class="tag">标签2</span>
-    <span class="tag">标签3</span>
-</div>
-```
-
----
-
-### 面包屑导航
-
-```
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 14px;
-  color: #909399;
-}
-.breadcrumb a {
-  color: #409eff;
-  text-decoration: none;
-}
-.breadcrumb a:hover {
-  text-decoration: underline;
-}
-```
-
-* **breadcrumb**：导航路径
-* **display: flex**：水平排列
-* **align-items: center**：垂直居中
-* **gap: 4px**：元素间距
-* **a**：可点击链接
-* **hover**：悬停下划线
-
----
-
-**使用示例**
-
-```
-<div class="breadcrumb">
-    <a href="#">首页</a> / 
-    <a href="#">用户管理</a> / 
-    <span>详情</span>
-</div>
-```
-
----
-
-### 卡片标题
-
-```
-.card-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-```
-
-* **card-title**：卡片内标题
-* **font-size: 16px**：文字大小
-* **font-weight: 600**：半粗体
-* **margin-bottom: 12px**：下方间距
-
----
-
-**使用示例**
-
-```
-<div class="card-shadow">
-    <div class="card-title">用户信息</div>
-    <p>这里是卡片内容</p>
-</div>
-```
-
----
-
-### 按钮组悬浮效果
-
-```
-.btn-group:hover .btn {
-  background-color: #66b1ff;
-  border-color: #66b1ff;
-}
-```
-
-* **btn-group:hover .btn**：按钮组合悬停状态
-* **background-color / border-color**：改变背景和边框颜色
-
-  * 其他常用值：
-
-    * `#409eff`：主色
-    * `#67c23a`：成功
-    * `#f56c6c`：危险
-
----
-
-**使用示例**
-
-```
-<div class="btn-group">
-    <button class="btn">左</button>
-    <button class="btn">中</button>
-    <button class="btn">右</button>
-</div>
-```
-
----
-
-### 表格列宽控制
-
-```
-.table-col {
-  width: 150px;
-  text-align: left;
-  padding: 8px;
-}
-```
-
-* **table-col**：表格列样式
-* **width**：固定列宽
-* **text-align**：文字对齐
-* **padding**：内边距
-
-  * 其他常用值：
-
-    * `text-align: center`
-    * `width: auto`
-
----
-
-**使用示例**
-
-```
-<table>
-  <tr>
-    <td class="table-col">姓名</td>
-    <td class="table-col">邮箱</td>
-  </tr>
-</table>
-```
-
----
-
-### 下拉选择样式
-
-```
-.select {
-  width: 200px;
-  padding: 6px 12px;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  background-color: #fff;
-}
-```
-
-* **select**：下拉选择框
-* **width / padding**：固定宽度和内部留白
-* **border / border-radius**：边框与圆角
-* **background-color**：白色背景
-
----
-
-**使用示例**
-
-```
-<select class="select">
-    <option>选项1</option>
-    <option>选项2</option>
-</select>
-```
-
----
-
-### 响应式布局
-
-```
-.responsive {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-```
-
-* **responsive**：常用页面容器
-* **width: 100%**：宽度自适应
-* **max-width: 1200px**：最大宽度
-* **margin: 0 auto**：水平居中
-* **padding**：左右间距
-
----
-
-**使用示例**
-
-```
-<div class="responsive">
-    <p>页面内容</p>
-</div>
-```
 
----
+使用建议
 
-### 阻止文本选中
+- 接口返回数据
+- 全局状态快照
+- 配置型对象
 
-```
-.no-select {
-  user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
-```
-
-* **no-select**：禁止用户选中内容
-* **user-select**：标准属性
-* **-webkit-user-select / -ms-user-select**：兼容不同浏览器
-
----
-
-**使用示例**
-
-```
-<p class="no-select">不可选中文本</p>
-```
-
----
-
-### 溢出提示
-
-```
-.overflow-tooltip {
-  position: relative;
-  display: inline-block;
-  max-width: 150px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-```
-
-* **overflow-tooltip**：超出显示省略号
-* **max-width**：最大宽度
-* **white-space: nowrap**：禁止换行
-* **overflow: hidden / text-overflow: ellipsis**：显示省略号
-
----
-
-**使用示例**
-
-```
-<span class="overflow-tooltip">这是一段很长的文字，用于演示溢出省略</span>
-```
-
----
+👉 **不可变数据，是“稳定系统”的基础**
 
-### 列表折叠
+------
 
-```
-.list-collapse .list-body {
-  display: none;
-}
-.list-collapse.active .list-body {
-  display: block;
-}
-```
-
-* **list-collapse**：折叠列表容器
-* **display: none / block**：控制展开与折叠
-* **active**：展开状态
+### `Pick<T, K>` —— 精准选择字段
 
----
-
-**使用示例**
-
-```
-<div class="list-collapse">
-    <div class="list-header">标题</div>
-    <div class="list-body">内容</div>
-</div>
+```ts
+type UserBasic = Pick<User, 'id' | 'name'>
 ```
 
----
+Vue 场景
 
-### 栅格间距
-
-```
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  margin: -8px;
-}
-.col {
-  padding: 8px;
-}
+```ts
+const list = ref<UserBasic[]>([])
 ```
 
-* **row**：行容器
-* **flex-wrap: wrap**：允许换行
-* **margin: -8px / padding: 8px**：保证列间距一致
-* **col**：列容器
+价值
 
----
+- 不复制结构
+- 避免“字段不一致”
 
-**使用示例**
-
-```
-<div class="row">
-    <div class="col"><div class="card">列1</div></div>
-    <div class="col"><div class="card">列2</div></div>
-</div>
-```
+👉 **Pick 是“裁剪”，不是“新建”**
 
----
+------
 
-### 背景色通用类
+### `Omit<T, K>` —— 精准排除字段
 
+```ts
+type UserWithoutId = Omit<User, 'id'>
 ```
-.bg-primary { background-color: #409eff; color: #fff; }
-.bg-success { background-color: #67c23a; color: #fff; }
-.bg-warning { background-color: #e6a23c; color: #fff; }
-.bg-error   { background-color: #f56c6c; color: #fff; }
-.bg-info    { background-color: #909399; color: #fff; }
-```
-
-* **bg-***：常用背景色类
-* **color: #fff**：文字白色保证可读性
-* **应用场景**：按钮、标签、状态标识、卡片背景
 
----
+新增接口场景
 
-**使用示例**
-
+```ts
+function createUser(data: UserWithoutId) {}
 ```
-<div class="bg-primary">主色背景</div>
-<div class="bg-success">成功背景</div>
-```
-
----
 
-### Tooltip 方向
-
-```
-.tooltip-top .tooltip-text {
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%);
-}
+👉 **新增 ≠ 编辑，类型一定要区分**
 
-.tooltip-bottom .tooltip-text {
-  top: 125%;
-  left: 50%;
-  transform: translateX(-50%);
-}
+------
 
-.tooltip-left .tooltip-text {
-  right: 125%;
-  top: 50%;
-  transform: translateY(-50%);
-}
+### `Record<K, T>` —— 字典与映射结构
 
-.tooltip-right .tooltip-text {
-  left: 125%;
-  top: 50%;
-  transform: translateY(-50%);
+```ts
+type Role = 'admin' | 'user'
+const roleMap: Record<Role, string> = {
+  admin: '管理员',
+  user: '普通用户'
 }
-```
-
-* **tooltip-***：提示框方向
-* **top / bottom / left / right**：控制提示框位置
-* **transform**：偏移到中心位置
-* **其他常用值**：可以结合 `margin` 或 `translate` 微调位置
-
----
-
-**使用示例**
-
-```
-<div class="tooltip tooltip-top">
-  悬停我
-  <span class="tooltip-text">上方提示</span>
-</div>
 ```
 
----
+Vue 中的高频用法
 
-### 表格固定列
-
-```
-.table-fixed th, .table-fixed td {
-  position: sticky;
-  left: 0;
-  background-color: #fff;
-  z-index: 1;
+```ts
+const statusText: Record<number, string> = {
+  0: '未开始',
+  1: '进行中',
+  2: '已完成'
 }
 ```
-
-* **table-fixed**：固定表格列
-* **position: sticky**：粘性定位
-* **left: 0**：固定左边
-* **background-color**：保证列覆盖内容可读
-* **z-index: 1**：显示在其他单元格之上
 
----
+👉 **`Record` 是“对象结构的 for 循环”**
 
-**使用示例**
+------
 
-```
-<table class="table-fixed">
-  <tr>
-    <th>姓名</th>
-    <th>邮箱</th>
-  </tr>
-</table>
-```
-
----
+### 工具类型的组合使用（这才是重点）
 
-### 弹窗滚动内容
+#### 表单模型派生
 
+```ts
+type UserForm = Partial<Omit<User, 'id'>>
 ```
-.modal-content {
-  max-height: 400px;
-  overflow-y: auto;
-  padding: 16px;
-}
-```
-
-* **modal-content**：弹窗内容区
-* **max-height**：最大高度
-* **overflow-y: auto**：超出时出现纵向滚动条
-* **padding**：内部留白
 
----
+含义拆解
 
-**使用示例**
+- `Omit`：新增不需要 id
+- `Partial`：表单未填完
 
-```
-<div class="modal">
-  <div class="modal-content">
-    <p>很多内容很多内容很多内容...</p>
-  </div>
-</div>
-```
+👉 **组合 ≠ 复杂，组合 = 语义清晰**
 
----
+------
 
-### 按钮禁用提示
+#### 请求参数 / 返回值拆分
 
-```
-.btn[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+```ts
+type UserQuery = Pick<User, 'name' | 'age'>
+type UserResult = Readonly<User>
+function fetchUser(params: UserQuery): Promise<UserResult> {}
 ```
-
-* **btn[disabled]**：禁用状态按钮
-* **opacity: 0.6**：半透明提示不可点击
-* **cursor: not-allowed**：鼠标显示禁止符号
-
----
 
-**使用示例**
+效果
 
-```
-<button class="btn primary" disabled>提交</button>
-```
+- 输入、输出角色明确
+- 避免一个类型“到处乱用”
 
----
+------
 
-### Tab 响应式
+#### 前后端字段裁剪（非常常见）
 
-```
-.tab-responsive {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+```ts
+interface ApiUser {
+  id: number
+  name: string
+  password: string
 }
-.tab-responsive .tab-item {
-  flex: 1 1 auto;
-  text-align: center;
-}
+type SafeUser = Omit<ApiUser, 'password'>
 ```
 
-* **tab-responsive**：响应式 Tab 容器
-* **flex-wrap: wrap**：超出自动换行
-* **gap**：Tab 间距
-* **flex: 1 1 auto**：自动平分宽度
-* **text-align: center**：文字居中
+👉 **类型本身就是“安全策略的一部分”**
 
----
+------
 
-**使用示例**
+## 字面量与类型推导
 
-```
-<div class="tab-responsive">
-    <div class="tab-item active">Tab1</div>
-    <div class="tab-item">Tab2</div>
-    <div class="tab-item">Tab3</div>
-</div>
-```
+------
 
----
+### 字面量类型 —— 把“值”变成“类型”
 
-### 图片懒加载占位
+#### 字符串字面量类型
 
-```
-.img-lazy {
-  background-color: #f5f7fa;
-  display: block;
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-}
+```ts
+type Status = 'loading' | 'success' | 'error'
 ```
 
-* **img-lazy**：图片未加载占位
-* **background-color**：背景颜色
-* **display: block / width / height**：固定容器尺寸
-* **object-fit: cover**：保持比例填充
+Vue 场景
 
----
-
-**使用示例**
-
-```
-<img class="img-lazy" data-src="pic.jpg" alt="懒加载图片"/>
+```ts
+const status = ref<Status>('loading')
+status.value = 'success' // ✅
+status.value = 'done'    // ❌ TS 报错
 ```
 
----
+关键理解
 
-### 提示标签
+- 值的范围被**严格限制**
+- 非法状态在**编码期直接被拦截**
 
-```
-.tag {
-  display: inline-block;
-  padding: 2px 6px;
-  font-size: 12px;
-  color: #fff;
-  background-color: #409eff;
-  border-radius: 4px;
-}
-```
+👉 **字面量类型 = 枚举的轻量替代**
 
-* **tag**：小标签，状态、类别使用
-* **padding**：内边距
-* **font-size**：文字大小
-* **color / background-color**：文字和背景
-* **border-radius**：圆角
+------
 
----
+#### 数字字面量类型
 
-**使用示例**
-
+```ts
+type Code = 200 | 401 | 500
+function handleCode(code: Code) {}
 ```
-<span class="tag">新用户</span>
-```
-
----
 
-### 卡片阴影变化
+使用建议
 
-```
-.card-hover {
-  transition: box-shadow 0.3s ease;
-}
-.card-hover:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-}
-```
+- **有限、明确的数值集合**
+- 状态码、步骤索引、等级值
 
-* **card-hover**：卡片悬停变化
-* **transition**：动画平滑
-* **box-shadow**：鼠标悬停增强阴影
+👉 **比 `number` 更安全**
 
----
+------
 
-**使用示例**
+#### `as const` —— 锁定字面量
 
+```ts
+const roles = ['admin', 'user']
 ```
-<div class="card-shadow card-hover">
-    <p>悬停卡片</p>
-</div>
-```
-
----
 
-### 列表边框
+此时类型是：
 
+```ts
+string[]
 ```
-.list-bordered .list-item {
-  border-bottom: 1px solid #ebeef5;
-}
-.list-bordered .list-item:last-child {
-  border-bottom: none;
-}
-```
-
-* **list-bordered**：带边框列表
-* **border-bottom**：分隔每一行
-* **:last-child**：最后一行去掉边框
-
----
 
-**使用示例**
+使用 `as const`
 
+```ts
+const roles = ['admin', 'user'] as const
 ```
-<div class="list-bordered">
-    <div class="list-item">行1</div>
-    <div class="list-item">行2</div>
-</div>
-```
 
----
+类型变为：
 
-### 小组件统一字体
-
-```
-.text-base {
-  font-size: 14px;
-  color: #606266;
-  line-height: 1.5;
-}
+```ts
+readonly ['admin', 'user']
 ```
-
-* **text-base**：小组件通用文字
-* **font-size**：文字大小
-* **color**：文字颜色
-* **line-height**：行高
-
----
 
-**使用示例**
+进一步派生类型
 
+```ts
+type Role = typeof roles[number]
+// 'admin' | 'user'
 ```
-<p class="text-base">这是统一字体的文本</p>
-```
-
----
 
-### 列表悬停高亮
+Vue 中的真实用途
 
-```
-.list-hover .list-item {
-  padding: 8px 16px;
-  cursor: pointer;
-}
-.list-hover .list-item:hover {
-  background-color: #f0f2f5;
-}
+```ts
+const TABS = [
+  { key: 'base', label: '基础信息' },
+  { key: 'role', label: '角色信息' }
+] as const
 ```
 
-* **list-hover**：带悬停效果的列表
-* **padding**：内部间距
-* **cursor: pointer**：鼠标手型
-* **:hover background-color**：鼠标悬停高亮
+👉 **`as const` 是“数据驱动类型”的核心开关**
 
-  * 其他常用值：不同背景色可根据设计稿调整
+------
 
----
+### 类型推导 —— TS 是如何“猜你想干什么的”
 
-**使用示例**
+#### 自动推导规则（你每天都在用）
 
+```ts
+const count = ref(0)
 ```
-<div class="list-hover">
-  <div class="list-item">菜单1</div>
-  <div class="list-item">菜单2</div>
-</div>
-```
 
----
+TS 推导为：
 
-### 通用边距类
-
-```
-.m-8 { margin: 8px; }
-.mt-8 { margin-top: 8px; }
-.mb-8 { margin-bottom: 8px; }
-.ml-8 { margin-left: 8px; }
-.mr-8 { margin-right: 8px; }
+```ts
+Ref<number>
+const list = ref([])
 ```
 
-* **m-* / mt-* / mb-* / ml-* / mr-***：快速设置外边距
-* **使用场景**：组件间统一间距，方便快速布局
+TS 推导为：
 
----
-
-**使用示例**
-
-```
-<div class="card m-8">卡片1</div>
-<div class="card m-8">卡片2</div>
+```ts
+Ref<never[]>
 ```
 
----
+⚠️ **这里已经埋雷了**
 
-### 通用内边距类
+------
 
-```
-.p-8 { padding: 8px; }
-.pt-8 { padding-top: 8px; }
-.pb-8 { padding-bottom: 8px; }
-.pl-8 { padding-left: 8px; }
-.pr-8 { padding-right: 8px; }
-```
+#### 显式声明 vs 隐式推导
 
-* **p-* / pt-* / pb-* / pl-* / pr-***：快速设置内边距
-* **使用场景**：保持组件内部统一留白
+隐式（推荐）
 
----
-
-**使用示例**
-
-```
-<div class="card p-8">带内边距的卡片</div>
+```ts
+const age = ref(18)
 ```
 
----
+显式（必要时）
 
-### 水平分隔线
-
-```
-.hr {
-  border: none;
-  border-top: 1px solid #ebeef5;
-  margin: 16px 0;
-}
+```ts
+const users = ref<User[]>([])
 ```
 
-* **hr**：水平分隔线
-* **border-top**：使用上边框实现
-* **margin**：上下间距
-* **其他常用值**：颜色、粗细可根据设计稿调整
+判断标准
 
----
+- **值能表达完整类型 → 交给推导**
+- **空值 / 容器 / 延迟赋值 → 必须声明**
 
-**使用示例**
+👉 **“空”是推导失效的最大来源**
 
-```
-<p>段落1</p>
-<hr class="hr">
-<p>段落2</p>
-```
+------
 
----
+#### 推导失效的常见场景（高频踩坑）
 
-### 文字居中
+空数组
 
-```
-.text-center {
-  text-align: center;
-}
+```ts
+const list = ref([]) // never[]
 ```
-
-* **text-center**：文字水平居中
-* **其他常用值**：
-
-  * `text-left`：左对齐
-  * `text-right`：右对齐
 
----
+正确写法
 
-**使用示例**
-
+```ts
+const list = ref<number[]>([])
 ```
-<p class="text-center">居中文本</p>
-```
-
----
 
-### 水平垂直居中容器
+空对象
 
+```ts
+const form = ref({})
+form.value.name = 'Tom' // ❌
 ```
-.center-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-```
-
-* **center-box**：水平垂直居中
-* **display: flex**：弹性布局
-* **justify-content: center**：水平居中
-* **align-items: center**：垂直居中
-* 其他常用值：
 
-  * `justify-content: flex-start / flex-end / space-between / space-around`
-  * `align-items: flex-start / flex-end / stretch`
+正确写法
 
----
-
-**使用示例**
-
-```
-<div class="center-box" style="height:100px; border:1px solid #ccc;">
-  <button class="btn">居中按钮</button>
-</div>
+```ts
+const form = ref<Partial<User>>({})
 ```
 
----
+条件返回不同类型
 
-### 溢出隐藏与滚动
-
-```
-.overflow-auto {
-  overflow: auto;
+```ts
+function getValue(flag: boolean) {
+  return flag ? 1 : 'a'
 }
-.overflow-hidden {
-  overflow: hidden;
-}
 ```
-
-* **overflow-auto**：内容超出显示滚动条
-* **overflow-hidden**：内容超出隐藏
-* 适用于弹窗内容、表格、滚动列表等
-
----
 
-**使用示例**
+推导结果
 
+```ts
+number | string
 ```
-<div class="overflow-auto" style="height: 100px; border: 1px solid #ccc;">
-  <p>很多内容...</p>
-</div>
-```
 
----
+👉 **推导不是失败，而是如实反映你的代码**
 
-### 背景渐变色
-
-```
-.bg-gradient {
-  background: linear-gradient(90deg, #409eff, #67c23a);
-}
-```
+------
 
-* **bg-gradient**：线性渐变背景
-* **linear-gradient**：渐变方向和颜色
-* 可用于按钮、卡片或 banner 背景
+## 模块化与声明文件
 
----
+------
 
-**使用示例**
+### 模块系统 —— 代码与类型的边界
 
-```
-<div class="bg-gradient p-8">渐变背景卡片</div>
-```
+#### `import / export` 的本质
 
----
+在 TypeScript 中：
 
-### 圆形头像
+> **模块 = 作用域 + 类型边界**
 
-```
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
+```ts
+// user.ts
+export interface User {
+  id: number
+  name: string
 }
+// useUser.ts
+import type { User } from './user'
 ```
 
-* **avatar**：圆形头像
-* **width / height**：固定尺寸
-* **border-radius: 50%**：圆形
-* **object-fit: cover**：保持图片比例
+关键点
 
----
+- `import type` **只引入类型**
+- 不参与运行时
+- 避免打包体积膨胀、循环依赖
 
-**使用示例**
+👉 **类型和逻辑，要在意识上分层**
 
-```
-<img class="avatar" src="avatar.jpg" alt="头像"/>
-```
+------
 
----
+#### 默认导出 vs 命名导出
 
-### 按钮尺寸
+默认导出
 
+```ts
+export default function useUser() {}
 ```
-.btn-small { padding: 4px 12px; font-size: 12px; height: 28px; }
-.btn-medium { padding: 6px 16px; font-size: 14px; height: 32px; }
-.btn-large { padding: 8px 20px; font-size: 16px; height: 40px; }
-```
-
-* **btn-small / medium / large**：不同尺寸按钮
-* **padding / font-size / height**：统一高度与文字大小
 
----
+命名导出
 
-**使用示例**
-
+```ts
+export function useUser() {}
+export function useRole() {}
 ```
-<button class="btn btn-small">小按钮</button>
-<button class="btn btn-medium">中按钮</button>
-<button class="btn btn-large">大按钮</button>
-```
-
----
 
-### 标签状态色
-
-```
-.tag-primary { background-color: #409eff; color: #fff; }
-.tag-success { background-color: #67c23a; color: #fff; }
-.tag-warning { background-color: #e6a23c; color: #fff; }
-.tag-error { background-color: #f56c6c; color: #fff; }
-```
+真实项目建议
 
-* **tag-***：常用状态标签
-* **background-color**：背景颜色
-* **color**：文字颜色，保证可读性
-* **应用场景**：状态标识、分类标签
+- **工具函数 / Hooks**：命名导出
+- **Vue 组件**：默认导出
+- **类型定义**：命名导出
 
----
+原因很简单：
 
-**使用示例**
+> **类型需要被“精确引用”，而不是随意起名**
 
-```
-<span class="tag-primary">进行中</span>
-<span class="tag-success">成功</span>
-<span class="tag-error">失败</span>
-```
+------
 
----
+#### 模块边界与职责划分（非常重要）
 
-### 表格排序指示
+错误示例（常见）
 
-```
-.table th {
-  cursor: pointer;
-  position: relative;
-}
-.table th:after {
-  content: '▲▼';
-  font-size: 10px;
-  position: absolute;
-  right: 8px;
-  color: #c0c4cc;
-}
+```ts
+// user.ts
+export interface User {}
+export function fetchUser() {}
+export function formatUser() {}
 ```
 
-* **table th**：表头单元格
-* **cursor: pointer**：鼠标手型
-* **position: relative / :after**：添加排序箭头
-* **content**：显示上下箭头
-* **color / font-size**：箭头颜色和大小
+问题
 
----
+- 类型、请求、业务逻辑混在一起
+- 后期必乱
 
-**使用示例**
+推荐拆分方式
 
-```
-<table class="table">
-  <tr>
-    <th>姓名</th>
-    <th>邮箱</th>
-  </tr>
-</table>
-```
-
----
-
-### 弹窗关闭按钮
-
-```
-.modal-close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  color: #909399;
-}
-.modal-close:hover {
-  color: #f56c6c;
-}
+```ts
+types/user.ts      // 只放 interface / type
+api/user.ts        // 只放接口请求
+hooks/useUser.ts   // 组合逻辑
 ```
-
-* **modal-close**：弹窗右上角关闭按钮
-* **position: absolute / top / right**：固定位置
-* **cursor: pointer**：鼠标手型
-* **hover color**：悬停颜色变化
 
----
+👉 **一个模块只回答一个问题**
 
-**使用示例**
+------
 
-```
-<div class="modal">
-  <span class="modal-close">×</span>
-  <div class="modal-content">弹窗内容</div>
-</div>
-```
+### 声明文件（`.d.ts`）—— 类型世界的“外挂接口”
 
----
+#### `.d.ts` 是什么
 
-### 折叠面板增强
+> **只存在于编译期，不生成 JS**
 
-```
-.collapse-header {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.collapse-header::after {
-  content: '▼';
-  transition: transform 0.3s;
-}
-.collapse.active .collapse-header::after {
-  transform: rotate(-180deg);
-}
+```ts
+// global.d.ts
+declare const __APP_VERSION__: string
 ```
 
-* **collapse-header**：可点击折叠标题
-* **justify-content / align-items**：内容水平分布和垂直居中
-* **::after content**：箭头指示
-* **transition / transform**：动画旋转
+你可以在任何地方直接用：
 
----
-
-**使用示例**
-
-```
-<div class="collapse">
-  <div class="collapse-header">标题</div>
-  <div class="collapse-body">内容</div>
-</div>
+```ts
+console.log(__APP_VERSION__)
 ```
 
----
+------
 
-### 响应式栅格
+#### 第三方库声明（高频）
 
-```
-.col-6 { width: 50%; }
-.col-4 { width: 33.3333%; }
-.col-3 { width: 25%; }
+当你遇到：
 
-@media (max-width: 768px) {
-  .col-6, .col-4, .col-3 { width: 100%; }
-}
+```ts
+Could not find a declaration file for module 'xxx'
 ```
 
-* **col-***：栅格列宽
-* **@media**：响应式适配
-* **应用场景**：多列布局，自适应小屏
+临时解决方案（兜底）
 
----
-
-**使用示例**
-
-```
-<div class="row">
-  <div class="col-6"><div class="card">列1</div></div>
-  <div class="col-6"><div class="card">列2</div></div>
-</div>
+```ts
+// types/xxx.d.ts
+declare module 'xxx'
 ```
 
----
+更好的方式（补充最小类型）
 
-### 悬浮提示按钮
-
-```
-.btn-tooltip {
-  position: relative;
-}
-.btn-tooltip:hover .tooltip-text {
-  visibility: visible;
+```ts
+declare module 'xxx' {
+  export function init(): void
 }
-.tooltip-text {
-  visibility: hidden;
-  position: absolute;
-  top: -28px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #303133;
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  z-index: 1000;
-}
 ```
-
-* **btn-tooltip**：带提示的按钮
-* **tooltip-text**：提示框
-* **visibility**：默认隐藏，悬停显示
-* **position / transform**：定位
-* **background-color / padding / border-radius**：样式
-
----
 
-**使用示例**
+👉 **不要一上来就 `declare module 'xxx': any`**
 
-```
-<div class="btn-tooltip">
-  <button class="btn">悬停</button>
-  <span class="tooltip-text">提示信息</span>
-</div>
-```
+------
 
----
+#### 全局类型声明（慎用，但必要）
 
-### 弹性容器换行
-
-```
-.flex-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+```ts
+// global.d.ts
+interface PageResult<T> {
+  list: T[]
+  total: number
 }
-```
-
-* **flex-wrap**：允许子元素换行
-* **gap**：元素间距
-* **应用场景**：按钮组、标签堆叠、卡片列表
-
----
-
-**使用示例**
-
 ```
-<div class="flex-wrap">
-  <div class="card">卡片1</div>
-  <div class="card">卡片2</div>
-  <div class="card">卡片3</div>
-</div>
-```
-
----
 
-### 图片圆角与阴影
+使用时无需 import
 
+```ts
+const result: PageResult<User>
 ```
-.img-card {
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  object-fit: cover;
-}
-```
 
-* **border-radius**：圆角
-* **box-shadow**：投影，增加卡片感
-* **object-fit: cover**：保持比例填充
+使用原则
 
----
+- **全局 ≠ 方便**
+- 只放 **真正全局、稳定、不依赖业务的类型**
 
-**使用示例**
-
-```
-<img class="img-card" src="pic.jpg" alt="图片" width="200" height="150"/>
-```
+------
 
----
+#### 扩展已有类型（非常容易写错）
 
-### 提示信息框
+典型场景：扩展 `Window`
 
-```
-.alert {
-  padding: 12px 16px;
-  border-radius: 4px;
-  margin-bottom: 16px;
-  font-size: 14px;
+```ts
+// global.d.ts
+declare global {
+  interface Window {
+    __TOKEN__: string
+  }
 }
-.alert-success { background-color: #f0f9eb; color: #67c23a; }
-.alert-warning { background-color: #fdf6ec; color: #e6a23c; }
-.alert-error { background-color: #fef0f0; color: #f56c6c; }
 ```
 
-* **alert**：提示框基础样式
-* **padding / border-radius / font-size / margin**：统一样式
-* **alert-***：不同状态颜色
+⚠️ 必须注意
 
----
+- 文件必须是 **模块**（至少有一个 `export {}`）
+- 否则可能被 TS 忽略
 
-**使用示例**
-
-```
-<div class="alert alert-success">操作成功</div>
-<div class="alert alert-warning">请注意</div>
-<div class="alert alert-error">操作失败</div>
+```ts
+export {}
 ```
 
----
+👉 **扩展 ≠ 覆盖，是“合并声明”**
 
-### 表单校验状态
+------
 
-```
-.input-error {
-  border-color: #f56c6c;
-  background-color: #fff0f0;
-}
-.input-success {
-  border-color: #67c23a;
-  background-color: #f0f9eb;
-}
-```
+这一节我们**不鼓吹 Class，也不妖魔化 Class**，而是把它放在 **现代前端 TS 项目中“该在的位置”**。
 
-* **input-error / input-success**：输入框校验状态
-* **border-color**：边框颜色提示状态
-* **background-color**：背景颜色
-* **应用场景**：表单校验提示
+------
 
----
+## Class（了解即可，非核心）
 
-**使用示例**
+------
 
-```
-<input class="input input-error" placeholder="错误示例"/>
-<input class="input input-success" placeholder="正确示例"/>
-```
+### 类的基础能力 —— TS 对 OOP 的最小支持
 
----
+#### `public / private / protected`
 
-### 下拉选中高亮
+```ts
+class User {
+  public name: string
+  private password: string
+  protected role: string
 
-```
-.select-item {
-  padding: 6px 12px;
-  cursor: pointer;
+  constructor(name: string, password: string, role: string) {
+    this.name = name
+    this.password = password
+    this.role = role
+  }
 }
-.select-item:hover, .select-item.active {
-  background-color: #f5f7fa;
-}
 ```
-
-* **select-item**：下拉项
-* **padding**：内边距
-* **cursor: pointer**：鼠标手型
-* **hover / active 背景色**：高亮显示
 
----
+访问规则
 
-**使用示例**
+- `public`：任何地方都能访问（默认）
+- `private`：**类内部**
+- `protected`：类内部 + 子类
 
-```
-<div class="select-item">选项1</div>
-<div class="select-item active">选项2</div>
-```
-
----
+```ts
+const user = new User('Tom', '123456', 'admin')
 
-### 栅格偏移
-
+user.name       // ✅
+user.password   // ❌
 ```
-.offset-3 { margin-left: 25%; }
-.offset-2 { margin-left: 16.6667%; }
-```
-
-* **offset-***：列偏移，常用于栅格布局
-* **margin-left**：左侧偏移比例
-* **应用场景**：布局调整、居中或对齐
 
----
+👉 **访问修饰符是“意图声明”，不是安全防护**
 
-**使用示例**
+------
 
-```
-<div class="row">
-  <div class="col-6 offset-3"><div class="card">偏移列</div></div>
-</div>
-```
+#### 构造函数（constructor）
 
----
+```ts
+class Counter {
+  count: number
 
-### 卡片悬停阴影
-
-```
-.card-hover-shadow {
-  transition: box-shadow 0.3s ease;
-}
-.card-hover-shadow:hover {
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  constructor(initial = 0) {
+    this.count = initial
+  }
 }
 ```
 
-* **card-hover-shadow**：鼠标悬停卡片效果
-* **transition**：平滑过渡
-* **box-shadow**：悬停增强阴影
+Vue 中的现实情况
 
----
+- **很少 new**
+- 更多是 **函数式初始化**
 
-**使用示例**
+👉 **构造函数在前端里，远不如后端重要**
 
-```
-<div class="card-shadow card-hover-shadow">
-  <p>悬停卡片阴影</p>
-</div>
-```
-
----
+------
 
-### 小组件边框
+#### 只读属性（readonly）
 
-```
-.border-box {
-  border: 1px solid #ebeef5;
-  border-radius: 4px;
-  padding: 8px;
+```ts
+class Config {
+  readonly appName = 'MyApp'
 }
+const cfg = new Config()
+cfg.appName = 'Other' // ❌
 ```
 
-* **border-box**：通用小组件边框
-* **border / border-radius**：边框和圆角
-* **padding**：内部间距
+意义
 
----
+- 防止被误改
+- 明确“初始化后不可变”
 
-**使用示例**
+👉 **readonly 更像“约束约定”，不是强安全**
 
-```
-<div class="border-box">小组件内容</div>
-```
+------
 
----
+### 类与接口 —— “能不能做到” vs “长什么样”
 
-### 流式文字
+#### `implements` 的意义
 
-```
-.text-flow {
-  white-space: normal;
-  word-break: break-word;
+```ts
+interface StorageService {
+  get(key: string): string | null
+  set(key: string, value: string): void
 }
-```
-
-* **text-flow**：文字自动换行
-* **white-space: normal**：允许换行
-* **word-break: break-word**：长单词换行
-* **应用场景**：表格单元格、卡片内容
-
----
-
-**使用示例**
-
-```
-<p class="text-flow">这是一段很长的文字，超过容器宽度时会自动换行显示。</p>
-```
-
----
-
-### 多行省略
-
-```
-.text-ellipsis-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+class LocalStorageService implements StorageService {
+  get(key: string) {
+    return localStorage.getItem(key)
+  }
+  set(key: string, value: string) {
+    localStorage.setItem(key, value)
+  }
 }
 ```
 
-* **text-ellipsis-2**：多行文本溢出显示省略号
-* **-webkit-line-clamp: 2**：限制显示行数
-* **overflow: hidden**：隐藏溢出内容
-* **应用场景**：卡片内容、列表描述
+关键理解
 
----
+- `implements` 只校验 **结构**
+- 不关心具体实现
 
-**使用示例**
+👉 **接口是“能力合同”**
 
-```
-<p class="text-ellipsis-2">这是一段很长的文字内容，用于演示多行溢出省略效果。</p>
-```
+------
 
----
+#### 抽象类（abstract）
 
-### 按钮图标位置
+```ts
+abstract class BaseService {
+  abstract fetch(): Promise<void>
 
-```
-.btn-icon-left {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  log() {
+    console.log('fetching...')
+  }
 }
-.btn-icon-left i {
-  order: -1;
+class UserService extends BaseService {
+  async fetch() {
+    // 实现具体逻辑
+  }
 }
-```
-
-* **btn-icon-left**：图标在文字左侧按钮
-* **display: inline-flex / align-items / gap**：水平排列和间距
-* **i order: -1**：图标在文字前面
-
----
-
-**使用示例**
-
 ```
-<button class="btn btn-icon-left"><i class="icon-search"></i>搜索</button>
-```
-
----
-
-### 标签组合
 
-```
-.tag-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-```
+使用场景
 
-* **tag-group**：多个标签组合
-* **flex-wrap: wrap**：换行
-* **gap: 4px**：标签间距
+- 需要 **共享实现**
+- 又要求子类 **必须实现某些方法**
 
----
+👉 **抽象类 = 接口 + 部分实现**
 
-**使用示例**
+------
 
-```
-<div class="tag-group">
-  <span class="tag-primary">标签1</span>
-  <span class="tag-success">标签2</span>
-  <span class="tag-warning">标签3</span>
-</div>
-```
+### Class 在现代前端 TS 项目中的真实定位
 
----
+现实结论（非常重要）
 
-### 列表分组
+> **Class 不是前端主角**
 
-```
-.list-group {
-  border: 1px solid #ebeef5;
-  border-radius: 4px;
-}
-.list-group .list-item {
-  padding: 8px 16px;
-  border-bottom: 1px solid #ebeef5;
-}
-.list-group .list-item:last-child {
-  border-bottom: none;
-}
-```
+在 Vue3 + Composition API 中：
 
-* **list-group**：分组列表容器
-* **list-item**：分组内每一项
-* **border / padding**：边框与间距
-* **last-child**：最后一行去掉下边框
+- 状态 → `ref / reactive`
+- 逻辑组合 → 函数 / hooks
+- 复用 → 泛型 + 工具函数
 
----
+Class 更适合：
 
-**使用示例**
+- SDK 封装
+- 服务层（如存储、通信）
+- 需要实例化、有生命周期的对象
 
-```
-<div class="list-group">
-  <div class="list-item">分组项1</div>
-  <div class="list-item">分组项2</div>
-</div>
-```
+不适合：
 
----
+- 页面状态
+- 业务流程
+- 表单逻辑
 
+👉 **90% 的前端代码，用不到 Class**
