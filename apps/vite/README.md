@@ -770,31 +770,298 @@ export default defineConfig(({ command, mode }) => {
 
 ### Vite 内置命令
 
+Vite 提供的核心命令，通常在 `package.json` 中这样使用：
+
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
+```
+
+说明：
+
+- `vite` 或 `vite dev` → 启动开发服务器
+- `vite build` → 构建生产静态文件
+- `vite preview` → 预览构建产物，模拟生产环境
+
+企业级认知：
+
+- **开发阶段用 `dev`**
+- **构建阶段用 `build`**
+- `preview` 仅用于测试构建效果，不是线上服务
+
+------
+
 ### 多环境与 mode
+
+可以在 scripts 中指定 mode，用于区分不同环境：
+
+```json
+{
+  "scripts": {
+    "dev": "vite --mode development",
+    "dev:test": "vite --mode test",
+    "build:prod": "vite build --mode production",
+    "build:test": "vite build --mode test"
+  }
+}
+```
+
+Vite 根据 `--mode` 自动加载对应的 `.env.[mode]` 文件：
+
+- `development` → `.env.development`
+- `test` → `.env.test`
+- `production` → `.env.production`
+
+企业实践建议：
+
+- 每个环境单独命令
+- 避免手动修改 `.env` 文件
+
+------
 
 ### scripts 与 env 关系
 
+在代码中通过 `import.meta.env` 获取环境变量：
+
+```ts
+const apiUrl = import.meta.env.VITE_API_BASE_URL
+```
+
+结合 scripts：
+
+```json
+{
+  "scripts": {
+    "dev": "vite --mode development",
+    "build:prod": "vite build --mode production"
+  }
+}
+```
+
+- `dev` → 使用 `.env.development`
+- `build:prod` → 使用 `.env.production`
+
+认知结论：
+
+> scripts 决定 mode，mode 决定 env，env 决定运行时配置
+
+------
+
 ### scripts 常用参数
+
+常用命令行参数示例：
+
+```json
+{
+  "scripts": {
+    "dev": "vite --port 3000 --open --host",
+    "build:prod": "vite build --sourcemap"
+  }
+}
+```
+
+参数说明：
+
+| 参数          | 作用                 |
+| ------------- | -------------------- |
+| `--port`      | 指定开发端口         |
+| `--open`      | 启动时自动打开浏览器 |
+| `--host`      | 开放局域网访问       |
+| `--sourcemap` | 生成 sourcemap 文件  |
+
+------
 
 ### scripts 与包管理器
 
+调用方式差异：
+
+| 包管理器 | 调用          |
+| -------- | ------------- |
+| npm      | `npm run dev` |
+| pnpm     | `pnpm dev`    |
+| yarn     | `yarn dev`    |
+
+企业实践：
+
+- **推荐统一使用 pnpm**
+- scripts 名称统一，避免多环境冲突
+
+------
+
 ### 跨平台与工程化约束
 
+1. Windows / macOS / Linux 跨平台差异：
 
+   - 使用 `cross-env` 设置环境变量：
+
+     ```json
+     "scripts": {
+       "build:test": "cross-env VITE_API_ENV=test vite build --mode test"
+     }
+     ```
+
+2. 工程化约束：
+
+   - scripts 是 **前端环境入口**
+   - **禁止在代码里硬编码环境**
+   - CI/CD 直接通过 scripts 执行构建
+
+---
 
 ## 插件体系（plugins）
 
 ### Vue 插件
 
-- `@vitejs/plugin-vue`
-- `<script setup>` 支持
+在 Vue3 + Vite 项目中，最核心的插件是 **`@vitejs/plugin-vue`**：
+
+```ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+
+export default defineConfig({
+  plugins: [vue()]
+})
+```
+
+#### 作用与认知
+
+- 提供 **SFC（.vue 文件）解析能力**
+- 支持 **`<script setup>` 语法**
+- 让 Vue3 项目能被 Vite 正确编译和热更新
+
+企业实践：
+
+- **必须注册插件**，否则 Vue 文件无法运行
+- `<script setup>` 不需要额外配置，插件已原生支持
+
+------
 
 ### 常见实用插件（认知级）
 
-- 自动导入（Auto Import）
-- 组件自动注册
-- SVG 图标处理
-- Mock 数据插件
+#### 1. 自动导入（Auto Import）
+
+作用：
+
+- 自动导入 Vue / Pinia / Vue Router 等 API
+- 免去重复 `import { ref, computed } from 'vue'`
+
+示例：
+
+```ts
+import AutoImport from 'unplugin-auto-import/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    AutoImport({
+      imports: ['vue', 'vue-router', 'pinia'],
+      dts: 'src/auto-imports.d.ts'
+    })
+  ]
+})
+```
+
+认知：
+
+- 提升开发效率
+- 必须生成 `dts` 文件，保证 TS 类型正确
+
+------
+
+#### 2. 组件自动注册
+
+作用：
+
+- 自动注册 `src/components` 下组件
+- 免去每次手动 `import` / `components` 配置
+
+示例：
+
+```ts
+import Components from 'unplugin-vue-components/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    Components({
+      dirs: ['src/components'],
+      extensions: ['vue'],
+      dts: 'src/components.d.ts'
+    })
+  ]
+})
+```
+
+认知：
+
+- 配合 TS 时需生成 `dts`
+- 企业项目中，组件库或通用组件必配
+
+------
+
+#### 3. SVG 图标处理
+
+作用：
+
+- 将 SVG 转为 Vue 组件
+- 支持按需使用
+
+示例：
+
+```ts
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import path from 'path'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    createSvgIconsPlugin({
+      iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
+      symbolId: 'icon-[name]'
+    })
+  ]
+})
+```
+
+认知：
+
+- 可以在模板中直接 `<svg-icon name="home" />`
+- 减少手动 import SVG 的麻烦
+
+------
+
+#### 4. Mock 数据插件
+
+作用：
+
+- 开发阶段模拟接口数据
+- 不依赖真实后端
+
+示例：
+
+```ts
+import { viteMockServe } from 'vite-plugin-mock'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    viteMockServe({
+      mockPath: 'mock',
+      localEnabled: true
+    })
+  ]
+})
+```
+
+认知：
+
+- 本地开发阶段必备
+- 上线时关闭或通过 `mode` 区分
 
 ------
 
@@ -802,19 +1069,124 @@ export default defineConfig(({ command, mode }) => {
 
 ### CSS 预处理器
 
-- SCSS / Less
-- `css.preprocessorOptions`
+Vite 内置对 **SCSS / Less / Stylus** 等预处理器支持，无需额外 loader，但可以通过 `css.preprocessorOptions` 配置全局变量或选项。
+
+#### 示例：SCSS 配置
+
+```ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import path from 'path'
+
+export default defineConfig({
+  plugins: [vue()],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "@/styles/variables.scss";`
+      },
+      less: {
+        javascriptEnabled: true
+      }
+    }
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  }
+})
+```
+
+认知：
+
+- `additionalData` 可以注入全局变量、mixins、函数
+- 企业项目通常 **统一注入 theme / 变量**
+- Less 需要 `javascriptEnabled: true` 才能用部分高级功能
+
+------
 
 ### 全局样式注入（高频）
 
-- 全局变量
-- 主题变量
-- mixins
+#### 全局变量 / 主题变量 / mixins 示例
+
+```
+src/styles/variables.scss
+$primary-color: #409eff;
+$font-size-base: 14px;
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+```
+
+在 `vite.config.ts` 通过 `additionalData` 注入：
+
+```ts
+scss: {
+  additionalData: `@import "@/styles/variables.scss";`
+}
+```
+
+使用示例：
+
+```vue
+<template>
+  <div class="box">Hello</div>
+</template>
+
+<style lang="scss">
+.box {
+  color: $primary-color;
+  @include flex-center;
+  font-size: $font-size-base;
+}
+</style>
+```
+
+认知：
+
+- 全局变量注入后，无需每个文件都手动 import
+- mixins 可统一管理布局、主题样式
+
+------
 
 ### CSS Modules（了解）
 
-- 使用场景
-- 与 scoped 的区别
+Vite 对 CSS Modules 支持开箱即用：
+
+#### 使用场景
+
+- 局部样式隔离
+- 避免全局样式冲突
+- 配合 TS 可获取类型提示
+
+#### 示例
+
+```vue
+<template>
+  <div :class="$style.box">Box</div>
+</template>
+
+<style module lang="scss">
+.box {
+  color: red;
+  font-size: 16px;
+}
+</style>
+```
+
+- `$style` 对象中包含类名映射
+- **与 `scoped` 区别**：
+  - `scoped` → Vue SFC 局部样式，仅作用于当前组件
+  - `module` → CSS Modules，生成哈希类名，可跨组件 import
+
+认知结论：
+
+- CSS Modules 更多用于 **复杂组件库 / 通用组件隔离样式**
+- scoped 更适合单组件局部样式
 
 ------
 
@@ -822,13 +1194,95 @@ export default defineConfig(({ command, mode }) => {
 
 ### 静态资源引入方式
 
-- `src/assets`
-- `public` 目录
+Vite 支持两种常见方式管理静态资源：
+
+#### 1. `src/assets`（模块化管理）
+
+- 文件会被 Vite **打包处理**
+- 支持 ES 模块方式引入
+
+示例：
+
+```ts
+import logoUrl from '@/assets/logo.png'
+
+const img = document.createElement('img')
+img.src = logoUrl
+document.body.appendChild(img)
+```
+
+Vue 模板中：
+
+```vue
+<template>
+  <img :src="logo" alt="logo" />
+</template>
+
+<script setup lang="ts">
+import logo from '@/assets/logo.png'
+</script>
+```
+
+认知：
+
+- 图片/字体/音视频等都可以放在 `src/assets`
+- 构建时会 **自动处理路径、生成 hash**
+
+------
+
+#### 2. `public` 目录（原封不动）
+
+- 放置不需要打包处理的资源
+- 可以通过 **绝对路径** 访问
+
+示例：
+
+```
+public/favicon.ico
+```
+
+Vue 中使用：
+
+```vue
+<img src="/favicon.ico" alt="favicon" />
+```
+
+认知：
+
+- 适合**外部 CDN / 不希望 hash 的静态资源**
+- 构建阶段直接原封不动复制到 `dist`
+
+------
 
 ### URL 处理规则
 
-- 图片、字体
-- base64 内联阈值
+Vite 对资源的处理遵循**模块导入规则 + 内联阈值**。
+
+#### 图片、字体
+
+- Vite 默认会根据文件大小进行处理
+- 小于 `4kb` 的资源 → 内联为 base64
+- 大于 `4kb` → 拷贝到 `assets` 目录并生成 hash 名
+
+可通过 `vite.config.ts` 调整：
+
+```ts
+export default defineConfig({
+  build: {
+    assetsInlineLimit: 8192 // 8kb
+  }
+})
+```
+
+#### 使用示例
+
+```ts
+import smallIcon from '@/assets/icon-small.png' // < 4kb → base64
+import largeImage from '@/assets/banner.jpg'    // > 4kb → hash 输出
+```
+
+- 内联图片不会生成额外文件
+- 大文件会生成 `dist/assets/xxx.[hash].png`
 
 ------
 
@@ -836,15 +1290,108 @@ export default defineConfig(({ command, mode }) => {
 
 ### 构建基础参数
 
-- `target`
-- `sourcemap`
-- `minify`
+#### `target`
+
+指定构建产物的浏览器兼容目标：
+
+```ts
+export default defineConfig({
+  build: {
+    target: 'es2015'
+  }
+})
+```
+
+- 常用值：
+  - `esnext` → 最新浏览器，体积最小
+  - `es2015` → 支持 IE11（需要额外 polyfill）
+- 企业实践：
+  - 如果只支持现代浏览器 → 使用 `esnext`
+  - 如果需要兼容旧版浏览器 → `es2015`
+
+------
+
+#### `sourcemap`
+
+是否生成 sourcemap，用于调试或线上分析：
+
+```ts
+export default defineConfig({
+  build: {
+    sourcemap: true
+  }
+})
+```
+
+- `true` → 生成 map 文件
+- `false` → 不生成（默认）
+- 企业实践：
+  - **开发环境不需要生成**
+  - 生产环境可根据需求生成，用于线上错误定位
+
+------
+
+#### `minify`
+
+压缩方式，减少构建体积：
+
+```ts
+export default defineConfig({
+  build: {
+    minify: 'esbuild' // 默认快速压缩
+    // minify: 'terser' // 高级压缩，可配置 drop console/debugger
+  }
+})
+```
+
+- `'esbuild'` → 默认，速度快
+- `'terser'` → 支持更细粒度配置，例如去掉 console
+- 企业实践：
+  - 绝大部分项目用 `'esbuild'` 即可
+  - 特殊优化才用 `'terser'`
+
+------
 
 ### 构建优化认知
 
-- chunk 拆分
-- vendor 拆包
-- 构建体积分析（认知即可）
+#### Chunk 拆分（按需打包）
+
+- Vite 默认会对模块进行自动拆分
+- 目标：减少单个 JS 包体积
+- 示例（概念认知即可）：
+  - 页面级组件 → 单独 chunk
+  - 大型依赖 → 拆分到 `vendor` chunk
+
+------
+
+#### Vendor 拆包
+
+- 第三方库（Vue / Pinia / Axios 等）单独打包
+- 优势：
+  - 浏览器缓存更高效
+  - 更新业务代码时无需重新下载大型库
+
+------
+
+#### 构建体积分析（认知）
+
+- 工具示例：`rollup-plugin-visualizer`
+- 作用：
+  - 查看每个依赖占用体积
+  - 优化包体积和依赖加载
+- 企业实践：
+  - 定期分析依赖
+  - 避免大文件被意外打入主 bundle
+
+```ts
+import { visualizer } from 'rollup-plugin-visualizer'
+
+export default defineConfig({
+  plugins: [
+    visualizer({ open: true })
+  ]
+})
+```
 
 ------
 
@@ -852,13 +1399,67 @@ export default defineConfig(({ command, mode }) => {
 
 ### 依赖预构建
 
-- 什么是预构建
-- 常见使用场景
+#### 什么是预构建
+
+- Vite 使用 **esbuild** 对依赖进行预构建
+- 目的：
+  - 将 **CommonJS / 大型依赖** 转为 **ESM**
+  - 加快开发启动速度（HMR 更快）
+
+企业认知：
+
+- 开发阶段生效
+- 只影响 dev server，不影响最终构建
+
+#### 常见使用场景
+
+- 第三方库报错或启动慢：
+  - 例如 Vue3 + Ant Design Vue、Axios
+- 解决依赖导入报错或 HMR 不生效
+
+示例：
+
+```ts
+export default defineConfig({
+  optimizeDeps: {
+    include: ['lodash-es', 'axios']
+  }
+})
+```
+
+说明：
+
+- `include` → 强制预构建某些依赖
+
+------
 
 ### exclude / include
 
-- 解决依赖报错
-- 兼容老库
+#### 解决依赖报错
+
+- 有些老库使用 CommonJS / UMD，Vite 默认无法正确处理
+- 可通过 `optimizeDeps.exclude` 排除，避免报错
+
+示例：
+
+```ts
+export default defineConfig({
+  optimizeDeps: {
+    exclude: ['some-legacy-lib']
+  }
+})
+```
+
+- `exclude` → 不做预构建
+- 适用于老库或者需要保留运行时特性
+
+#### 兼容老库
+
+- 某些库依赖 `process` / `global` 等 Node 全局对象
+- 通过 `exclude` 或额外插件处理
+- 企业实践：
+  - 避免直接修改 node_modules
+  - 优先尝试 `include` / `exclude` 解决
 
 ------
 
@@ -866,10 +1467,41 @@ export default defineConfig(({ command, mode }) => {
 
 ### HMR 基础认知
 
-- 默认行为
-- Vue SFC 的 HMR 特点
+- **默认行为**：
+  - 开发阶段修改代码，浏览器自动更新，无需刷新
+  - 减少开发等待时间
+- **Vue SFC 的 HMR 特点**：
+  - `<script setup>`、模板和样式的修改都会热更新
+  - 状态（ref、reactive）会尽量保留
+  - 不支持所有场景（如大幅度组件结构变化，可能需要刷新）
+
+示例：无额外配置即可使用：
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+
+export default defineConfig({
+  plugins: [vue()]
+})
+```
+
+------
 
 ### HMR 异常排查思路（了解）
+
+- 修改后页面不刷新或状态丢失：
+  - 检查插件版本是否兼容 Vue3
+  - 检查组件导出方式，确保使用 `<script setup>` 或 `export default`
+- 依赖库更新不生效：
+  - 可尝试清理缓存 `node_modules/.vite`
+  - 配置 `optimizeDeps` 预构建依赖
+
+认知结论：
+
+- HMR 是 **开发加速工具**，不是生产功能
+- 企业项目中，只需了解异常排查方法即可
 
 ------
 
@@ -877,11 +1509,32 @@ export default defineConfig(({ command, mode }) => {
 
 ### mode 的概念
 
-- `development`
-- `production`
-- 自定义 mode
+- **development** → 开发模式，dev server
+- **production** → 构建生产环境
+- **自定义 mode** → 可通过 `--mode xxx` 传入，加载 `.env.xxx` 文件
+
+示例：
+
+```json
+{
+  "scripts": {
+    "dev:test": "vite --mode test",
+    "build:prod": "vite build --mode production"
+  }
+}
+```
+
+------
 
 ### mode 与 env 的关系
+
+- `mode` 决定 Vite 加载哪个 `.env.[mode]` 文件
+- `.env` → 全局共享变量
+- `.env.[mode]` → 针对特定环境覆盖全局变量
+
+认知结论：
+
+> mode = env 的入口，env = 运行时变量来源
 
 ------
 
@@ -889,13 +1542,33 @@ export default defineConfig(({ command, mode }) => {
 
 ### 与 ESLint / Prettier
 
-- Vite 本身不负责什么
-- 插件配合方式
+- **Vite 本身不负责代码风格检查或格式化**
+- 配合方式：
+  - `vite-plugin-eslint` → 开发时自动检查
+  - Prettier → 仅格式化，Vite 不调用
+
+示例：
+
+```ts
+import eslintPlugin from 'vite-plugin-eslint'
+
+export default defineConfig({
+  plugins: [vue(), eslintPlugin()]
+})
+```
+
+------
 
 ### 与 Vue Router / Pinia
 
-- Vite 不侵入业务结构
-- 只负责构建与运行
+- Vite **不侵入业务结构**
+- 只负责：
+  - 运行 dev server
+  - 构建产物
+- Vue Router / Pinia 配置与 Vite 无关
+- 企业实践：
+  - 目录结构、路由、状态管理完全由团队控制
+  - Vite 仅提供工具链支持
 
 ------
 
@@ -903,14 +1576,34 @@ export default defineConfig(({ command, mode }) => {
 
 ### 新手常见坑
 
-- base 配置导致资源 404
-- 代理不生效
-- env 变量 undefined
+1. **base 配置导致资源 404**
+   - `base` 配置不正确 → 静态资源路径错误
+   - 企业实践：生产环境一般设置 `/` 或 CDN 路径
+2. **代理不生效**
+   - 常见原因：
+     - `server.proxy` 写错
+     - 请求路径与 rewrite 不匹配
+   - 企业实践：严格按照 `/api` 前缀和 rewrite 配置
+3. **env 变量 undefined**
+   - 忘记加 `VITE_` 前缀
+   - 未正确设置 mode 或 scripts
+
+------
 
 ### 企业项目中 Vite 的边界
 
-- 不写业务逻辑
-- 不替代框架能力
+- **不写业务逻辑**
+- **不替代框架能力**：
+  - Vue Router / Pinia / 状态管理
+  - UI 组件库
+- Vite 仅负责：
+  - 开发服务器
+  - 构建产物
+  - 开发优化
+
+认知结论：
+
+> Vite 是**现代前端开发工具链核心**，不是框架或业务逻辑解决方案
 
 ------
 
