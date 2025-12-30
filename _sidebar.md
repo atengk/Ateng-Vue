@@ -22,4 +22,5 @@
   - [Vue3 ECharts（待）](/apps/vue3-echarts/)
 
 - 工具
-  - [Vite（待）](/apps/vite/)
+  - [Vite](/apps/vite/)
+  - [自定义工具类](/apps/custom-utils/)
