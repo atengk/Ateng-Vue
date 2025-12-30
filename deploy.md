@@ -246,7 +246,9 @@ export default defineConfig({
   }
 ```
 
-- env.d.ts
+- src/vite-env.d.ts
+
+环境变量IDE提示配置
 
 ```
 /// <reference types="vite/client" />
