@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
+
+
+const baseUrl = import.meta.env.VITE_API_BASE
+
+console.log(import.meta.env.VITE_APP_NAME)
+
+
 </script>
 
 <template>
