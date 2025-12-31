@@ -24,3 +24,6 @@
 - 工具
   - [Vite](/apps/vite/)
   - [自定义工具类](/apps/custom-utils/)
+
+- 插件
+    - [Number-Flow 数字流动动画](/apps/number-flow/)
