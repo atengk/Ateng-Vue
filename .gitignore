@@ -34,6 +34,7 @@
 !*.xml
 !*.config
 !banner.txt
+!.swf
 !.env*
 
 #忽略根目录下的文件
