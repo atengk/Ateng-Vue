@@ -33,3 +33,9 @@
 
 - 插件
     - [Number-Flow 数字流动动画](/apps/number-flow/)
+
+- 文本编辑器
+    - [WangEditor v5 富文本编辑器](/apps/wangeditor/)
+    - [UEditorPlus 富文本编辑器](/apps/ueditor-plus/)
+    - [Quill 富文本编辑器](/apps/quill/)
+
