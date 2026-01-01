@@ -28,6 +28,7 @@
 - 插件
     - [Number-Flow 数字流动动画](/apps/number-flow/)
     - [vue-offce 文档预览](/apps/vue-office/)
+    - [VueDraggablePlus 拖拽组件](/apps/vue‑draggable‑plus/)
 
 - 文本编辑器
     - [WangEditor v5 富文本编辑器](/apps/wangeditor/)
