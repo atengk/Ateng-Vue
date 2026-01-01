@@ -10,18 +10,6 @@
 - [官网地址](https://github.com/501351981/vue-office)
 
 
-
-## 基础配置
-
-**安装依赖**
-
-```
-pnpm add @vue-office/docx @vue-office/excel @vue-office/pptx @vue-office/pdf vue-demi@0.14.10
-
-```
-
-
-
 ## docx文件预览
 
 **安装依赖**
