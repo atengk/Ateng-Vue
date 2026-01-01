@@ -36,3 +36,4 @@
 
 - 视频播放器
     - [videojs播放器](/apps/videojs-player/)
+    - [西瓜视频播放器](/apps/xgplayer/)
