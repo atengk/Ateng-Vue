@@ -33,6 +33,7 @@
 
 - 插件
     - [Number-Flow 数字流动动画](/apps/number-flow/)
+    - [vue-offce 文档预览](/apps/vue-office/)
 
 - 文本编辑器
     - [WangEditor v5 富文本编辑器](/apps/wangeditor/)
