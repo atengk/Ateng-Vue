@@ -33,3 +33,6 @@
     - [UEditorPlus 富文本编辑器](/apps/ueditor-plus/)
     - [Quill 富文本编辑器](/apps/quill/)
     - [Umo Editor 文档编辑器](/apps/umo-editor/)
+
+- 视频播放器
+    - [videojs播放器](/apps/videojs-player/)
