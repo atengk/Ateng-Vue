@@ -30,7 +30,6 @@
     - [vue-offce 文档预览](/apps/vue-office/)
     - [VueDraggablePlus 拖拽组件](/apps/vue‑draggable‑plus/)
     - [Signature Pad 签名绘制组件](/apps/signature-pad/)
-    - [html2canvas HTML渲染器](/apps/html2canvas/)
 
 - 文本编辑器
     - [WangEditor v5 富文本编辑器](/apps/wangeditor/)
@@ -44,3 +43,7 @@
 
 - 地图
     - [vue-baidu-map-3x 百度地图](/apps/vue-baidu-map-3x/)
+
+- DOM导出图片
+    - [html2canvas HTML渲染器](/apps/html2canvas/)
+    - [DOM to Image 生成图像](/apps/dom-to-image/)
