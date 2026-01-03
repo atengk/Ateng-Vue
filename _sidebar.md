@@ -31,6 +31,7 @@
     - [VueDraggablePlus 拖拽组件](/apps/vue‑draggable‑plus/)
     - [Signature Pad 签名绘制组件](/apps/signature-pad/)
     - [Canvas Drawing Editor画布编辑器](/apps/canvas-drawing-editor/)
+    - [Vue Print Next打印库](/apps/vue-print-next/)
 
 - 文本编辑器
     - [WangEditor v5 富文本编辑器](/apps/wangeditor/)
