@@ -1759,60 +1759,437 @@ const handleCheckedChange = (val: string[]) => {
 
 ## 8. Table 表格（核心组件）
 
-### 8.1 基础表格
+## 8.1 基础表格
 
-- `:data`
-- `border`
-- `stripe`
-- `row-key`
+### 🎯 目标效果
 
-### 8.2 列配置
+- 渲染表格数据
+- 带边框 / 斑马纹
+- 指定 `row-key` 保持行唯一性
 
-- `prop`
-- `label`
-- `width / min-width`
-- `align`
+------
 
-### 8.3 插槽列（非常常用）
+### ✅ App.vue 示例：基础表格
 
-- 自定义展示
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>基础表格示例</h3>
+
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        style="width: 100%"
+        row-key="id"
+      >
+        <el-table-column prop="id" label="ID" width="60" />
+        <el-table-column prop="name" label="姓名" min-width="120" />
+        <el-table-column prop="email" label="邮箱" min-width="200" />
+        <el-table-column prop="status" label="状态" width="100" />
+      </el-table>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import { reactive } from 'vue'
+
+const tableData = reactive([
+  { id: 1, name: '张三', email: 'zhangsan@example.com', status: '启用' },
+  { id: 2, name: '李四', email: 'lisi@example.com', status: '禁用' },
+  { id: 3, name: '王五', email: 'wangwu@example.com', status: '启用' }
+])
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+</style>
+```
+
+------
+
+### 📌 理论讲解
+
+1. **`:data`** → 表格数据数组
+2. **`border`** → 显示边框
+3. **`stripe`** → 斑马纹
+4. **`row-key`** → 每行唯一标识（必填，保证排序 / 选择 / 滚动正确）
+
+------
+
+## 8.2 列配置
+
+- 控制列显示内容、宽度、对齐
+
+```vue
+<el-table-column prop="email" label="邮箱" min-width="200" align="center" />
+```
+
+- **prop** → 对应数据字段
+- **label** → 列标题
+- **width / min-width** → 固定或最小宽度
+- **align** → 左 / 中 / 右对齐
+
+------
+
+## 8.3 插槽列（自定义渲染，非常常用）
+
+- 自定义单元格内容
 - 状态标签
-- 操作按钮列
+- 操作按钮
 
-### 8.4 固定列 & 滚动
+```vue
+<el-table-column label="状态" width="100">
+  <template #default="{ row }">
+    <el-tag type="success" v-if="row.status === '启用'">启用</el-tag>
+    <el-tag type="info" v-else>禁用</el-tag>
+  </template>
+</el-table-column>
 
-- `fixed="left/right"`
-- 横向滚动
+<el-table-column label="操作" width="160">
+  <template #default="{ row }">
+    <el-button type="primary" size="small" @click="editRow(row)">编辑</el-button>
+    <el-button type="danger" size="small" @click="deleteRow(row)">删除</el-button>
+  </template>
+</el-table-column>
+```
 
-### 8.5 表格选择
+------
 
-- `type="selection"`
-- 批量操作
+## 8.4 固定列 & 横向滚动
 
-### 8.6 空数据 & Loading
+```vue
+<el-table
+  :data="tableData"
+  style="width: 800px"
+  height="300"
+  border
+  stripe
+>
+  <el-table-column fixed="left" prop="id" label="ID" width="60" />
+  <el-table-column prop="name" label="姓名" width="120" />
+  <el-table-column prop="email" label="邮箱" width="200" />
+  <el-table-column prop="status" label="状态" width="100" />
+  <el-table-column fixed="right" label="操作" width="160">
+    <template #default="{ row }">
+      <el-button size="small">查看</el-button>
+    </template>
+  </el-table-column>
+</el-table>
+```
 
-- `empty-text`
-- `v-loading`
+- **fixed="left/right"** → 固定列
+- **横向滚动** → 当总宽度大于容器时自动出现滚动条
+- **height** → 指定表格高度可实现纵向滚动
+
+------
+
+## 8.5 表格选择（批量操作）
+
+```vue
+<el-table
+  :data="tableData"
+  border
+  stripe
+  row-key="id"
+  @selection-change="handleSelectionChange"
+>
+  <el-table-column type="selection" width="55" />
+  <el-table-column prop="name" label="姓名" />
+  <el-table-column prop="email" label="邮箱" />
+</el-table>
+
+<el-button type="primary" @click="batchDelete">批量删除</el-button>
+import { ref } from 'vue'
+
+const selectedRows = ref<any[]>([])
+
+const handleSelectionChange = (rows: any[]) => {
+  selectedRows.value = rows
+}
+
+const batchDelete = () => {
+  if (!selectedRows.value.length) return alert('请选择记录')
+  alert('删除: ' + JSON.stringify(selectedRows.value))
+}
+```
+
+- **type="selection"** → 显示复选框
+- **@selection-change** → 获取选中行
+- 可配合批量操作按钮
+
+------
+
+## 8.6 空数据 & Loading
+
+```vue
+<el-table
+  :data="emptyData"
+  border
+  stripe
+  empty-text="暂无数据"
+  v-loading="loading"
+  style="width: 100%"
+>
+  <el-table-column prop="name" label="姓名" />
+  <el-table-column prop="email" label="邮箱" />
+</el-table>
+const emptyData: any[] = []
+const loading = ref(false)
+```
+
+- **empty-text** → 自定义空数据提示
+- **v-loading** → 表格加载中效果
 
 ------
 
 ## 9. Pagination 分页
 
-### 9.1 基础分页
+## 9.1 基础分页
 
-- `current-page`
-- `page-size`
-- `total`
+### 🎯 目标效果
 
-### 9.2 常用事件
+- 显示页码
+- 每页条数
+- 总条数
 
-- `@current-change`
-- `@size-change`
+------
 
-### 9.3 与 Table 联动
+### ✅ App.vue 示例：基础分页
 
-- 后端分页
-- 搜索 + 分页重置
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>基础分页示例</h3>
+
+      <el-pagination
+        v-model:current-page="currentPage"
+        :page-size="pageSize"
+        :total="total"
+        layout="prev, pager, next, jumper, ->, total"
+      />
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const currentPage = ref(1)
+const pageSize = ref(10)
+const total = ref(95) // 总条数
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+</style>
+```
+
+------
+
+### 📌 理论讲解
+
+1. **`current-page` / `v-model:current-page`**
+   - 当前页码
+   - 与后台请求页码绑定
+2. **`page-size`**
+   - 每页显示条数
+   - 可配合 `@size-change` 动态修改
+3. **`total`**
+   - 总条数，用于计算页数
+4. **`layout`**
+   - 控制分页组件布局
+   - 常用组合：
+     - `prev, pager, next, jumper` → 前一页 / 页码 / 下一页 / 页码跳转
+     - `->, total` → 右对齐显示总条数
+
+------
+
+## 9.2 常用事件
+
+```vue
+<el-pagination
+  v-model:current-page="currentPage"
+  :page-size="pageSize"
+  :total="total"
+  @current-change="handleCurrentChange"
+  @size-change="handleSizeChange"
+  layout="prev, pager, next, sizes, ->, total"
+  :page-sizes="[10, 20, 50, 100]"
+/>
+const handleCurrentChange = (page: number) => {
+  currentPage.value = page
+  fetchTableData()
+}
+
+const handleSizeChange = (size: number) => {
+  pageSize.value = size
+  currentPage.value = 1 // 页大小改变后重置页码
+  fetchTableData()
+}
+
+// 模拟接口请求
+const fetchTableData = () => {
+  console.log('请求数据：页码', currentPage.value, '条数', pageSize.value)
+}
+```
+
+------
+
+### 📌 理论讲解
+
+1. **`@current-change`** → 页码改变时触发
+2. **`@size-change`** → 每页条数改变时触发
+3. **重置页码**
+   - 搜索条件改变或 pageSize 改变时，通常重置 `currentPage = 1`
+   - 避免页码越界或查询结果不正确
+4. **`page-sizes`**
+   - 可配置用户可选的每页条数数组
+   - 常用 `[10, 20, 50, 100]`
+
+------
+
+## 9.3 与 Table 联动（高频实战）
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>Table + Pagination 联动示例</h3>
+
+      <!-- 搜索条件 -->
+      <el-form :inline="true" :model="searchForm" class="search-form">
+        <el-form-item label="姓名">
+          <el-input v-model="searchForm.name" placeholder="请输入姓名" clearable />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="search">搜索</el-button>
+          <el-button @click="reset">重置</el-button>
+        </el-form-item>
+      </el-form>
+
+      <!-- 表格 -->
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        row-key="id"
+        style="margin-top: 16px;"
+      >
+        <el-table-column type="selection" width="55" />
+        <el-table-column prop="id" label="ID" width="60" />
+        <el-table-column prop="name" label="姓名" />
+        <el-table-column prop="email" label="邮箱" />
+      </el-table>
+
+      <!-- 分页 -->
+      <el-pagination
+        v-model:current-page="currentPage"
+        :page-size="pageSize"
+        :total="total"
+        @current-change="handleCurrentChange"
+        @size-change="handleSizeChange"
+        layout="prev, pager, next, sizes, ->, total"
+        :page-sizes="[10, 20, 50]"
+        style="margin-top: 16px; text-align: right;"
+      />
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import { reactive, ref, computed } from 'vue'
+
+// 搜索表单
+const searchForm = reactive({
+  name: ''
+})
+
+// 表格数据
+const tableData = ref([] as any[])
+const total = ref(0)
+const currentPage = ref(1)
+const pageSize = ref(10)
+
+// 模拟后端分页接口
+const allData = Array.from({ length: 95 }).map((_, i) => ({
+  id: i + 1,
+  name: `用户${i + 1}`,
+  email: `user${i + 1}@example.com`
+}))
+
+const fetchTableData = () => {
+  // 模拟搜索过滤
+  let filtered = allData.filter(item => item.name.includes(searchForm.name))
+  total.value = filtered.length
+
+  // 分页数据
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  tableData.value = filtered.slice(start, end)
+}
+
+// 页码/页大小改变
+const handleCurrentChange = (page: number) => {
+  currentPage.value = page
+  fetchTableData()
+}
+
+const handleSizeChange = (size: number) => {
+  pageSize.value = size
+  currentPage.value = 1
+  fetchTableData()
+}
+
+// 搜索
+const search = () => {
+  currentPage.value = 1
+  fetchTableData()
+}
+
+// 重置
+const reset = () => {
+  searchForm.name = ''
+  currentPage.value = 1
+  fetchTableData()
+}
+
+// 初始化
+fetchTableData()
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+.search-form {
+  margin-bottom: 16px;
+}
+</style>
+```
+
+------
+
+### 📌 理论讲解
+
+1. **搜索 + 分页**
+   - 搜索条件改变时 → `currentPage = 1`
+   - 分页组件会触发 `@current-change` 重新拉取数据
+2. **后端分页**
+   - 后端返回总条数 `total`
+   - 分页组件根据 `page-size` 计算页数
+3. **前端分页**
+   - 可以用 `slice()` 截取数据
+   - `total` = 数据长度
+4. **表格 + 复选框**
+   - 批量操作 + 分页结合 → 需要考虑跨页选择逻辑
 
 ------
 
@@ -2003,12 +2380,3 @@ const handleCheckedChange = (val: string[]) => {
 
 ------
 
-### 下一步建议（你可以直接选）
-
-你可以直接告诉我：
-
-- **“从 Table 开始，给我完整 App.vue 示例”**
-- **“先做 搜索 + 表格 + 分页 组合”**
-- **“按这个大纲，逐个组件补完整示例代码”**
-
-我会**严格按这个大纲**，每个组件给你一个**可直接复制运行的 App.vue 示例**，并且用 **TypeScript + Element Plus 2.13 的最佳实践写法**。
