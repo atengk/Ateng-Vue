@@ -2404,62 +2404,1284 @@ fetchTableData()
 
 ## 10. Dialog 弹窗（高频）
 
-### 10.1 基础用法
+## 10.1 基础用法
 
-- `v-model`
-- `title`
-- `width`
+### 🎯 使用场景
 
-### 10.2 底部操作区
+- 简单提示弹窗
+- 信息展示
+- 作为新增 / 编辑的容器
 
-- `#footer`
-- 确认 / 取消
+------
 
-### 10.3 表单弹窗
+### ✅ App.vue 示例：基础 Dialog
 
-- 新增 / 编辑共用
-- 关闭前校验
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <el-button type="primary" @click="dialogVisible = true">
+        打开弹窗
+      </el-button>
+
+      <el-dialog
+        v-model="dialogVisible"
+        title="基础弹窗"
+        width="500px"
+      >
+        <p>这是一个最基础的 Dialog 示例</p>
+      </el-dialog>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const dialogVisible = ref(false)
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+</style>
+```
+
+------
+
+### 📌 理论讲解
+
+#### 1️⃣ `v-model`
+
+- 控制弹窗显示 / 隐藏
+- **必须是 boolean**
+- 关闭弹窗时会自动变为 `false`
+
+#### 2️⃣ `title`
+
+- 弹窗标题
+- 可动态绑定（新增 / 编辑切换）
+
+#### 3️⃣ `width`
+
+- 常用：`400px / 500px / 600px / 60%`
+- 后台表单一般 **不要太窄**
+
+------
+
+## 10.2 底部操作区（footer 插槽）
+
+### 🎯 使用场景
+
+- 确认 / 取消按钮
+- 提交表单
+- 自定义操作区布局
+
+------
+
+### ✅ App.vue 示例：自定义 Footer
+
+```vue
+<el-dialog
+  v-model="dialogVisible"
+  title="带底部操作的弹窗"
+  width="500px"
+>
+  <p>这里是弹窗内容</p>
+
+  <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogVisible = false">取消</el-button>
+      <el-button type="primary" @click="handleConfirm">
+        确认
+      </el-button>
+    </span>
+  </template>
+</el-dialog>
+const handleConfirm = () => {
+  console.log('点击确认')
+  dialogVisible.value = false
+}
+```
+
+------
+
+### 📌 理论讲解
+
+1. **`#footer` 插槽**
+   - 完全接管底部区域
+   - 官方按钮样式只是默认实现，**真实项目几乎都会自定义**
+2. **按钮行为**
+   - 取消：直接关闭弹窗
+   - 确认：一般触发表单校验或接口请求
+3. **常见样式**
+   - 按钮右对齐（Element Plus 默认）
+   - 主按钮 `type="primary"`
+
+------
+
+## 10.3 表单弹窗（新增 / 编辑共用，核心）
+
+这是 **最重要的一节**。
+
+### 🎯 目标效果
+
+- 同一个 Dialog
+- 同一份 Form
+- 支持 **新增 / 编辑**
+- 关闭前校验表单
+
+------
+
+### ✅ App.vue 示例：表单 Dialog（完整实战）
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <el-button type="primary" @click="openAdd">新增</el-button>
+      <el-button @click="openEdit">编辑</el-button>
+
+      <el-dialog
+          v-model="dialogVisible"
+          :title="dialogTitle"
+          width="600px"
+          :before-close="handleBeforeClose"
+      >
+        <el-form
+            ref="formRef"
+            :model="form"
+            :rules="rules"
+            label-width="100px"
+        >
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="form.name" />
+          </el-form-item>
+
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="form.email" />
+          </el-form-item>
+        </el-form>
+
+        <template #footer>
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="submitForm">
+            确认
+          </el-button>
+        </template>
+      </el-dialog>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import {ref, reactive, nextTick} from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
+
+/** 弹窗状态 */
+const dialogVisible = ref(false)
+const dialogTitle = ref('')
+
+/** 表单 */
+const formRef = ref<FormInstance>()
+const form = reactive({
+  name: '',
+  email: ''
+})
+
+/** 校验规则 */
+const rules: FormRules = {
+  name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+  email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }]
+}
+
+/** 新增 */
+const openAdd = async () => {
+  dialogTitle.value = '新增用户'
+  dialogVisible.value = true
+
+  await nextTick()
+  formRef.value?.resetFields()
+}
+
+/** 编辑 */
+const openEdit = () => {
+  dialogTitle.value = '编辑用户'
+  form.name = '张三'
+  form.email = 'zhangsan@example.com'
+  dialogVisible.value = true
+}
+
+/** 提交 */
+const submitForm = async () => {
+  if (!formRef.value) return
+
+  try {
+    await formRef.value.validate()
+    console.log('提交数据', form)
+    dialogVisible.value = false
+  } catch (err) {
+    // 校验失败是正常业务，不要抛错
+    console.warn('表单校验未通过', err)
+  }
+}
+
+/** 关闭前校验 */
+const handleBeforeClose = (done: () => void) => {
+  // 这里可以弹确认框
+  done()
+}
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+</style>
+```
+
+------
+
+### 📌 理论讲解（重点）
+
+#### 1️⃣ 新增 / 编辑共用逻辑
+
+- **新增**
+  - 重置表单
+  - title = 新增
+- **编辑**
+  - 回填数据
+  - title = 编辑
+
+> ⚠️ 真实项目：
+> **不要复制两个 Dialog！一定要共用**
+
+------
+
+#### 2️⃣ 表单校验
+
+- `formRef.validate()` → 校验通过才提交
+- 校验失败会自动高亮错误项
+
+------
+
+#### 3️⃣ `before-close`（非常重要）
+
+- 弹窗关闭前钩子
+- 常用于：
+  - 提示“是否确认关闭”
+  - 阻止未保存数据丢失
+
+```ts
+const handleBeforeClose = (done) => {
+  // confirm 弹窗
+  done()
+}
+```
+
+------
+
+#### 4️⃣ 常见注意事项（项目经验）
+
+✅ **关闭弹窗时是否重置表单**
+
+- 新增：一定要 reset
+- 编辑：视情况
+
+✅ **表单 ref**
+
+- 一定要 `ref<FormInstance>()`
+- TS 项目必做
+
+✅ **不要用 v-if 包 el-dialog**
+
+- 会导致表单 ref 丢失
+- 推荐用 `v-model` 控制显示
 
 ------
 
 ## 11. Drawer 抽屉
 
-### 11.1 基础抽屉
+## 11.1 基础抽屉
 
-- `v-model`
-- `direction`
-- `size`
+### 🎯 使用场景
 
-### 11.2 详情页展示
+- 侧滑面板
+- 不希望遮挡整个页面（对比 Dialog）
+- 编辑 / 设置 / 快速操作
 
-- 表单只读
-- 长内容滚动
+------
+
+### ✅ App.vue 示例：基础 Drawer
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <el-button type="primary" @click="drawerVisible = true">
+        打开抽屉
+      </el-button>
+
+      <el-drawer
+        v-model="drawerVisible"
+        title="基础抽屉"
+        direction="rtl"
+        size="400px"
+      >
+        <p>这是一个基础 Drawer 示例</p>
+      </el-drawer>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const drawerVisible = ref(false)
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+</style>
+```
+
+------
+
+### 📌 理论讲解
+
+#### 1️⃣ `v-model`
+
+- 控制 Drawer 显示 / 隐藏
+- 类型：`boolean`
+- 关闭时自动变为 `false`
+
+#### 2️⃣ `direction`
+
+- 抽屉出现方向：
+  - `rtl` → 右侧（最常用）
+  - `ltr` → 左侧
+  - `ttb` → 顶部
+  - `btt` → 底部
+
+> ✅ 后台系统 **90% 使用 `rtl`**
+
+#### 3️⃣ `size`
+
+- 抽屉宽度 / 高度
+- 常用：
+  - `300px / 400px / 500px`
+  - `30% / 40%`
+
+------
+
+## 11.2 详情页展示（高频实战）
+
+### 🎯 目标效果
+
+- 点击表格“查看”
+- 抽屉展示详情
+- 表单 **只读**
+- 内容超出可滚动
+
+------
+
+### ✅ App.vue 示例：详情 Drawer（推荐用法）
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <el-button @click="openDetail">查看详情</el-button>
+
+      <el-drawer
+        v-model="drawerVisible"
+        title="用户详情"
+        direction="rtl"
+        size="500px"
+      >
+        <el-form
+          :model="detail"
+          label-width="100px"
+          class="detail-form"
+        >
+          <el-form-item label="姓名">
+            <el-input v-model="detail.name" disabled />
+          </el-form-item>
+
+          <el-form-item label="邮箱">
+            <el-input v-model="detail.email" disabled />
+          </el-form-item>
+
+          <el-form-item label="简介">
+            <el-input
+              v-model="detail.desc"
+              type="textarea"
+              :rows="6"
+              disabled
+            />
+          </el-form-item>
+        </el-form>
+      </el-drawer>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import { ref, reactive } from 'vue'
+
+const drawerVisible = ref(false)
+
+const detail = reactive({
+  name: '',
+  email: '',
+  desc: ''
+})
+
+const openDetail = () => {
+  // 模拟接口返回
+  detail.name = '张三'
+  detail.email = 'zhangsan@example.com'
+  detail.desc =
+    '这里是用户简介内容，通常会比较长。'.repeat(10)
+
+  drawerVisible.value = true
+}
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+
+/* 内容过长时滚动 */
+.detail-form {
+  padding-right: 16px;
+}
+</style>
+```
+
+------
+
+### 📌 理论讲解（重点）
+
+#### 1️⃣ Drawer vs Dialog（选型建议）
+
+| 场景        | 推荐   |
+| ----------- | ------ |
+| 新增 / 编辑 | Dialog |
+| 查看详情    | Drawer |
+| 辅助操作    | Drawer |
+| 强打断用户  | Dialog |
+
+------
+
+#### 2️⃣ 表单只读实现方式（推荐）
+
+✅ **最简单稳定**
+
+```vue
+<el-input disabled />
+```
+
+❌ 不推荐：
+
+- 自己写 div + span（样式不统一）
+- 条件渲染两套模板
+
+------
+
+#### 3️⃣ 长内容滚动
+
+- Drawer 默认内容区可滚动
+- 表单内容建议：
+  - 使用 `textarea`
+  - 合理 `rows`
+  - 留右侧 padding，避免滚动条压内容
+
+------
+
+#### 4️⃣ 实际项目常见增强点
+
+- 顶部放状态 Tag
+- 底部固定操作按钮（查看 → 编辑）
+- Drawer 内嵌 Table / Timeline
+
+------
+
+### ⚠️ 常见坑 & 注意事项
+
+1. **不要频繁销毁 Drawer**
+   - 不用 `v-if`
+   - 用 `v-model` 控制
+2. **表单只读 ≠ disabled 整个 form**
+   - 单项 disabled 更灵活
+3. **抽屉太宽**
+   - 会影响主页面感知
+   - 一般不超过 40%
 
 ------
 
 ## 12. Message / MessageBox
 
-### 12.1 Message
+## 12.1 Message（轻量提示）
 
-- 成功 / 警告 / 错误提示
+### 🎯 使用场景
+
+- 操作成功 / 失败提示
 - 接口返回统一提示
+- 非阻断式反馈（不打断用户）
 
-### 12.2 MessageBox
+------
+
+### ✅ App.vue 示例：基础 Message
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <el-button type="success" @click="showSuccess">
+        成功
+      </el-button>
+
+      <el-button type="warning" @click="showWarning">
+        警告
+      </el-button>
+
+      <el-button type="danger" @click="showError">
+        错误
+      </el-button>
+
+      <el-button type="primary" @click="showWithVariable">
+        变量提示
+      </el-button>
+
+      <el-button @click="showGroup">
+        分组消息合并
+      </el-button>
+
+      <el-button @click="showSingle">
+        防重复提示
+      </el-button>
+
+      <el-button @click="mockRequest">
+        接口场景
+      </el-button>
+
+      <el-button :disabled="disabled" @click="handleClick">
+        幂等按钮
+      </el-button>
+
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import { ElMessage } from 'element-plus'
+import {ref} from "vue";
+
+/**
+ * 基础成功提示
+ */
+const showSuccess = () => {
+  ElMessage.success({
+    message: '操作成功',
+    showClose: true
+  })
+}
+
+/**
+ * 基础警告提示
+ */
+const showWarning = () => {
+  ElMessage.warning({
+    message: '请注意输入内容',
+    showClose: true
+  })
+}
+
+/**
+ * 基础错误提示
+ */
+const showError = () => {
+  ElMessage.error({
+    message: '操作失败',
+    showClose: true
+  })
+}
+
+/**
+ * 变量提示（高频）
+ */
+const showWithVariable = () => {
+  const userName = '张三'
+  const count = 3
+
+  ElMessage.success({
+    message: `用户 ${userName} 操作成功，共处理 ${count} 条数据`,
+    showClose: true
+  })
+}
+
+/**
+ * 分组消息合并
+ */
+const showGroup = () => {
+  ElMessage({
+    message: '分组消息合并提示.',
+    grouping: true,
+    type: 'success',
+  })
+}
+
+/**
+ * 防止多次点击提示堆叠
+ */
+const showSingle = () => {
+  ElMessage.closeAll()
+  ElMessage.info({
+    message: '当前只显示一条提示',
+    duration: 2000
+  })
+}
+
+/**
+ * 模拟接口请求场景（成功 / 失败）
+ */
+const mockRequest = async () => {
+  try {
+    ElMessage.info({
+      message: '正在提交...',
+      duration: 1000
+    })
+
+    // 模拟接口延迟
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        Math.random() > 0.5 ? resolve(true) : reject(new Error())
+      }, 1200)
+    })
+
+    ElMessage.success({
+      message: '提交成功',
+      showClose: true
+    })
+  } catch {
+    ElMessage.error({
+      message: '提交失败，请重试',
+      showClose: true
+    })
+  }
+}
+
+const disabled = ref(false)
+const handleClick = () => {
+  if (disabled.value) return
+
+  disabled.value = true
+  ElMessage.success('操作生效')
+
+  setTimeout(() => {
+    disabled.value = false
+  }, 1000)
+}
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+</style>
+```
+
+------
+
+### 📌 理论讲解
+
+#### 1️⃣ Message 的特点
+
+- 非模态（不会阻断操作）
+- 自动消失
+- 适合**结果反馈**
+
+#### 2️⃣ 常用类型
+
+| 方法                | 场景            |
+| ------------------- | --------------- |
+| `ElMessage.success` | 新增 / 保存成功 |
+| `ElMessage.warning` | 参数不合法      |
+| `ElMessage.error`   | 接口异常        |
+| `ElMessage.info`    | 普通提示        |
+
+------
+
+## 12.1（进阶）接口返回统一提示（非常常用）
+
+```ts
+const handleApiResponse = (res: { code: number; msg: string }) => {
+  if (res.code === 0) {
+    ElMessage.success(res.msg || '操作成功')
+  } else {
+    ElMessage.error(res.msg || '操作失败')
+  }
+}
+```
+
+📌 实战经验：
+
+- **不要在每个页面都写一堆 Message**
+- 一般在：
+  - 请求拦截器
+  - 业务统一方法
+  - 提交成功回调
+- 集中处理提示逻辑
+
+------
+
+## 12.2 MessageBox（确认框）
+
+### 🎯 使用场景
 
 - 删除确认
 - 危险操作二次确认
+- 防误操作
+
+------
+
+### ✅ App.vue 示例：删除确认（Promise 风格）
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <el-button type="danger" @click="handleDelete">
+        删除
+      </el-button>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import { ElMessageBox, ElMessage } from 'element-plus'
+
+const handleDelete = async () => {
+  try {
+    await ElMessageBox.confirm(
+      '此操作将永久删除该数据，是否继续？',
+      '删除确认',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+    // 确认后执行
+    ElMessage.success('删除成功')
+  } catch {
+    // 取消不需要提示
+  }
+}
+</script>
+```
+
+------
+
+### 📌 理论讲解
+
+#### 1️⃣ `ElMessageBox.confirm`
+
+- 返回 Promise
+- 用户点击：
+  - 确认 → resolve
+  - 取消 / 关闭 → reject
+
+#### 2️⃣ 常用参数
+
+| 参数                | 说明                     |
+| ------------------- | ------------------------ |
+| `message`           | 提示内容                 |
+| `title`             | 标题                     |
+| `type`              | `warning / error / info` |
+| `confirmButtonText` | 确认按钮文字             |
+| `cancelButtonText`  | 取消按钮文字             |
+
+------
+
+## 12.2（进阶）危险操作二次确认
+
+```ts
+const handleDanger = async () => {
+  try {
+    await ElMessageBox.confirm(
+      '该操作不可恢复，是否确认执行？',
+      '高危操作',
+      {
+        type: 'error',
+        confirmButtonText: '我已确认',
+        cancelButtonText: '取消',
+        closeOnClickModal: false
+      }
+    )
+    ElMessage.success('操作已执行')
+  } catch {}
+}
+```
+
+📌 项目经验：
+
+- **危险操作一定禁止点击遮罩关闭**
+
+  ```ts
+  closeOnClickModal: false
+  ```
+
+- 确认按钮文案要 **明确责任**
+
+------
+
+## 12.3 Message vs MessageBox（选型总结）
+
+| 场景         | 推荐       |
+| ------------ | ---------- |
+| 操作结果反馈 | Message    |
+| 是否继续？   | MessageBox |
+| 删除 / 清空  | MessageBox |
+| 成功 / 失败  | Message    |
+
+------
+
+### ⚠️ 常见坑 & 注意事项
+
+1. **MessageBox 不要滥用**
+   - 会打断用户流程
+2. **取消操作不要提示“已取消”**
+   - 会显得啰嗦
+3. **接口异常**
+   - 网络错误 → Message.error
+   - 业务失败 → Message.warning / error
+
+------
+
+## 14. Notification 通知
+
+## 14.1 基础通知
+
+### 🎯 使用场景
+
+- 系统级提示
+- 后台任务完成通知
+- 非当前操作触发的反馈
+
+> 和 Message 的核心区别：
+> **Notification 更“全局”，存在时间更长，不打断用户**
+
+------
+
+### ✅ App.vue 示例：基础 Notification
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <el-button type="primary" @click="notifySuccess">
+        成功通知
+      </el-button>
+      <el-button type="warning" @click="notifyWarning">
+        警告通知
+      </el-button>
+      <el-button type="danger" @click="notifyError">
+        错误通知
+      </el-button>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import { ElNotification } from 'element-plus'
+
+const notifySuccess = () => {
+  ElNotification({
+    title: '成功',
+    message: '数据已成功同步',
+    type: 'success'
+  })
+}
+
+const notifyWarning = () => {
+  ElNotification({
+    title: '警告',
+    message: '部分数据未同步',
+    type: 'warning'
+  })
+}
+
+const notifyError = () => {
+  ElNotification({
+    title: '错误',
+    message: '同步失败，请稍后重试',
+    type: 'error'
+  })
+}
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+</style>
+```
+
+------
+
+### 📌 理论讲解
+
+#### 1️⃣ Notification 特点
+
+- 出现在页面角落（默认右上）
+- 不阻断用户操作
+- 显示时间比 Message 长
+- 适合 **“你不一定立刻处理，但需要知道” 的信息**
+
+#### 2️⃣ 常用类型
+
+| type    | 使用场景     |
+| ------- | ------------ |
+| success | 后台任务完成 |
+| warning | 异常但可继续 |
+| error   | 系统级错误   |
+| info    | 普通通知     |
+
+------
+
+## 14.2 常用配置参数（高频）
+
+```ts
+ElNotification({
+  title: '任务完成',
+  message: '导出任务已完成，请前往下载中心',
+  type: 'success',
+  duration: 4500,
+  position: 'top-right',
+  showClose: true
+})
+```
+
+### 📌 参数说明
+
+| 参数        | 说明               |
+| ----------- | ------------------ |
+| `title`     | 标题               |
+| `message`   | 内容               |
+| `type`      | 通知类型           |
+| `duration`  | 自动关闭时间（ms） |
+| `position`  | 出现位置           |
+| `showClose` | 是否显示关闭按钮   |
+
+------
+
+## 14.3 手动关闭 / 持久通知
+
+### 🎯 使用场景
+
+- 必须用户明确知晓
+- 系统异常 / 权限问题
+
+------
+
+### ✅ 示例：不会自动关闭的通知
+
+```ts
+ElNotification({
+  title: '系统异常',
+  message: '检测到异常状态，请立即处理',
+  type: 'error',
+  duration: 0 // 不自动关闭
+})
+```
+
+📌 项目经验：
+
+- `duration = 0` → 必须手动关闭
+- **只用于重要通知，不能滥用**
+
+------
+
+## 14.4 Notification vs Message（关键区别）
+
+| 维度     | Message  | Notification |
+| -------- | -------- | ------------ |
+| 出现位置 | 页面中间 | 页面角落     |
+| 是否阻断 | 否       | 否           |
+| 显示时间 | 短       | 长           |
+| 适合场景 | 操作反馈 | 系统通知     |
+
+✅ **简单规则**：
+
+- 点击按钮后的结果 → **Message**
+- 后台事件 / 系统状态 → **Notification**
+
+------
+
+## 14.5 实际项目高频场景示例
+
+### 1️⃣ 导出完成通知
+
+```ts
+ElNotification({
+  title: '导出完成',
+  message: '文件已生成，可前往下载',
+  type: 'success'
+})
+```
+
+### 2️⃣ 权限变更通知
+
+```ts
+ElNotification({
+  title: '权限变更',
+  message: '你的权限已发生变更，请重新登录',
+  type: 'warning',
+  duration: 0
+})
+```
+
+### 3️⃣ WebSocket / SSE 推送
+
+- 新任务
+- 新消息
+- 审批结果
+
+> Notification 是这类 **异步推送** 的最佳展示方式
+
+------
+
+## 14.6 常见坑 & 使用规范
+
+### ⚠️ 常见问题
+
+1. **Notification 太多**
+   - 会堆满右上角
+   - 用户会忽略
+2. **和 Message 混用**
+   - 场景不清晰，体验混乱
+
+------
+
+### ✅ 推荐规范（非常实用）
+
+- 用户主动操作结果 → Message
+- 系统异步 / 被动结果 → Notification
+- 高危 / 必须确认 → MessageBox
 
 ------
 
 ## 13. Loading
 
-### 13.1 指令方式
+## 13.1 指令方式（`v-loading`）
 
-- `v-loading`
+### 🎯 使用场景
 
-### 13.2 全屏 Loading
+- 表格加载
+- 表单提交中
+- 局部区域加载（推荐）
 
-- 请求期间锁屏
+------
+
+### ✅ App.vue 示例：局部 Loading（最常用）
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <el-button type="primary" @click="loadData">
+        加载数据
+      </el-button>
+
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        v-loading="loading"
+        style="margin-top: 16px;"
+      >
+        <el-table-column prop="id" label="ID" width="80" />
+        <el-table-column prop="name" label="姓名" />
+      </el-table>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const loading = ref(false)
+const tableData = ref<any[]>([])
+
+const loadData = () => {
+  loading.value = true
+  setTimeout(() => {
+    tableData.value = [
+      { id: 1, name: '张三' },
+      { id: 2, name: '李四' }
+    ]
+    loading.value = false
+  }, 1500)
+}
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+</style>
+```
+
+------
+
+### 📌 理论讲解
+
+#### 1️⃣ `v-loading`
+
+- Element Plus 提供的 **指令**
+- 值为 `boolean`
+- `true` → 显示 Loading
+- `false` → 隐藏 Loading
+
+#### 2️⃣ 推荐使用位置
+
+✅ 表格
+✅ 表单容器
+✅ Card / 区块容器
+
+❌ 整个页面随便套（会影响体验）
+
+------
+
+### 📌 常用修饰参数（了解即可）
+
+```vue
+<div
+  v-loading="loading"
+  element-loading-text="加载中..."
+  element-loading-background="rgba(255,255,255,0.8)"
+>
+```
+
+- `element-loading-text` → 提示文字
+- `element-loading-background` → 背景遮罩
+
+------
+
+## 13.2 全屏 Loading（请求期间锁屏）
+
+### 🎯 使用场景
+
+- 登录
+- 系统初始化
+- 高危 / 长耗时操作
+- 全局接口拦截
+
+------
+
+### ✅ App.vue 示例：全屏 Loading
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <el-button type="danger" @click="doHeavyTask">
+        执行耗时操作
+      </el-button>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import { ElLoading } from 'element-plus'
+
+const doHeavyTask = () => {
+  const loading = ElLoading.service({
+    lock: true,
+    text: '处理中，请稍候...',
+    background: 'rgba(0, 0, 0, 0.5)'
+  })
+
+  setTimeout(() => {
+    loading.close()
+  }, 2000)
+}
+</script>
+```
+
+------
+
+### 📌 理论讲解
+
+#### 1️⃣ `ElLoading.service`
+
+- 返回一个 Loading 实例
+- **必须手动 `close()`**
+
+#### 2️⃣ 常用参数
+
+| 参数         | 说明                  |
+| ------------ | --------------------- |
+| `lock`       | 是否锁屏              |
+| `text`       | 提示文本              |
+| `background` | 遮罩层背景            |
+| `fullscreen` | 是否全屏（默认 true） |
+
+------
+
+## 13.2（进阶）配合接口请求（真实项目）
+
+```ts
+let loadingInstance: any
+
+const startLoading = () => {
+  loadingInstance = ElLoading.service({ lock: true })
+}
+
+const endLoading = () => {
+  loadingInstance?.close()
+}
+```
+
+📌 常见做法：
+
+- **请求开始** → `startLoading`
+- **请求结束 / 异常** → `endLoading`
+- 推荐放在：
+  - axios 拦截器
+  - 全局请求封装
+
+------
+
+## 13.3 Loading 使用规范（非常重要）
+
+### ✅ 推荐
+
+- 列表 → **表格 Loading**
+- 表单提交 → **按钮 Loading / 局部 Loading**
+- 系统级操作 → **全屏 Loading**
+
+### ❌ 不推荐
+
+- 每个请求都全屏 Loading
+- Loading 时间 < 300ms 也强制显示（会闪）
+
+------
+
+## 13.4 常见坑 & 注意事项
+
+1. **忘记 close()**
+   - 页面会被永久锁死
+2. **多次调用**
+   - 需要统一管理 Loading 实例
+3. **全屏 Loading + Dialog**
+   - 注意遮罩层层级问题
 
 ------
 
