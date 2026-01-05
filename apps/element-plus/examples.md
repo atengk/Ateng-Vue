@@ -644,7 +644,7 @@ xs = 24  // 1 行 1 个
 
 ------
 
-# 二、表单与数据录入（高频核心）
+## 二、表单与数据录入（高频核心）
 
 ## 3. Form 表单（el-form）
 
@@ -973,7 +973,7 @@ const isDisabled = ref(false)
 
 ------
 
-# 4. Input 输入类组件
+## 4. Input 输入类组件
 
 ## 4.1 el-input 基础使用
 
@@ -2452,18 +2452,18 @@ const dialogVisible = ref(false)
 
 📌 理论讲解
 
-#### 1️⃣ `v-model`
+1️⃣ `v-model`
 
 - 控制弹窗显示 / 隐藏
 - **必须是 boolean**
 - 关闭弹窗时会自动变为 `false`
 
-#### 2️⃣ `title`
+2️⃣ `title`
 
 - 弹窗标题
 - 可动态绑定（新增 / 编辑切换）
 
-#### 3️⃣ `width`
+3️⃣ `width`
 
 - 常用：`400px / 500px / 600px / 60%`
 - 后台表单一般 **不要太窄**
@@ -4547,9 +4547,9 @@ import { Plus, Delete, Search } from '@element-plus/icons-vue'
     <h2>动态 Icon（component :is）</h2>
 
     <div
-      v-for="item in actions"
-      :key="item.name"
-      class="action"
+        v-for="item in actions"
+        :key="item.name"
+        class="action"
     >
       <el-icon>
         <component :is="item.icon" />
@@ -4560,11 +4560,6 @@ import { Plus, Delete, Search } from '@element-plus/icons-vue'
 </template>
 
 <script setup lang="ts">
-import {
-  Edit,
-  Delete,
-  View
-} from '@element-plus/icons-vue'
 
 /**
  * 模拟后端 / 配置驱动的 Icon
@@ -4573,17 +4568,17 @@ const actions = [
   {
     name: 'edit',
     label: '编辑',
-    icon: Edit
+    icon: 'Edit'
   },
   {
     name: 'delete',
     label: '删除',
-    icon: Delete
+    icon: 'Delete'
   },
   {
     name: 'view',
     label: '查看',
-    icon: View
+    icon: 'View'
   }
 ]
 </script>
@@ -4671,11 +4666,10 @@ icon: Edit
 </template>
 
 <script setup lang="ts">
-import { Edit, Delete } from '@element-plus/icons-vue'
 
 const tableData = [
-  { name: '数据一', icon: Edit },
-  { name: '数据二', icon: Delete }
+  { name: '数据一', icon: 'Edit' },
+  { name: '数据二', icon: 'Delete' }
 ]
 </script>
 ```
@@ -4684,18 +4678,9 @@ const tableData = [
 
 ## X.5 ⚠️ 常见错误 & 注意事项（很关键）
 
-❌ 错误 1：icon 用字符串
-
-```ts
-icon: 'Edit'
-```
-
-- TS 不报错
-- 运行直接炸 ❌
-
 ------
 
-❌ 错误 2：忘记 el-icon 包裹
+❌ 错误 1：忘记 el-icon 包裹
 
 ```vue
 <component :is="icon" />
@@ -4740,6 +4725,343 @@ icon: 'Edit'
 
 ------
 
-## 16. Upload 上传（文件 / 图片 / 表单联动）
+好，这一节我**严格按你给的 Layout 示例格式来**，不再跑偏👇
+**目标明确、完整 App.vue、代码优先、理论只解释关键点**。
+
+------
+
+## Upload 上传（文件 / 图片 / 预览 / 拖拽 / 表单联动）
+
+> Upload 是后台系统里**坑最多、组合最多**的组件之一
+> 本章只覆盖 **真实项目 90% 会用到的场景**
+
+------
+
+## 16.1 基础文件上传（单文件）
+
+🎯 目标效果
+
+- 上传单个文件
+- 手动控制上传
+- 成功 / 失败回调
+- 不依赖真实接口（便于本地跑）
+
+------
+
+完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>基础文件上传</h2>
+
+    <el-upload
+      class="upload-demo"
+      :auto-upload="false"
+      :on-change="handleChange"
+      :limit="1"
+    >
+      <el-button type="primary">选择文件</el-button>
+    </el-upload>
+  </div>
+</template>
+
+<script setup lang="ts">
+import type { UploadFile } from 'element-plus'
+
+/**
+ * 文件变更时触发
+ */
+const handleChange = (file: UploadFile) => {
+  console.log('选择的文件：', file)
+}
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+📌 理论 & 关键点讲解
+
+1️⃣ `el-upload` 本质
+
+- 是一个 **文件选择 + 状态管理组件**
+- 是否真的上传，取决于你是否配置 `action`
+
+------
+
+2️⃣ `auto-upload="false"`
+
+- 只选择文件
+- 上传动作交给你自己（常见于表单提交）
+
+------
+
+## 16.2 图片上传 + 预览（⭐ 极高频）
+
+🎯 目标效果
+
+- 只能上传图片
+- 显示缩略图
+- 支持预览
+
+------
+
+完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>图片上传 + 预览</h2>
+
+    <el-upload
+      action="#"
+      list-type="picture-card"
+      :auto-upload="false"
+      :on-preview="handlePreview"
+    >
+      <el-icon><Plus /></el-icon>
+    </el-upload>
+
+    <el-dialog v-model="previewVisible" title="图片预览">
+      <img :src="previewUrl" class="preview-img" />
+    </el-dialog>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Plus } from '@element-plus/icons-vue'
+import type { UploadFile } from 'element-plus'
+
+const previewVisible = ref(false)
+const previewUrl = ref('')
+
+/**
+ * 点击预览
+ */
+const handlePreview = (file: UploadFile) => {
+  previewUrl.value = file.url!
+  previewVisible.value = true
+}
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+
+.preview-img {
+  width: 100%;
+}
+</style>
+```
+
+------
+
+📌 关键参数说明
+
+| 参数                       | 作用                 |
+| -------------------------- | -------------------- |
+| `list-type="picture-card"` | 图片卡片模式         |
+| `on-preview`               | 点击图片回调         |
+| `file.url`                 | 图片地址（后端返回） |
+
+------
+
+## 16.3 拖拽上传（Drag）
+
+🎯 目标效果
+
+- 支持拖拽
+- 批量上传
+- 大文件常用
+
+------
+
+完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>拖拽上传</h2>
+
+    <el-upload
+      drag
+      action="#"
+      multiple
+      :auto-upload="false"
+    >
+      <el-icon class="upload-icon"><UploadFilled /></el-icon>
+      <div class="el-upload__text">
+        将文件拖到此处，或 <em>点击上传</em>
+      </div>
+    </el-upload>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { UploadFilled } from '@element-plus/icons-vue'
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+
+.upload-icon {
+  font-size: 40px;
+  color: #409eff;
+}
+</style>
+```
+
+------
+
+📌 使用场景
+
+- 附件上传
+- 文档 / 压缩包
+- 多文件业务
+
+------
+
+## 16.4 Upload + 表单联动（⭐ 真实项目）
+
+🎯 目标效果
+
+- Upload 作为表单字段
+- 校验是否上传
+- 提交时统一处理
+
+------
+
+完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>Upload + Form 联动</h2>
+
+    <el-form
+      ref="formRef"
+      :model="form"
+      :rules="rules"
+      label-width="80px"
+    >
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="form.name" />
+      </el-form-item>
+
+      <el-form-item label="附件" prop="file">
+        <el-upload
+          :auto-upload="false"
+          :limit="1"
+          :on-change="handleFileChange"
+        >
+          <el-button>选择文件</el-button>
+        </el-upload>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="submit">
+          提交
+        </el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import type { FormInstance, UploadFile } from 'element-plus'
+
+const formRef = ref<FormInstance>()
+
+const form = ref({
+  name: '',
+  file: null as UploadFile | null
+})
+
+const rules = {
+  name: [{ required: true, message: '请输入名称' }],
+  file: [{ required: true, message: '请上传文件' }]
+}
+
+/**
+ * 选择文件
+ */
+const handleFileChange = (file: UploadFile) => {
+  form.value.file = file
+}
+
+/**
+ * 提交表单
+ */
+const submit = () => {
+  formRef.value?.validate(valid => {
+    if (!valid) return
+    console.log('表单数据：', form.value)
+  })
+}
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+📌 核心思想（非常重要）
+
+- Upload **不负责业务数据**
+- 表单中只保存：
+  - file
+  - fileId
+  - fileUrl
+- 提交时统一处理
+
+------
+
+## 16.5 常见坑 & 注意事项（必看）
+
+⚠️ 坑 1：直接依赖 Upload 内部状态
+
+❌ 不推荐：
+
+```ts
+uploadRef.value.fileList
+```
+
+✅ 推荐：
+
+```ts
+form.file
+```
+
+------
+
+⚠️ 坑 2：Upload 当成自动提交组件
+
+- 大多数后台项目：
+  - **都是表单提交时再上传**
+  - 而不是选完立刻传
+
+------
+
+⚠️ 坑 3：图片预览 url 为空
+
+- 本地文件需要 `URL.createObjectURL`
+- 后端文件需要返回 url
+
+------
 
 ## 17. Tree / Cascader（权限 & 组织结构）
