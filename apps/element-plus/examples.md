@@ -4381,7 +4381,7 @@ function toRoute(name: string) {
 
 ------
 
-# ## X. Icon 图标（Element Plus）
+## ## X. Icon 图标（Element Plus）
 
 > Icon 是后台系统中**使用频率极高但最容易写乱**的部分
 > 本章只讲 **项目中真正常用、可维护、可扩展的用法**
@@ -4725,11 +4725,6 @@ const tableData = [
 
 ------
 
-好，这一节我**严格按你给的 Layout 示例格式来**，不再跑偏👇
-**目标明确、完整 App.vue、代码优先、理论只解释关键点**。
-
-------
-
 ## Upload 上传（文件 / 图片 / 预览 / 拖拽 / 表单联动）
 
 > Upload 是后台系统里**坑最多、组合最多**的组件之一
@@ -4756,10 +4751,11 @@ const tableData = [
     <h2>基础文件上传</h2>
 
     <el-upload
-      class="upload-demo"
-      :auto-upload="false"
-      :on-change="handleChange"
-      :limit="1"
+        class="upload-demo"
+        :auto-upload="false"
+        :on-change="handleChange"
+        :on-remove="handleRemove"
+        :limit="1"
     >
       <el-button type="primary">选择文件</el-button>
     </el-upload>
@@ -4768,12 +4764,23 @@ const tableData = [
 
 <script setup lang="ts">
 import type { UploadFile } from 'element-plus'
+import {ref} from "vue";
+
+const uploadFile = ref<UploadFile | null>(null);
 
 /**
  * 文件变更时触发
  */
 const handleChange = (file: UploadFile) => {
   console.log('选择的文件：', file)
+  uploadFile.value = file
+}
+/**
+ * 删除文件时
+ */
+const handleRemove = (file: UploadFile) => {
+  console.log('删除的文件：', file)
+  uploadFile.value = null
 }
 </script>
 
@@ -4892,10 +4899,12 @@ const handlePreview = (file: UploadFile) => {
     <h2>拖拽上传</h2>
 
     <el-upload
-      drag
-      action="#"
-      multiple
-      :auto-upload="false"
+        drag
+        action="#"
+        multiple
+        :auto-upload="false"
+        :on-change="handleChange"
+        :on-remove="handleRemove"
     >
       <el-icon class="upload-icon"><UploadFilled /></el-icon>
       <div class="el-upload__text">
@@ -4906,19 +4915,33 @@ const handlePreview = (file: UploadFile) => {
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { UploadFilled } from '@element-plus/icons-vue'
+import type { UploadFile, UploadFiles } from 'element-plus'
+
+/**
+ * 存储所有已选择的文件
+ */
+const uploadFiles = ref<UploadFiles>([])
+
+/**
+ * 文件变化时
+ */
+const handleChange = (_file: UploadFile, files: UploadFiles) => {
+  console.log('选择的文件：', _file)
+  console.log('文件列表：', files)
+  uploadFiles.value = files
+}
+
+/**
+ * 删除文件时
+ */
+const handleRemove = (_file: UploadFile, files: UploadFiles) => {
+  console.log('删除的文件：', _file)
+  console.log('文件列表：', files)
+  uploadFiles.value = files
+}
 </script>
-
-<style scoped>
-.page {
-  padding: 20px;
-}
-
-.upload-icon {
-  font-size: 40px;
-  color: #409eff;
-}
-</style>
 ```
 
 ------
@@ -4930,6 +4953,109 @@ import { UploadFilled } from '@element-plus/icons-vue'
 - 多文件业务
 
 ------
+
+## 16.6 上传限制
+
+**单文件上传**
+
+**场景**：只允许 **1 个 JPG / PNG，≤ 2MB**
+
+```vue
+<template>
+  <el-upload
+    action="#"
+    :auto-upload="false"
+    :limit="1"
+    accept=".jpg,.jpeg,.png"
+    list-type="text"
+    :on-change="handleChange"
+    :on-exceed="handleExceed"
+  >
+    <el-button type="primary">选择图片</el-button>
+  </el-upload>
+</template>
+
+<script setup lang="ts">
+import type { UploadFile, UploadFiles } from 'element-plus'
+import { ElMessage } from 'element-plus'
+
+const MAX_SIZE = 2 * 1024 * 1024
+const ALLOW_TYPES = ['image/jpeg', 'image/png']
+
+const handleChange = (file: UploadFile, fileList: UploadFiles) => {
+  const rawFile = file.raw
+  if (!rawFile) {
+    return
+  }
+
+  if (!ALLOW_TYPES.includes(rawFile.type)) {
+    ElMessage.error('仅支持 JPG / PNG 格式')
+    fileList.splice(fileList.indexOf(file), 1)
+    return
+  }
+
+  if (rawFile.size > MAX_SIZE) {
+    ElMessage.error('文件大小不能超过 2MB')
+    fileList.splice(fileList.indexOf(file), 1)
+  }
+}
+
+const handleExceed = () => {
+  ElMessage.warning('只能上传一个文件')
+}
+</script>
+```
+
+**多文件上传**
+
+**场景**：最多 **5 个文件**，JPG / PNG，每个 ≤ 2MB
+
+```vue
+<template>
+  <el-upload
+    action="#"
+    multiple
+    :auto-upload="false"
+    :limit="5"
+    accept=".jpg,.jpeg,.png"
+    list-type="text"
+    :on-change="handleChange"
+    :on-exceed="handleExceed"
+  >
+    <el-button type="primary">选择图片</el-button>
+  </el-upload>
+</template>
+
+<script setup lang="ts">
+import type { UploadFile, UploadFiles } from 'element-plus'
+import { ElMessage } from 'element-plus'
+
+const MAX_SIZE = 2 * 1024 * 1024
+const ALLOW_TYPES = ['image/jpeg', 'image/png']
+
+const handleChange = (file: UploadFile, fileList: UploadFiles) => {
+  const rawFile = file.raw
+  if (!rawFile) {
+    return
+  }
+
+  if (!ALLOW_TYPES.includes(rawFile.type)) {
+    ElMessage.error(`文件 ${rawFile.name} 类型不支持`)
+    fileList.splice(fileList.indexOf(file), 1)
+    return
+  }
+
+  if (rawFile.size > MAX_SIZE) {
+    ElMessage.error(`文件 ${rawFile.name} 超过 2MB`)
+    fileList.splice(fileList.indexOf(file), 1)
+  }
+}
+
+const handleExceed = (files: File[]) => {
+  ElMessage.warning(`最多只能上传 5 个文件，本次选择了 ${files.length} 个`)
+}
+</script>
+```
 
 ## 16.4 Upload + 表单联动（⭐ 真实项目）
 
@@ -5031,6 +5157,220 @@ const submit = () => {
 
 ------
 
+## 上传到服务器
+
+**自动上传**
+
+> **选择文件 → 校验 → 自动上传**
+
+适合场景
+
+- 表单中上传头像 / 附件
+- 不需要“确认按钮”
+- 用户体验最顺
+
+```vue
+<template>
+  <el-upload
+    action="/api/upload/image"
+    :limit="1"
+    accept=".jpg,.jpeg,.png"
+    list-type="picture-card"
+    :before-upload="beforeUpload"
+    :on-success="handleSuccess"
+    :on-error="handleError"
+    :on-exceed="handleExceed"
+  >
+    <el-icon><Plus /></el-icon>
+  </el-upload>
+</template>
+
+<script setup lang="ts">
+import { ElMessage } from 'element-plus'
+
+const MAX_SIZE = 2 * 1024 * 1024
+const ALLOW_TYPES = ['image/jpeg', 'image/png']
+
+const beforeUpload = (file: File) => {
+  if (!ALLOW_TYPES.includes(file.type)) {
+    ElMessage.error('仅支持 JPG / PNG 格式')
+    return false
+  }
+
+  if (file.size > MAX_SIZE) {
+    ElMessage.error('文件大小不能超过 2MB')
+    return false
+  }
+
+  return true
+}
+
+const handleSuccess = (response: any) => {
+  ElMessage.success('上传成功')
+  console.log('后端返回：', response)
+}
+
+const handleError = () => {
+  ElMessage.error('上传失败')
+}
+
+const handleExceed = () => {
+  ElMessage.warning('只能上传一个文件')
+}
+</script>
+```
+
+后端接口参考
+
+```java
+package local.ateng.java.config.controller;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/file")
+@CrossOrigin
+public class FileController {
+
+    @PostMapping("/upload")
+    public Map<String, Object> upload(@RequestParam("file") MultipartFile file) throws IOException {
+
+        String fileName = UUID.randomUUID().toString().replace("-", "")
+                + "_" + file.getOriginalFilename();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("name", file.getOriginalFilename());
+        result.put("url", "/upload/" + fileName);
+        result.put("createTime", LocalDateTime.now());
+
+        return result;
+    }
+}
+```
+
+**手动上传**
+
+> **先选文件 → 校验 → 点击按钮再上传**
+
+适合场景
+
+- 表单 + 多个字段一起提交
+- “保存 / 提交” 按钮
+- 多文件统一上传
+
+```vue
+<template>
+  <el-upload
+      ref="uploadRef"
+      :auto-upload="false"
+      multiple
+      :limit="5"
+      list-type="text"
+      accept=".jpg,.jpeg,.png"
+      :on-change="handleChange"
+      :http-request="mockRequest"
+      :on-success="handleSuccess"
+      :on-error="handleError"
+  >
+    <el-button type="primary">选择文件</el-button>
+  </el-upload>
+
+  <el-button
+      type="success"
+      class="mt-2"
+      @click="submitUpload"
+  >
+    开始上传（模拟）
+  </el-button>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import type {
+  UploadInstance,
+  UploadFile,
+  UploadFiles,
+  UploadRequestOptions
+} from 'element-plus'
+import { ElMessage } from 'element-plus'
+
+const uploadRef = ref<UploadInstance>()
+
+const MAX_SIZE = 2 * 1024 * 1024
+const ALLOW_TYPES = ['image/jpeg', 'image/png']
+
+/**
+ * 选择阶段校验
+ */
+const handleChange = (file: UploadFile, fileList: UploadFiles) => {
+  const raw = file.raw
+  if (!raw) {
+    return
+  }
+
+  if (!ALLOW_TYPES.includes(raw.type)) {
+    ElMessage.error(`文件 ${raw.name} 类型不支持`)
+    fileList.splice(fileList.indexOf(file), 1)
+    return
+  }
+
+  if (raw.size > MAX_SIZE) {
+    ElMessage.error(`文件 ${raw.name} 超过 2MB`)
+    fileList.splice(fileList.indexOf(file), 1)
+  }
+}
+
+/**
+ * 模拟上传请求（不走后端）
+ */
+const mockRequest = (options: UploadRequestOptions) => {
+  const { file, onSuccess, onError } = options
+
+  setTimeout(() => {
+    if (file.size > 0) {
+      onSuccess?.({
+        url: URL.createObjectURL(file),
+        name: file.name
+      })
+    } else {
+      onError?.({
+        name: 'UploadError',
+        message: 'mock upload error'
+      } as any)
+    }
+  }, 1000)
+}
+
+/**
+ * 上传成功回调
+ */
+const handleSuccess = (_: any, file: UploadFile) => {
+  ElMessage.success(`文件 ${file.name} 上传成功`)
+}
+
+/**
+ * 上传失败回调
+ */
+const handleError = () => {
+  ElMessage.error('上传失败')
+}
+
+/**
+ * 手动触发上传
+ */
+const submitUpload = () => {
+  uploadRef.value?.submit()
+}
+</script>
+```
+
 ## 16.5 常见坑 & 注意事项（必看）
 
 ⚠️ 坑 1：直接依赖 Upload 内部状态
@@ -5064,4 +5404,1031 @@ form.file
 
 ------
 
-## 17. Tree / Cascader（权限 & 组织结构）
+## Tree 树形控件（权限 / 组织结构 / 菜单）
+
+> **Tree 是后台系统里最容易写“能跑但不可用”的组件**
+> 下面所有示例都来自 **真实项目写法**，不是 API Demo。
+
+------
+
+## 1. 基础 Tree（展示 + 展开）
+
+🎯 使用场景
+
+- 组织结构展示
+- 菜单预览
+- 分类浏览（只读）
+
+------
+
+✅ 完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>基础 Tree</h2>
+
+    <el-tree
+      :data="treeData"
+      :props="treeProps"
+      default-expand-all
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+/**
+ * Tree 字段映射
+ */
+const treeProps = {
+  label: 'name',
+  children: 'children',
+}
+
+/**
+ * 树数据（通常来自后端）
+ */
+const treeData = [
+  {
+    id: 1,
+    name: '总部',
+    children: [
+      { id: 11, name: '技术部' },
+      { id: 12, name: '市场部' },
+    ],
+  },
+]
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+📌 关键点
+
+- `default-expand-all`
+  👉 **仅适合节点不多的情况**
+- 不写 `node-key`
+  👉 **只能展示，不能操作**
+
+------
+
+## 2. 复选 Tree（权限分配核心）
+
+🎯 使用场景
+
+- 角色权限
+- 菜单勾选
+- 功能授权
+
+------
+
+✅ 完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>权限 Tree（多选）</h2>
+
+    <el-tree
+      ref="treeRef"
+      :data="treeData"
+      show-checkbox
+      node-key="id"
+      default-expand-all
+      :props="treeProps"
+    />
+
+    <el-button type="primary" @click="getChecked">
+      获取选中节点
+    </el-button>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import type { ElTree } from 'element-plus'
+
+const treeRef = ref<InstanceType<typeof ElTree>>()
+
+const treeProps = {
+  label: 'name',
+  children: 'children',
+}
+
+const treeData = [
+  {
+    id: 1,
+    name: '系统管理',
+    children: [
+      { id: 11, name: '用户管理' },
+      { id: 12, name: '角色管理' },
+    ],
+  },
+]
+
+/**
+ * 获取勾选节点（提交给后端）
+ */
+const getChecked = () => {
+  const checked = treeRef.value?.getCheckedKeys()
+  const halfChecked = treeRef.value?.getHalfCheckedKeys()
+
+  console.log('全选：', checked)
+  console.log('半选：', halfChecked)
+}
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+📌 必背 API
+
+| 方法                   | 说明             |
+| ---------------------- | ---------------- |
+| `getCheckedKeys()`     | 完全选中         |
+| `getHalfCheckedKeys()` | 半选（权限核心） |
+| `node-key`             | **必须有**       |
+
+------
+
+## 3. 默认回显（编辑必用）
+
+🎯 使用场景
+
+- 编辑角色
+- 修改权限
+- 回显已选菜单
+
+------
+
+✅ 完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>Tree 回显选中</h2>
+
+    <el-tree
+      ref="treeRef"
+      :data="treeData"
+      show-checkbox
+      node-key="id"
+      default-expand-all
+      :props="treeProps"
+    />
+
+    <el-button @click="setChecked">
+      回显权限
+    </el-button>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, nextTick } from 'vue'
+import type { ElTree } from 'element-plus'
+
+const treeRef = ref<InstanceType<typeof ElTree>>()
+
+const treeProps = {
+  label: 'name',
+  children: 'children',
+}
+
+const treeData = [
+  {
+    id: 1,
+    name: '系统管理',
+    children: [
+      { id: 11, name: '用户管理' },
+      { id: 12, name: '角色管理' },
+    ],
+  },
+]
+
+/**
+ * 设置选中（编辑回显）
+ */
+const setChecked = async () => {
+  await nextTick()
+  treeRef.value?.setCheckedKeys([12])
+}
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+⚠️ 真实项目坑点
+
+- **必须 `nextTick`**
+- **必须先渲染 Tree**
+- 否则：`setCheckedKeys` 无效
+
+------
+
+## 4. Tree + Dialog（真实业务形态）
+
+🎯 使用场景
+
+- 弹窗分配权限
+- 避免页面跳转
+- 状态隔离
+
+------
+
+✅ 完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <el-button type="primary" @click="open">
+      分配权限
+    </el-button>
+
+    <el-dialog
+      v-model="visible"
+      title="权限配置"
+      width="600px"
+      destroy-on-close
+    >
+      <el-tree
+        ref="treeRef"
+        :data="treeData"
+        show-checkbox
+        node-key="id"
+        default-expand-all
+        :props="treeProps"
+      />
+
+      <template #footer>
+        <el-button @click="visible = false">取消</el-button>
+        <el-button type="primary" @click="submit">
+          保存
+        </el-button>
+      </template>
+    </el-dialog>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, nextTick } from 'vue'
+import type { ElTree } from 'element-plus'
+
+const visible = ref(false)
+const treeRef = ref<InstanceType<typeof ElTree>>()
+
+const treeProps = {
+  label: 'name',
+  children: 'children',
+}
+
+const treeData = [
+  {
+    id: 1,
+    name: '系统管理',
+    children: [
+      { id: 11, name: '用户管理' },
+      { id: 12, name: '角色管理' },
+    ],
+  },
+]
+
+const open = async () => {
+  visible.value = true
+  await nextTick()
+  treeRef.value?.setCheckedKeys([11])
+}
+
+const submit = () => {
+  const keys = treeRef.value?.getCheckedKeys()
+  console.log('提交权限：', keys)
+  visible.value = false
+}
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+📌 为什么一定要 `destroy-on-close`
+
+- 避免上一次勾选残留
+- 编辑 / 新增状态完全隔离
+- **权限 Tree 必开**
+
+------
+
+## 5. Tree 常用配置速查（项目级）
+
+```vue
+<el-tree
+  node-key="id"
+  show-checkbox
+  default-expand-all
+  highlight-current
+  check-strictly
+/>
+```
+
+| 配置                | 说明         |
+| ------------------- | ------------ |
+| `highlight-current` | 高亮当前节点 |
+| `check-strictly`    | 父子不联动   |
+| `show-checkbox`     | 多选         |
+| `node-key`          | 操作必备     |
+
+------
+
+## 6. 懒加载 Tree（大数据量必用）
+
+> **Tree 节点一多，不懒加载 = 卡死页面**
+
+🎯 使用场景
+
+* 组织架构（上万节点）
+* 省 / 市 / 区 级联
+* 菜单树（后端按层级查）
+
+---
+
+✅ 完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>懒加载 Tree</h2>
+
+    <el-tree
+        :props="treeProps"
+        node-key="id"
+        lazy
+        :load="loadNode"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+
+const treeProps = {
+  label: 'name',
+  children: 'children',
+  isLeaf: 'leaf',
+}
+
+/**
+ * 懒加载节点
+ */
+interface TreeNodeData {
+  id: number | string
+  name: string
+  leaf?: boolean
+}
+
+interface LazyTreeNode {
+  level: number
+  data: TreeNodeData
+}
+
+const loadNode = (
+    node: LazyTreeNode,
+    resolve: (data: TreeNodeData[]) => void,
+) => {
+  console.log(node)
+  if (node.level === 0) {
+    resolve([{ id: 1, name: '总部', leaf: false }])
+    return
+  }
+
+  resolve([
+    { id: `${node.data.id}-1`, name: '子部门A', leaf: true },
+    { id: `${node.data.id}-2`, name: '子部门B', leaf: true },
+  ])
+}
+
+</script>
+```
+
+---
+
+📌 核心认知
+
+* **`lazy + load` 是一套**
+* `leaf` 决定是否还能展开
+* 不要 `default-expand-all` ❌（会失效）
+
+---
+
+## 7. Tree 勾选规则控制（权限最容易出 Bug）
+
+> **90% 的权限 Bug 都是「勾选规则没想清楚」**
+
+---
+
+### 7.1 父子不联动（按钮级权限）
+
+```vue
+<el-tree
+  show-checkbox
+  node-key="id"
+  check-strictly
+/>
+```
+
+🎯 场景
+
+* 页面权限 + 按钮权限
+* 勾选按钮 ≠ 勾选页面
+
+---
+
+### 7.2 禁用某些节点（只读权限）
+
+```vue
+const treeProps = {
+  label: 'name',
+  children: 'children',
+  disabled: (data: any) => data.disabled === true,
+}
+```
+
+```js
+{
+  id: 1,
+  name: '系统管理',
+  disabled: true,
+}
+```
+
+📌 **后端字段直透 Tree 是最稳的做法**
+
+---
+
+## 8. Tree 搜索 / 过滤（组织 & 菜单必备）
+
+🎯 使用场景
+
+* 快速定位用户 / 菜单
+* 组织结构太深
+
+---
+
+✅ 完整示例
+
+```vue
+<template>
+  <el-input
+      v-model="keyword"
+      placeholder="输入关键字过滤"
+  />
+
+  <el-tree
+      ref="treeRef"
+      :data="treeData"
+      node-key="id"
+      :props="treeProps"
+      :filter-node-method="filterNode"
+  />
+</template>
+
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import type { ElTree } from 'element-plus'
+
+const treeRef = ref<InstanceType<typeof ElTree>>()
+const keyword = ref('')
+
+const treeProps = {
+  label: 'name',
+  children: 'children',
+}
+
+const treeData = [
+  {
+    id: 1,
+    name: '系统管理',
+    children: [
+      { id: 11, name: '用户管理' },
+      { id: 12, name: '角色管理' },
+    ],
+  },
+]
+
+const filterNode = (value: string, data: any) => {
+  if (!value) return true
+  return data.name.includes(value)
+}
+
+watch(keyword, (val) => {
+  treeRef.value?.filter(val)
+})
+</script>
+```
+
+---
+
+⚠️ 项目坑点
+
+* **只过滤显示，不会改数据**
+* 搜索 ≠ 勾选（要单独处理）
+
+---
+
+## 9. Tree 与 Table / 表单联动（高频实战）
+
+🎯 使用场景
+
+* 左 Tree，右 Table
+* 点击部门 → 查询用户
+
+---
+
+```vue
+<el-tree
+  :data="deptTree"
+  node-key="id"
+  @node-click="handleSelect"
+/>
+```
+
+```ts
+const handleSelect = (node: any) => {
+  searchForm.deptId = node.id
+  loadTable()
+}
+```
+
+📌 **Tree 永远只做「条件选择器」**
+
+---
+
+## 10. Tree 状态重置（编辑 / 新增必备）
+
+> **Tree 最大的坑：状态残留**
+
+---
+
+正确做法（3 选 1）
+
+✅ 方案一：`destroy-on-close`（你已经写了）
+
+✅ 方案二：手动清空
+
+```ts
+treeRef.value?.setCheckedKeys([])
+```
+
+✅ 方案三：key 强制刷新
+
+```vue
+<el-tree :key="treeKey" />
+```
+
+```ts
+treeKey.value++
+```
+
+# Cascader 级联选择器（区域 / 组织 / 表单联动）
+
+> **Cascader ≠ 下拉框**
+> 它解决的是：**层级关系 + 选择约束 + 数据联动**
+
+------
+
+## 1. 基础 Cascader（展示 + 选择）
+
+🎯 使用场景
+
+- 省 / 市 / 区
+- 分类层级选择
+- 简单组织结构
+
+------
+
+✅ 完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>基础 Cascader</h2>
+
+    <el-cascader
+      v-model="value"
+      :options="options"
+      placeholder="请选择地区"
+      clearable
+    />
+
+    <p>选中值：{{ value }}</p>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+/**
+ * 选中的路径值
+ * 示例：['zhejiang', 'hangzhou', 'xihu']
+ */
+const value = ref<string[]>([])
+
+/**
+ * 级联数据
+ */
+const options = [
+  {
+    value: 'zhejiang',
+    label: '浙江省',
+    children: [
+      {
+        value: 'hangzhou',
+        label: '杭州市',
+        children: [
+          { value: 'xihu', label: '西湖区' },
+        ],
+      },
+    ],
+  },
+]
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+📌 参数说明
+
+| 参数          | 说明             |
+| ------------- | ---------------- |
+| `v-model`     | **完整路径数组** |
+| `options`     | 树形数据         |
+| `clearable`   | 高频必开         |
+| `placeholder` | UX 必备          |
+
+------
+
+## 2. 只返回最后一级（表单最常用）
+
+🎯 使用场景
+
+- 后端只要 `districtId`
+- 表单提交
+- 搜索条件
+
+------
+
+✅ 完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>只返回最后一级</h2>
+
+    <el-cascader
+      v-model="value"
+      :options="options"
+      :props="{ emitPath: false }"
+      clearable
+    />
+
+    <p>选中值：{{ value }}</p>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+/**
+ * 只返回末级
+ */
+const value = ref<string | null>(null)
+
+const options = [
+  {
+    value: 'dept1',
+    label: '总部',
+    children: [
+      { value: 'dept11', label: '技术部' },
+      { value: 'dept12', label: '市场部' },
+    ],
+  },
+]
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+📌 核心配置
+
+```ts
+:props="{ emitPath: false }"
+```
+
+👉 **99% 表单都该开这个**
+
+------
+
+## 3. 禁止选择非叶子节点（真实业务）
+
+🎯 使用场景
+
+- 只能选最底层部门
+- 只能选区县，不能选省市
+
+------
+
+✅ 完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>仅允许选择叶子节点</h2>
+
+    <el-cascader
+      v-model="value"
+      :options="options"
+      :props="cascaderProps"
+      clearable
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const value = ref<string | null>(null)
+
+const cascaderProps = {
+  emitPath: false,
+  checkStrictly: false, // 默认
+}
+
+const options = [
+  {
+    value: 'a',
+    label: '一级',
+    children: [
+      {
+        value: 'a-1',
+        label: '二级',
+        children: [
+          { value: 'a-1-1', label: '三级' },
+        ],
+      },
+    ],
+  },
+]
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+⚠️ 注意
+
+- **不要开启 `checkStrictly: true`**
+- 否则父节点也可选 ❌
+
+------
+
+## 4. 可搜索 Cascader（数据多必用）
+
+🎯 使用场景
+
+- 城市数据
+- 大组织树
+- 字典级联
+
+------
+
+✅ 完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>可搜索 Cascader</h2>
+
+    <el-cascader
+      v-model="value"
+      :options="options"
+      filterable
+      clearable
+      placeholder="搜索部门"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const value = ref<string[]>([])
+
+const options = [
+  {
+    value: 'root',
+    label: '总部',
+    children: [
+      { value: 'dev', label: '研发部' },
+      { value: 'hr', label: '人事部' },
+    ],
+  },
+]
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+📌 真实体验
+
+- **搜索的是 label**
+- 自动展开路径
+- 极大提升 UX
+
+------
+
+## 5. 动态加载（懒加载，接口必备）
+
+🎯 使用场景
+
+- 全国城市
+- 超大组织架构
+- 接口分页加载
+
+------
+
+✅ 完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>懒加载 Cascader</h2>
+
+    <el-cascader
+      v-model="value"
+      :props="cascaderProps"
+      clearable
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const value = ref<string[]>([])
+
+const cascaderProps = {
+  lazy: true,
+  emitPath: false,
+  lazyLoad(node: any, resolve: any) {
+    const { level } = node
+
+    setTimeout(() => {
+      if (level === 0) {
+        resolve([
+          { value: 'zj', label: '浙江省', leaf: false },
+        ])
+      } else {
+        resolve([
+          { value: 'hz', label: '杭州市', leaf: true },
+        ])
+      }
+    }, 500)
+  },
+}
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+📌 接口对接要点
+
+- `leaf: true` **必须返回**
+- `resolve` 一定要调用
+- 常配合 Loading
+
+------
+
+## 6. Cascader + Form（高频组合）
+
+🎯 使用场景
+
+- 搜索表单
+- 新增 / 编辑页
+- 校验联动
+
+------
+
+✅ 完整示例（App.vue）
+
+```vue
+<template>
+  <el-form :model="form" label-width="100px">
+    <el-form-item label="所属部门" prop="deptId">
+      <el-cascader
+        v-model="form.deptId"
+        :options="options"
+        :props="{ emitPath: false }"
+        clearable
+      />
+    </el-form-item>
+  </el-form>
+</template>
+
+<script setup lang="ts">
+import { reactive } from 'vue'
+
+const form = reactive({
+  deptId: null as string | null,
+})
+
+const options = [
+  {
+    value: '1',
+    label: '总部',
+    children: [
+      { value: '11', label: '研发部' },
+    ],
+  },
+]
+</script>
+```
+
+------
+
+⚠️ 表单常见坑
+
+- `emitPath` 不关 → 后端接收数组 ❌
+- 编辑页需回显单值
+- 校验写在 `el-form-item`
+
+------
+
+## 7. Cascader 项目级配置速查
+
+```ts
+:props="{
+  emitPath: false,
+  lazy: true,
+  checkStrictly: false
+}"
+```
+
+| 场景   | 推荐              |
+| ------ | ----------------- |
+| 表单   | `emitPath: false` |
+| 数据多 | `lazy: true`      |
+| 禁父选 | 默认即可          |
+
+------
+
+
+
