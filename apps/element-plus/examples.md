@@ -8,7 +8,7 @@
 
 ## 1.1 基本页面结构（Header 固定 + Main 滚动）
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 页面 **高度撑满整个视口**
 - Header 固定在顶部
@@ -17,7 +17,7 @@
 
 ------
 
-### ✅ App.vue 完整示例（可直接用）
+完整示例
 
 ```vue
 <template>
@@ -85,9 +85,9 @@
 
 ------
 
-### 📌 理论 & 关键点讲解
+📌 理论 & 关键点讲解
 
-#### 1️⃣ `el-container`
+1️⃣ `el-container`
 
 - 本质是一个 **flex 容器**
 - **默认是纵向布局**
@@ -101,7 +101,7 @@ height: 100vh;
 
 ------
 
-#### 2️⃣ `el-header / el-footer`
+2️⃣ `el-header / el-footer`
 
 - 默认是 `flex: 0 0 auto`
 - 高度建议**自己明确写死**
@@ -112,7 +112,7 @@ height: 100vh;
 
 ------
 
-#### 3️⃣ `el-main`（最容易踩坑）
+3️⃣ `el-main`（最容易踩坑）
 
 - **不会自动滚动**
 - 必须显式加：
@@ -128,7 +128,7 @@ overflow: auto;
 
 ------
 
-### ⚠️ 常见错误
+⚠️ 常见错误
 
 | 错误                   | 结果         |
 | ---------------------- | ------------ |
@@ -144,7 +144,7 @@ overflow: auto;
 
 ------
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 左侧：菜单栏（Aside）
 - 右侧：Header + 内容
@@ -154,7 +154,7 @@ overflow: auto;
 
 ------
 
-### ✅ App.vue 完整示例（可直接用）
+完整示例
 
 ```vue
 <template>
@@ -240,9 +240,9 @@ const toggleCollapse = () => {
 
 ------
 
-### 📌 理论 & 参数说明
+📌 理论 & 参数说明
 
-#### 1️⃣ `el-aside`
+1️⃣ `el-aside`
 
 ```vue
 <el-aside :width="isCollapse ? '64px' : '200px'" />
@@ -258,7 +258,7 @@ const toggleCollapse = () => {
 
 ------
 
-#### 2️⃣ 折叠菜单的核心思想
+2️⃣ 折叠菜单的核心思想
 
 ```ts
 const isCollapse = ref(false)
@@ -272,7 +272,7 @@ const isCollapse = ref(false)
 
 ------
 
-#### 3️⃣ 为什么要再嵌套一个 `el-container`
+3️⃣ 为什么要再嵌套一个 `el-container`
 
 ```vue
 <el-container>
@@ -291,7 +291,7 @@ const isCollapse = ref(false)
 
 ------
 
-### ⚠️ 真实项目注意事项
+⚠️ 真实项目注意事项
 
 1. **Aside 一定要固定宽度**
 2. 折叠只做宽度变化，避免 `v-if`
@@ -309,7 +309,7 @@ const isCollapse = ref(false)
 
 ## 2.1 基础栅格
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 一行分成若干列
 - 列宽按比例分配
@@ -317,7 +317,7 @@ const isCollapse = ref(false)
 
 ------
 
-### ✅ App.vue 示例：基础栅格
+完整示例：基础栅格
 
 ```vue
 <template>
@@ -364,9 +364,9 @@ const isCollapse = ref(false)
 
 ------
 
-### 📌 理论讲解（非常关键）
+📌 理论讲解（非常关键）
 
-#### 1️⃣ `span` 是什么？
+1️⃣ `span` 是什么？
 
 ```vue
 <el-col :span="6" />
@@ -386,7 +386,7 @@ const isCollapse = ref(false)
 
 ------
 
-#### 2️⃣ `gutter` 是什么？
+2️⃣ `gutter` 是什么？
 
 ```vue
 <el-row :gutter="20" />
@@ -406,7 +406,7 @@ const isCollapse = ref(false)
 
 ------
 
-### ⚠️ 常见坑
+⚠️ 常见坑
 
 ❌ 在 `el-col` 上写 `margin`
 ❌ 忘记加 `gutter` 导致内容贴边
@@ -416,7 +416,7 @@ const isCollapse = ref(false)
 
 ## 2.2 响应式栅格
 
-### 🎯 目标效果
+🎯 目标效果
 
 - PC：一行多列
 - 平板：一行 2 列
@@ -424,7 +424,7 @@ const isCollapse = ref(false)
 
 ------
 
-### ✅ App.vue 示例：响应式布局
+完整示例：响应式布局
 
 ```vue
 <template>
@@ -492,7 +492,7 @@ const isCollapse = ref(false)
 
 ------
 
-### 📌 响应式参数说明
+📌 响应式参数说明
 
 | 参数 | 含义            |
 | ---- | --------------- |
@@ -510,7 +510,7 @@ const isCollapse = ref(false)
 
 ------
 
-### ✅ 实战建议（非常重要）
+✅ 实战建议（非常重要）
 
 - **后台系统可以不写 `xs`**
 - 搜索区、表单强烈建议写响应式
@@ -524,7 +524,7 @@ const isCollapse = ref(false)
 
 ------
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 一行 3~4 个查询条件
 - 最右侧：查询 / 重置按钮
@@ -533,7 +533,7 @@ const isCollapse = ref(false)
 
 ------
 
-### ✅ App.vue 示例：搜索区布局
+完整示例：搜索区布局
 
 ```vue
 <template>
@@ -600,9 +600,9 @@ const isCollapse = ref(false)
 
 ------
 
-### 📌 搜索布局核心思想（一定要记住）
+📌 搜索布局核心思想（一定要记住）
 
-#### 1️⃣ 一行 4 列的黄金比例
+1️⃣ 一行 4 列的黄金比例
 
 ```ts
 lg = 6   // 24 / 4 = 6
@@ -615,7 +615,7 @@ xs = 24  // 1 行 1 个
 
 ------
 
-#### 2️⃣ 为什么按钮单独一列？
+2️⃣ 为什么按钮单独一列？
 
 - 对齐好控制
 - 不受 label 宽度影响
@@ -623,7 +623,7 @@ xs = 24  // 1 行 1 个
 
 ------
 
-#### 3️⃣ 为什么按钮列要 `24`？
+3️⃣ 为什么按钮列要 `24`？
 
 ```vue
 :md="24"
@@ -635,7 +635,7 @@ xs = 24  // 1 行 1 个
 
 ------
 
-### ⚠️ 常见错误总结
+⚠️ 常见错误总结
 
 ❌ 所有列 span 写死
 ❌ 按钮和表单项混在一起
@@ -655,7 +655,7 @@ xs = 24  // 1 行 1 个
 
 ## 3.1 基础表单结构
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 新增 / 编辑表单
 - 有 label
@@ -664,7 +664,7 @@ xs = 24  // 1 行 1 个
 
 ------
 
-### ✅ App.vue 示例：基础表单
+完整示例：基础表单
 
 ```vue
 <template>
@@ -752,9 +752,9 @@ const resetForm = () => {
 
 ------
 
-### 📌 理论 & 参数说明
+📌 理论 & 参数说明
 
-#### 1️⃣ `:model`
+1️⃣ `:model`
 
 ```ts
 :form="form"
@@ -766,7 +766,7 @@ const resetForm = () => {
 
 ------
 
-#### 2️⃣ `label-width` & `label-position`
+2️⃣ `label-width` & `label-position`
 
 | 参数             | 含义                                             |
 | ---------------- | ------------------------------------------------ |
@@ -778,7 +778,7 @@ const resetForm = () => {
 
 ------
 
-#### 3️⃣ `el-form-item` & `prop`
+3️⃣ `el-form-item` & `prop`
 
 - `label` → 展示在左侧
 - `prop` → 用于表单校验 **对应字段**
@@ -788,7 +788,7 @@ const resetForm = () => {
 
 ## 3.2 表单校验（必用）
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 必填
 - 格式验证（邮箱、手机号）
@@ -797,7 +797,7 @@ const resetForm = () => {
 
 ------
 
-### ✅ App.vue 示例：表单校验
+完整示例：表单校验
 
 ```vue
 <template>
@@ -902,9 +902,9 @@ const resetForm = () => {
 
 ------
 
-### 📌 理论说明
+📌 理论说明
 
-#### 1️⃣ `:rules`
+1️⃣ `:rules`
 
 - 对象，键名 = form 属性名
 - 值 = 校验规则数组
@@ -915,7 +915,7 @@ const resetForm = () => {
   - `message`（提示）
   - `trigger`（触发事件）
 
-#### 2️⃣ `validate` 方法
+2️⃣ `validate` 方法
 
 ```ts
 formRef.value?.validate((valid) => { ... })
@@ -924,7 +924,7 @@ formRef.value?.validate((valid) => { ... })
 - 手动触发表单校验
 - 回调 `valid` = true / false
 
-#### 3️⃣ `resetFields` 方法
+3️⃣ `resetFields` 方法
 
 - 重置表单数据为初始值
 - 清除校验状态
@@ -933,14 +933,14 @@ formRef.value?.validate((valid) => { ... })
 
 ## 3.3 表单禁用 / 只读态
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 查看详情页用同一个表单
 - 禁止修改
 
 ------
 
-### ✅ 示例
+✅ 示例
 
 ```vue
 <el-form :model="form" :disabled="isDisabled" label-width="100px">
@@ -963,7 +963,7 @@ const isDisabled = ref(false)
 
 ------
 
-### 📌 理论说明
+📌 理论说明
 
 - `:disabled` 会**递归禁用**表单内的所有输入控件
 - 配合 **同一个表单组件**，可实现：
@@ -977,7 +977,7 @@ const isDisabled = ref(false)
 
 ## 4.1 el-input 基础使用
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 普通文本输入
 - 可清空
@@ -987,7 +987,7 @@ const isDisabled = ref(false)
 
 ------
 
-### ✅ App.vue 示例：基础 Input
+完整示例：基础 Input
 
 ```vue
 <template>
@@ -1048,31 +1048,31 @@ const form = reactive({
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ `v-model`
+1️⃣ `v-model`
 
 - 双向绑定输入框值到数据源
 - 输入改变时，`form.username` 自动更新
 - 是表单数据绑定的基础
 
-#### 2️⃣ `placeholder`
+2️⃣ `placeholder`
 
 - 提示用户输入内容
 - 不同于 `label`，只是灰色占位文字
 
-#### 3️⃣ `clearable`
+3️⃣ `clearable`
 
 - 显示小叉号，点击清空输入
 - 常用于搜索框 / 表单输入
 
-#### 4️⃣ `show-password`
+4️⃣ `show-password`
 
 - 仅对 `type="password"` 有效
 - 显示切换密码明文的小眼睛图标
 - 对安全登录表单非常实用
 
-#### 5️⃣ `maxlength / show-word-limit`
+5️⃣ `maxlength / show-word-limit`
 
 - 限制最大输入长度
 - `show-word-limit` 显示右下角文字计数
@@ -1082,7 +1082,7 @@ const form = reactive({
 
 ## 4.2 前后缀插槽
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 在输入框前后添加图标、文字或按钮
 - 高频场景：
@@ -1091,7 +1091,7 @@ const form = reactive({
 
 ------
 
-### ✅ App.vue 示例：前后缀
+完整示例：前后缀
 
 ```vue
 <template>
@@ -1145,15 +1145,15 @@ const clearEmail = () => {
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ 前缀 `#prefix`
+1️⃣ 前缀 `#prefix`
 
 - 显示在输入框最左侧
 - 可放图标 / 文本 / 组件
 - 常用场景：搜索图标、货币符号（¥）
 
-#### 2️⃣ 后缀 `#suffix`
+2️⃣ 后缀 `#suffix`
 
 - 显示在输入框最右侧
 - 可放按钮 / 清空 / 状态提示
@@ -1162,7 +1162,7 @@ const clearEmail = () => {
   - 输入验证状态（✔️ / ❌）
   - 日期选择按钮
 
-#### 3️⃣ 注意事项
+3️⃣ 注意事项
 
 - 插槽本身不会改变输入框的 `v-model`
 - 如果是按钮操作，需要手动操作数据
@@ -1174,7 +1174,7 @@ const clearEmail = () => {
 
 ## 5.1 el-select + el-option 基础使用
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 下拉选择
 - 可清空
@@ -1183,7 +1183,7 @@ const clearEmail = () => {
 
 ------
 
-### ✅ App.vue 示例：基础 Select
+完整示例：基础 Select
 
 ```vue
 <template>
@@ -1255,31 +1255,31 @@ const form = reactive({
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ `v-model`
+1️⃣ `v-model`
 
 - 双向绑定选择器的值
 - 对应 `el-option` 的 `value`
 - 必须是响应式对象（`reactive` / `ref`）
 
-#### 2️⃣ `placeholder`
+2️⃣ `placeholder`
 
 - 占位提示文字
 - 当 `v-model` 为空时显示
 
-#### 3️⃣ `clearable`
+3️⃣ `clearable`
 
 - 右侧出现小叉号，点击清空选择
 - 对于表单查询区非常常用
 
-#### 4️⃣ `filterable`
+4️⃣ `filterable`
 
 - 允许输入过滤选项
 - 对应后台搜索或字典选择非常实用
 - 文字匹配规则：包含搜索词即可
 
-#### 5️⃣ `disabled`
+5️⃣ `disabled`
 
 - 对单个选项禁用
 - 适合灰掉不可选的枚举值
@@ -1288,7 +1288,7 @@ const form = reactive({
 
 ## 5.2 常见业务场景
 
-### 1️⃣ 下拉字典（字典表 / 枚举）
+1️⃣ 下拉字典（字典表 / 枚举）
 
 ```ts
 const statusOptions = [
@@ -1309,7 +1309,7 @@ const statusOptions = [
 
 ------
 
-### 2️⃣ 枚举映射
+2️⃣ 枚举映射
 
 - 常见场景：接口返回 `status = 1 / 0`，前端显示“启用 / 禁用”
 - 结合 `v-for` 渲染
@@ -1334,7 +1334,7 @@ const roleEnum = {
 
 ------
 
-### 3️⃣ 禁用选项
+3️⃣ 禁用选项
 
 - 有些角色或状态不可选，用 `disabled` 控制
 
@@ -1348,7 +1348,7 @@ const roleEnum = {
 
 ------
 
-### 📌 实战注意事项
+📌 实战注意事项
 
 1. **动态数据必须保证 key 唯一**
 2. **filterable 下拉与 clearable 一起用非常顺手**
@@ -1362,7 +1362,7 @@ const roleEnum = {
 
 ## 6.1 单个时间选择
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 单个日期或日期时间选择
 - 可以自定义显示格式
@@ -1370,7 +1370,7 @@ const roleEnum = {
 
 ------
 
-### ✅ App.vue 示例：单日期 / 日期时间选择
+完整示例：单日期 / 日期时间选择
 
 ```vue
 <template>
@@ -1425,9 +1425,9 @@ const form = reactive({
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ `type`
+1️⃣ `type`
 
 - 常用类型：
   - `date` → 只选择日期
@@ -1437,7 +1437,7 @@ const form = reactive({
   - `week` → 周
 - 控制选择器 UI 和弹出控件
 
-#### 2️⃣ `format` & `value-format`
+2️⃣ `format` & `value-format`
 
 | 属性           | 含义                                            |
 | -------------- | ----------------------------------------------- |
@@ -1446,7 +1446,7 @@ const form = reactive({
 
 > ⚠️ 如果不写 `value-format`，`v-model` 默认是 `Date` 对象
 
-#### 3️⃣ `clearable`
+3️⃣ `clearable`
 
 - 右侧出现清空按钮
 - 常用在搜索条件里
@@ -1455,7 +1455,7 @@ const form = reactive({
 
 ## 6.2 时间范围选择（高频使用）
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 搜索区常用 “起止时间”
 - 支持快捷选择（今天 / 本周 / 最近7天）
@@ -1463,7 +1463,7 @@ const form = reactive({
 
 ------
 
-### ✅ App.vue 示例：时间范围选择
+完整示例：时间范围选择
 
 ```vue
 <template>
@@ -1538,20 +1538,20 @@ const shortcuts = [
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ `type="daterange" / "datetimerange"`
+1️⃣ `type="daterange" / "datetimerange"`
 
 - `daterange` → 选择日期区间
 - `datetimerange` → 选择日期 + 时间区间
 - `v-model` 绑定 **数组** `[start, end]`
 
-#### 2️⃣ `start-placeholder / end-placeholder`
+2️⃣ `start-placeholder / end-placeholder`
 
 - 分别控制开始、结束日期的占位文字
 - 搜索表单 UX 必须写清楚
 
-#### 3️⃣ `shortcuts`
+3️⃣ `shortcuts`
 
 - 自定义快捷选项按钮
 - `text` + `value`
@@ -1569,7 +1569,7 @@ const shortcuts = [
 
 ## 7.1 el-radio-group 单选
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 单选枚举
 - 可选带边框按钮
@@ -1577,7 +1577,7 @@ const shortcuts = [
 
 ------
 
-### ✅ App.vue 示例：Radio 单选
+完整示例：Radio 单选
 
 ```vue
 <template>
@@ -1624,19 +1624,19 @@ const form = reactive({
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ `v-model`
+1️⃣ `v-model`
 
 - 双向绑定选中值
 - `el-radio` 的 `label` 值对应 `v-model`
 
-#### 2️⃣ `border`
+2️⃣ `border`
 
 - 外观带边框按钮风格
 - 常用于状态 / 类型选择
 
-#### 3️⃣ 注意事项
+3️⃣ 注意事项
 
 - `el-radio-group` 必须有 `v-model`
 - 每个 `el-radio` 的 `label` 唯一
@@ -1646,7 +1646,7 @@ const form = reactive({
 
 ## 7.2 el-checkbox-group 多选
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 多选字段
 - 支持全选 / 反选
@@ -1654,7 +1654,7 @@ const form = reactive({
 
 ------
 
-### ✅ App.vue 示例：Checkbox 多选
+完整示例：Checkbox 多选
 
 ```vue
 <template>
@@ -1734,20 +1734,20 @@ const handleCheckedChange = (val: string[]) => {
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ `v-model`
+1️⃣ `v-model`
 
 - 多选绑定数组
 - 数组内元素 = 被选中的 `label`
 
-#### 2️⃣ 全选 / 反选逻辑
+2️⃣ 全选 / 反选逻辑
 
 - `indeterminate` → 半选状态
 - 单个选项变化时需要更新 `checkAll` 和 `indeterminate`
 - 常用于权限、标签列表
 
-#### 3️⃣ 注意事项
+3️⃣ 注意事项
 
 - `label` 唯一且对应 `v-model` 类型
 - 数组操作时保持响应式，使用 `reactive` 或 `ref`
@@ -1761,7 +1761,7 @@ const handleCheckedChange = (val: string[]) => {
 
 ## 8.1 基础表格
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 渲染表格数据
 - 带边框 / 斑马纹
@@ -1769,7 +1769,7 @@ const handleCheckedChange = (val: string[]) => {
 
 ------
 
-### ✅ App.vue 示例：基础表格
+完整示例：基础表格
 
 ```vue
 <template>
@@ -1812,7 +1812,7 @@ const tableData = reactive([
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
 1. **`:data`** → 表格数据数组
 2. **`border`** → 显示边框
@@ -1951,7 +1951,7 @@ const loading = ref(false)
 
 ## 9.1 基础分页
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 显示页码
 - 每页条数
@@ -1959,7 +1959,7 @@ const loading = ref(false)
 
 ------
 
-### ✅ App.vue 示例：基础分页
+完整示例：基础分页
 
 ```vue
 <template>
@@ -1994,7 +1994,7 @@ const total = ref(95) // 总条数
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
 1. **`current-page` / `v-model:current-page`**
    - 当前页码
@@ -2043,7 +2043,7 @@ const fetchTableData = () => {
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
 1. **`@current-change`** → 页码改变时触发
 2. **`@size-change`** → 每页条数改变时触发
@@ -2177,7 +2177,7 @@ fetchTableData()
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
 1. **搜索 + 分页**
    - 搜索条件改变时 → `currentPage = 1`
@@ -2378,7 +2378,7 @@ fetchTableData()
 </style>
 ```
 
-### 📌 理论讲解
+📌 理论讲解
 
 1. **为什么默认不支持跨页选择**
    - `el-table` 的选中状态只和当前 `data` 绑定
@@ -2406,7 +2406,7 @@ fetchTableData()
 
 ## 10.1 基础用法
 
-### 🎯 使用场景
+🎯 使用场景
 
 - 简单提示弹窗
 - 信息展示
@@ -2414,7 +2414,7 @@ fetchTableData()
 
 ------
 
-### ✅ App.vue 示例：基础 Dialog
+完整示例：基础 Dialog
 
 ```vue
 <template>
@@ -2450,7 +2450,7 @@ const dialogVisible = ref(false)
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
 #### 1️⃣ `v-model`
 
@@ -2472,7 +2472,7 @@ const dialogVisible = ref(false)
 
 ## 10.2 底部操作区（footer 插槽）
 
-### 🎯 使用场景
+🎯 使用场景
 
 - 确认 / 取消按钮
 - 提交表单
@@ -2480,7 +2480,7 @@ const dialogVisible = ref(false)
 
 ------
 
-### ✅ App.vue 示例：自定义 Footer
+完整示例：自定义 Footer
 
 ```vue
 <el-dialog
@@ -2507,7 +2507,7 @@ const handleConfirm = () => {
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
 1. **`#footer` 插槽**
    - 完全接管底部区域
@@ -2525,7 +2525,7 @@ const handleConfirm = () => {
 
 这是 **最重要的一节**。
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 同一个 Dialog
 - 同一份 Form
@@ -2534,7 +2534,7 @@ const handleConfirm = () => {
 
 ------
 
-### ✅ App.vue 示例：表单 Dialog（完整实战）
+完整示例：表单 Dialog（完整实战）
 
 ```vue
 <template>
@@ -2643,9 +2643,9 @@ const handleBeforeClose = (done: () => void) => {
 
 ------
 
-### 📌 理论讲解（重点）
+📌 理论讲解（重点）
 
-#### 1️⃣ 新增 / 编辑共用逻辑
+1️⃣ 新增 / 编辑共用逻辑
 
 - **新增**
   - 重置表单
@@ -2659,14 +2659,14 @@ const handleBeforeClose = (done: () => void) => {
 
 ------
 
-#### 2️⃣ 表单校验
+2️⃣ 表单校验
 
 - `formRef.validate()` → 校验通过才提交
 - 校验失败会自动高亮错误项
 
 ------
 
-#### 3️⃣ `before-close`（非常重要）
+3️⃣ `before-close`（非常重要）
 
 - 弹窗关闭前钩子
 - 常用于：
@@ -2682,7 +2682,7 @@ const handleBeforeClose = (done) => {
 
 ------
 
-#### 4️⃣ 常见注意事项（项目经验）
+4️⃣ 常见注意事项（项目经验）
 
 ✅ **关闭弹窗时是否重置表单**
 
@@ -2705,7 +2705,7 @@ const handleBeforeClose = (done) => {
 
 ## 11.1 基础抽屉
 
-### 🎯 使用场景
+🎯 使用场景
 
 - 侧滑面板
 - 不希望遮挡整个页面（对比 Dialog）
@@ -2713,7 +2713,7 @@ const handleBeforeClose = (done) => {
 
 ------
 
-### ✅ App.vue 示例：基础 Drawer
+完整示例：基础 Drawer
 
 ```vue
 <template>
@@ -2750,15 +2750,15 @@ const drawerVisible = ref(false)
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ `v-model`
+1️⃣ `v-model`
 
 - 控制 Drawer 显示 / 隐藏
 - 类型：`boolean`
 - 关闭时自动变为 `false`
 
-#### 2️⃣ `direction`
+2️⃣ `direction`
 
 - 抽屉出现方向：
   - `rtl` → 右侧（最常用）
@@ -2768,7 +2768,7 @@ const drawerVisible = ref(false)
 
 > ✅ 后台系统 **90% 使用 `rtl`**
 
-#### 3️⃣ `size`
+3️⃣ `size`
 
 - 抽屉宽度 / 高度
 - 常用：
@@ -2779,7 +2779,7 @@ const drawerVisible = ref(false)
 
 ## 11.2 详情页展示（高频实战）
 
-### 🎯 目标效果
+🎯 目标效果
 
 - 点击表格“查看”
 - 抽屉展示详情
@@ -2788,7 +2788,7 @@ const drawerVisible = ref(false)
 
 ------
 
-### ✅ App.vue 示例：详情 Drawer（推荐用法）
+完整示例：详情 Drawer（推荐用法）
 
 ```vue
 <template>
@@ -2865,9 +2865,9 @@ const openDetail = () => {
 
 ------
 
-### 📌 理论讲解（重点）
+📌 理论讲解（重点）
 
-#### 1️⃣ Drawer vs Dialog（选型建议）
+1️⃣ Drawer vs Dialog（选型建议）
 
 | 场景        | 推荐   |
 | ----------- | ------ |
@@ -2878,7 +2878,7 @@ const openDetail = () => {
 
 ------
 
-#### 2️⃣ 表单只读实现方式（推荐）
+2️⃣ 表单只读实现方式（推荐）
 
 ✅ **最简单稳定**
 
@@ -2893,7 +2893,7 @@ const openDetail = () => {
 
 ------
 
-#### 3️⃣ 长内容滚动
+3️⃣ 长内容滚动
 
 - Drawer 默认内容区可滚动
 - 表单内容建议：
@@ -2903,7 +2903,7 @@ const openDetail = () => {
 
 ------
 
-#### 4️⃣ 实际项目常见增强点
+4️⃣ 实际项目常见增强点
 
 - 顶部放状态 Tag
 - 底部固定操作按钮（查看 → 编辑）
@@ -2911,7 +2911,7 @@ const openDetail = () => {
 
 ------
 
-### ⚠️ 常见坑 & 注意事项
+⚠️ 常见坑 & 注意事项
 
 1. **不要频繁销毁 Drawer**
    - 不用 `v-if`
@@ -2928,63 +2928,38 @@ const openDetail = () => {
 
 ## 12.1 Message（轻量提示）
 
-### 🎯 使用场景
+### 12.1.0 使用场景与定位
 
-- 操作成功 / 失败提示
-- 接口返回统一提示
-- 非阻断式反馈（不打断用户）
+🎯 使用场景
 
-------
+* 操作成功 / 失败提示
+* 接口返回统一提示
+* 非阻断式反馈（不打断用户）
 
-### ✅ App.vue 示例：基础 Message
+📌 核心定位
 
-```vue
-<template>
-  <el-container class="page-container">
-    <el-main>
-      <el-button type="success" @click="showSuccess">
-        成功
-      </el-button>
+* Message 用于 **结果反馈**
+* 非模态提示，不会阻断用户操作
+* 不用于用户决策或表单校验
 
-      <el-button type="warning" @click="showWarning">
-        警告
-      </el-button>
+---
 
-      <el-button type="danger" @click="showError">
-        错误
-      </el-button>
+### 12.1.1 基础用法（必会）
 
-      <el-button type="primary" @click="showWithVariable">
-        变量提示
-      </el-button>
+> 本节只关注：**如何快速、正确地使用 Message**
 
-      <el-button @click="showGroup">
-        分组消息合并
-      </el-button>
+常用类型
 
-      <el-button @click="showSingle">
-        防重复提示
-      </el-button>
+| 方法                | 场景            |
+| ------------------- | --------------- |
+| `ElMessage.success` | 新增 / 保存成功 |
+| `ElMessage.warning` | 参数不合法      |
+| `ElMessage.error`   | 接口异常        |
+| `ElMessage.info`    | 普通提示        |
 
-      <el-button @click="mockRequest">
-        接口场景
-      </el-button>
+示例
 
-      <el-button :disabled="disabled" @click="handleClick">
-        幂等按钮
-      </el-button>
-
-    </el-main>
-  </el-container>
-</template>
-
-<script setup lang="ts">
-import { ElMessage } from 'element-plus'
-import {ref} from "vue";
-
-/**
- * 基础成功提示
- */
+```ts
 const showSuccess = () => {
   ElMessage.success({
     message: '操作成功',
@@ -2992,9 +2967,6 @@ const showSuccess = () => {
   })
 }
 
-/**
- * 基础警告提示
- */
 const showWarning = () => {
   ElMessage.warning({
     message: '请注意输入内容',
@@ -3002,19 +2974,47 @@ const showWarning = () => {
   })
 }
 
-/**
- * 基础错误提示
- */
 const showError = () => {
   ElMessage.error({
     message: '操作失败',
     showClose: true
   })
 }
+```
 
-/**
- * 变量提示（高频）
- */
+---
+
+### 12.1.2 展示行为控制（UI 层）
+
+> 本节关注 **Message 的展示方式**，不涉及业务逻辑
+
+纯色模式（plain）
+
+```ts
+const showPlain = () => {
+  ElMessage({
+    message: '数据已更新',
+    type: 'success',
+    plain: true
+  })
+}
+```
+
+自定义偏移量（offset）
+
+```ts
+const showOffset = () => {
+  ElMessage({
+    message: '操作成功',
+    type: 'success',
+    offset: 80
+  })
+}
+```
+
+变量提示（高频）
+
+```ts
 const showWithVariable = () => {
   const userName = '张三'
   const count = 3
@@ -3024,21 +3024,29 @@ const showWithVariable = () => {
     showClose: true
   })
 }
+```
 
-/**
- * 分组消息合并
- */
+---
+
+### 12.1.3 消息管理策略（防滥用）
+
+> 本节关注：**如何避免 Message 滥用或刷屏**
+
+分组消息合并
+
+```ts
 const showGroup = () => {
   ElMessage({
     message: '分组消息合并提示.',
     grouping: true,
-    type: 'success',
+    type: 'success'
   })
 }
+```
 
-/**
- * 防止多次点击提示堆叠
- */
+防重复提示
+
+```ts
 const showSingle = () => {
   ElMessage.closeAll()
   ElMessage.info({
@@ -3046,10 +3054,32 @@ const showSingle = () => {
     duration: 2000
   })
 }
+```
 
-/**
- * 模拟接口请求场景（成功 / 失败）
- */
+幂等按钮场景
+
+```ts
+const disabled = ref(false)
+
+const handleClick = () => {
+  if (disabled.value) return
+
+  disabled.value = true
+  ElMessage.success('操作生效')
+
+  setTimeout(() => {
+    disabled.value = false
+  }, 1000)
+}
+```
+
+---
+
+### 12.1.4 业务场景示例（接口请求）
+
+> Message 在真实项目中，通常配合接口请求使用
+
+```ts
 const mockRequest = async () => {
   try {
     ElMessage.info({
@@ -3057,7 +3087,6 @@ const mockRequest = async () => {
       duration: 1000
     })
 
-    // 模拟接口延迟
     await new Promise((resolve, reject) => {
       setTimeout(() => {
         Math.random() > 0.5 ? resolve(true) : reject(new Error())
@@ -3075,74 +3104,29 @@ const mockRequest = async () => {
     })
   }
 }
-
-const disabled = ref(false)
-const handleClick = () => {
-  if (disabled.value) return
-
-  disabled.value = true
-  ElMessage.success('操作生效')
-
-  setTimeout(() => {
-    disabled.value = false
-  }, 1000)
-}
-</script>
-
-<style scoped>
-.page-container {
-  padding: 16px;
-}
-</style>
 ```
 
-------
+---
 
-### 📌 理论讲解
-
-#### 1️⃣ Message 的特点
-
-- 非模态（不会阻断操作）
-- 自动消失
-- 适合**结果反馈**
-
-#### 2️⃣ 常用类型
-
-| 方法                | 场景            |
-| ------------------- | --------------- |
-| `ElMessage.success` | 新增 / 保存成功 |
-| `ElMessage.warning` | 参数不合法      |
-| `ElMessage.error`   | 接口异常        |
-| `ElMessage.info`    | 普通提示        |
-
-------
-
-## 12.1（进阶）接口返回统一提示（非常常用）
-
-```ts
-const handleApiResponse = (res: { code: number; msg: string }) => {
-  if (res.code === 0) {
-    ElMessage.success(res.msg || '操作成功')
-  } else {
-    ElMessage.error(res.msg || '操作失败')
-  }
-}
-```
+### 12.1.5 使用原则（实战经验）
 
 📌 实战经验：
 
-- **不要在每个页面都写一堆 Message**
-- 一般在：
-  - 请求拦截器
-  - 业务统一方法
-  - 提交成功回调
-- 集中处理提示逻辑
+* 不要在每个页面都写大量 Message
+* Message 应作为 **统一反馈出口**
+* 推荐集中在以下位置处理：
+
+  * 请求拦截器
+  * 业务公共方法
+  * 提交成功 / 失败回调
+
+> 目标：**提示可控、语义统一、体验一致**
 
 ------
 
 ## 12.2 MessageBox（确认框）
 
-### 🎯 使用场景
+🎯 使用场景
 
 - 删除确认
 - 危险操作二次确认
@@ -3150,7 +3134,7 @@ const handleApiResponse = (res: { code: number; msg: string }) => {
 
 ------
 
-### ✅ App.vue 示例：删除确认（Promise 风格）
+完整示例：删除确认（Promise 风格）
 
 ```vue
 <template>
@@ -3188,16 +3172,16 @@ const handleDelete = async () => {
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ `ElMessageBox.confirm`
+1️⃣ `ElMessageBox.confirm`
 
 - 返回 Promise
 - 用户点击：
   - 确认 → resolve
   - 取消 / 关闭 → reject
 
-#### 2️⃣ 常用参数
+2️⃣ 常用参数
 
 | 参数                | 说明                     |
 | ------------------- | ------------------------ |
@@ -3252,7 +3236,7 @@ const handleDanger = async () => {
 
 ------
 
-### ⚠️ 常见坑 & 注意事项
+⚠️ 常见坑 & 注意事项
 
 1. **MessageBox 不要滥用**
    - 会打断用户流程
@@ -3268,7 +3252,7 @@ const handleDanger = async () => {
 
 ## 14.1 基础通知
 
-### 🎯 使用场景
+🎯 使用场景
 
 - 系统级提示
 - 后台任务完成通知
@@ -3279,7 +3263,7 @@ const handleDanger = async () => {
 
 ------
 
-### ✅ App.vue 示例：基础 Notification
+完整示例：基础 Notification
 
 ```vue
 <template>
@@ -3335,16 +3319,16 @@ const notifyError = () => {
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ Notification 特点
+1️⃣ Notification 特点
 
 - 出现在页面角落（默认右上）
 - 不阻断用户操作
 - 显示时间比 Message 长
 - 适合 **“你不一定立刻处理，但需要知道” 的信息**
 
-#### 2️⃣ 常用类型
+2️⃣ 常用类型
 
 | type    | 使用场景     |
 | ------- | ------------ |
@@ -3368,7 +3352,7 @@ ElNotification({
 })
 ```
 
-### 📌 参数说明
+📌 参数说明
 
 | 参数        | 说明               |
 | ----------- | ------------------ |
@@ -3383,14 +3367,14 @@ ElNotification({
 
 ## 14.3 手动关闭 / 持久通知
 
-### 🎯 使用场景
+🎯 使用场景
 
 - 必须用户明确知晓
 - 系统异常 / 权限问题
 
 ------
 
-### ✅ 示例：不会自动关闭的通知
+✅ 示例：不会自动关闭的通知
 
 ```ts
 ElNotification({
@@ -3426,7 +3410,7 @@ ElNotification({
 
 ## 14.5 实际项目高频场景示例
 
-### 1️⃣ 导出完成通知
+1️⃣ 导出完成通知
 
 ```ts
 ElNotification({
@@ -3436,7 +3420,7 @@ ElNotification({
 })
 ```
 
-### 2️⃣ 权限变更通知
+2️⃣ 权限变更通知
 
 ```ts
 ElNotification({
@@ -3447,7 +3431,7 @@ ElNotification({
 })
 ```
 
-### 3️⃣ WebSocket / SSE 推送
+3️⃣ WebSocket / SSE 推送
 
 - 新任务
 - 新消息
@@ -3459,7 +3443,7 @@ ElNotification({
 
 ## 14.6 常见坑 & 使用规范
 
-### ⚠️ 常见问题
+⚠️ 常见问题
 
 1. **Notification 太多**
    - 会堆满右上角
@@ -3469,7 +3453,7 @@ ElNotification({
 
 ------
 
-### ✅ 推荐规范（非常实用）
+✅ 推荐规范（非常实用）
 
 - 用户主动操作结果 → Message
 - 系统异步 / 被动结果 → Notification
@@ -3481,7 +3465,7 @@ ElNotification({
 
 ## 13.1 指令方式（`v-loading`）
 
-### 🎯 使用场景
+🎯 使用场景
 
 - 表格加载
 - 表单提交中
@@ -3489,7 +3473,7 @@ ElNotification({
 
 ------
 
-### ✅ App.vue 示例：局部 Loading（最常用）
+完整示例：局部 Loading（最常用）
 
 ```vue
 <template>
@@ -3540,16 +3524,16 @@ const loadData = () => {
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ `v-loading`
+1️⃣ `v-loading`
 
 - Element Plus 提供的 **指令**
 - 值为 `boolean`
 - `true` → 显示 Loading
 - `false` → 隐藏 Loading
 
-#### 2️⃣ 推荐使用位置
+2️⃣ 推荐使用位置
 
 ✅ 表格
 ✅ 表单容器
@@ -3559,7 +3543,7 @@ const loadData = () => {
 
 ------
 
-### 📌 常用修饰参数（了解即可）
+📌 常用修饰参数（了解即可）
 
 ```vue
 <div
@@ -3576,7 +3560,7 @@ const loadData = () => {
 
 ## 13.2 全屏 Loading（请求期间锁屏）
 
-### 🎯 使用场景
+🎯 使用场景
 
 - 登录
 - 系统初始化
@@ -3585,7 +3569,7 @@ const loadData = () => {
 
 ------
 
-### ✅ App.vue 示例：全屏 Loading
+完整示例：全屏 Loading
 
 ```vue
 <template>
@@ -3617,14 +3601,14 @@ const doHeavyTask = () => {
 
 ------
 
-### 📌 理论讲解
+📌 理论讲解
 
-#### 1️⃣ `ElLoading.service`
+1️⃣ `ElLoading.service`
 
 - 返回一个 Loading 实例
 - **必须手动 `close()`**
 
-#### 2️⃣ 常用参数
+2️⃣ 常用参数
 
 | 参数         | 说明                  |
 | ------------ | --------------------- |
@@ -3661,13 +3645,13 @@ const endLoading = () => {
 
 ## 13.3 Loading 使用规范（非常重要）
 
-### ✅ 推荐
+✅ 推荐
 
 - 列表 → **表格 Loading**
 - 表单提交 → **按钮 Loading / 局部 Loading**
 - 系统级操作 → **全屏 Loading**
 
-### ❌ 不推荐
+❌ 不推荐
 
 - 每个请求都全屏 Loading
 - Loading 时间 < 300ms 也强制显示（会闪）
@@ -3687,125 +3671,1075 @@ const endLoading = () => {
 
 ## 五、导航与页面结构
 
+------
+
 ## 14. Menu 菜单
 
-### 14.1 基础菜单
+> Menu 通常与 `Layout + Router` 强绑定，是后台系统**导航体系的核心**
 
-- `el-menu`
-- `el-menu-item`
-- `el-sub-menu`
+------
 
-### 14.2 常用配置
+## 14.1 基础菜单
 
-- `default-active`
-- `router`
-- `collapse`
+🎯 组成结构
+
+- `el-menu`：菜单容器
+- `el-menu-item`：菜单项
+- `el-sub-menu`：子菜单（多级）
+
+------
+
+✅ 基础示例（静态菜单）
+
+```vue
+<template>
+  <el-menu class="side-menu" default-active="1">
+    <el-menu-item index="1">
+      首页
+    </el-menu-item>
+
+    <el-menu-item index="2">
+      用户管理
+    </el-menu-item>
+
+    <el-sub-menu index="3">
+      <template #title>
+        系统设置
+      </template>
+      <el-menu-item index="3-1">角色管理</el-menu-item>
+      <el-menu-item index="3-2">权限管理</el-menu-item>
+    </el-sub-menu>
+  </el-menu>
+</template>
+
+<style scoped>
+.side-menu {
+  width: 200px;
+  min-height: 100vh;
+}
+</style>
+```
+
+------
+
+📌 说明
+
+- `index` 是菜单唯一标识
+- `el-sub-menu` 通过 `#title` 定义标题
+- 适合 **原型 / 静态页面**
+
+------
+
+## 14.2 常用配置（高频）
+
+### 14.2.1 default-active（当前激活菜单）
+
+```vue
+<el-menu default-active="/dashboard">
+```
+
+📌 说明：
+
+- 决定 **高亮哪一个菜单**
+- 实际项目中一般 **绑定当前路由路径**
+
+------
+
+### 14.2.2 router（结合 vue-router）
+
+> **后台项目强烈推荐开启**
+
+```vue
+<el-menu router>
+  <el-menu-item index="/dashboard">
+    仪表盘
+  </el-menu-item>
+
+  <el-menu-item index="/user">
+    用户管理
+  </el-menu-item>
+</el-menu>
+```
+
+📌 行为说明：
+
+- `index` = 路由路径
+- 点击菜单 → 自动 `router.push(index)`
+- 不需要手动写 `@click`
+
+------
+
+### 14.2.3 collapse（侧边栏折叠）
+
+```vue
+<el-menu :collapse="isCollapse">
+const isCollapse = ref(false)
+```
+
+📌 使用场景：
+
+- 侧边栏收起 / 展开
+- 常与 **Header 折叠按钮** 联动
+
+------
+
+## 14.3 Router 菜单完整示例（真实项目）
+
+✅ 示例：SideMenu.vue
+
+```vue
+<template>
+  <el-menu
+    router
+    :default-active="route.path"
+    :collapse="collapsed"
+    class="side-menu"
+  >
+    <el-menu-item index="/dashboard">
+      仪表盘
+    </el-menu-item>
+
+    <el-sub-menu index="/system">
+      <template #title>
+        系统管理
+      </template>
+      <el-menu-item index="/system/user">
+        用户管理
+      </el-menu-item>
+      <el-menu-item index="/system/role">
+        角色管理
+      </el-menu-item>
+    </el-sub-menu>
+  </el-menu>
+</template>
+
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
+
+defineProps<{
+  collapsed: boolean
+}>()
+
+const route = useRoute()
+</script>
+
+<style scoped>
+.side-menu {
+  width: 200px;
+  height: 100vh;
+}
+</style>
+```
+
+------
+
+📌 关键点（面试 + 实战）
+
+1. `default-active` 使用 `route.path`
+2. `router` 模式避免手动跳转
+3. 菜单结构与路由结构 **一一对应**
+
+------
+
+## 14.4 动态菜单（权限 / 后端驱动）
+
+> **90% 中大型后台都会用**
+
+------
+
+示例数据结构
+
+```ts
+const menus = [
+  {
+    path: '/dashboard',
+    title: '仪表盘'
+  },
+  {
+    path: '/system',
+    title: '系统管理',
+    children: [
+      { path: '/system/user', title: '用户管理' },
+      { path: '/system/role', title: '角色管理' }
+    ]
+  }
+]
+```
+
+------
+
+✅ 动态渲染菜单
+
+```vue
+<el-menu router :default-active="route.path">
+  <template v-for="menu in menus" :key="menu.path">
+    <el-menu-item
+      v-if="!menu.children"
+      :index="menu.path"
+    >
+      {{ menu.title }}
+    </el-menu-item>
+
+    <el-sub-menu
+      v-else
+      :index="menu.path"
+    >
+      <template #title>
+        {{ menu.title }}
+      </template>
+
+      <el-menu-item
+        v-for="child in menu.children"
+        :key="child.path"
+        :index="child.path"
+      >
+        {{ child.title }}
+      </el-menu-item>
+    </el-sub-menu>
+  </template>
+</el-menu>
+```
+
+------
+
+## 14.5 常见问题 & 规范
+
+⚠️ 常见坑
+
+1. **index 不唯一**
+   - 会导致高亮错乱
+2. **default-active 写死**
+   - 刷新后状态不对
+3. **菜单与路由不一致**
+   - 跳转成功但不高亮
 
 ------
 
 ## 15. Tabs 标签页
 
-### 15.1 基础 Tabs
-
-- `v-model`
-- `el-tab-pane`
-
-### 15.2 常见场景
-
-- 多状态切换
-- 列表分类
+> Tabs 常用于 **状态切换、分类筛选、模块分区展示**
+> 本质是一个「**受控组件**」，核心是 `v-model`
 
 ------
 
-## 六、其他高频组件
+## 15.1 基础 Tabs
 
-## 16. Tag 标签
+🎯 核心组件
 
-### 16.1 状态展示
-
-- `type`
-- `effect`
-
-### 16.2 可关闭
-
-- `closable`
-- `@close`
+- `el-tabs`：标签页容器
+- `el-tab-pane`：单个标签页
 
 ------
 
-## 17. Button 按钮（组合使用）
+✅ 基础示例（最小可用）
 
-### 17.1 常用类型
+```vue
+<template>
+  <el-tabs v-model="activeTab">
+    <el-tab-pane label="用户管理" name="user" />
+    <el-tab-pane label="角色管理" name="role" />
+    <el-tab-pane label="系统设置" name="setting" />
+  </el-tabs>
+</template>
 
-- `type`
-- `plain`
-- `link`
+<script setup lang="ts">
+import { ref } from 'vue'
 
-### 17.2 Loading 状态
+const activeTab = ref('user')
+</script>
+```
 
-- `:loading`
+------
 
-### 17.3 权限控制（逻辑层）
+📌 参数说明
 
-- 是否渲染
-- 是否禁用
+| 参数      | 说明                         |
+| --------- | ---------------------------- |
+| `v-model` | 当前激活的 tab，值 = `name`  |
+| `label`   | 页签显示文本                 |
+| `name`    | 页签唯一标识（**必须唯一**） |
+
+------
+
+⚠️ 注意点
+
+- `name` 不写会自动生成，但**不推荐**
+- 实战中应 **明确 name**，方便状态控制
+
+------
+
+## 15.2 Tabs 内容区域（实际使用）
+
+✅ 带内容的 Tabs
+
+```vue
+<el-tabs v-model="activeTab">
+  <el-tab-pane label="基本信息" name="base">
+    <div>这里是基本信息内容</div>
+  </el-tab-pane>
+
+  <el-tab-pane label="日志记录" name="log">
+    <div>这里是日志列表</div>
+  </el-tab-pane>
+</el-tabs>
+```
+
+📌 每个 `el-tab-pane` 内部就是普通 Vue 模板
+可放 **表单 / 表格 / 任意组件**
+
+------
+
+## 15.3 常见场景一：多状态切换（⭐ 极高频）
+
+> 用 Tabs 替代「状态下拉框」，**体验更好**
+
+------
+
+🎯 典型业务
+
+- 全部 / 启用 / 禁用
+- 待审核 / 已通过 / 已拒绝
+- 处理中 / 已完成
+
+------
+
+✅ Tabs + 状态筛选示例
+
+```vue
+<template>
+  <el-tabs v-model="status" @tab-change="handleTabChange">
+    <el-tab-pane label="全部" name="all" />
+    <el-tab-pane label="启用" name="enabled" />
+    <el-tab-pane label="禁用" name="disabled" />
+  </el-tabs>
+
+  <el-table :data="tableData">
+    <!-- 表格内容 -->
+  </el-table>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const status = ref('all')
+const tableData = ref([])
+
+function handleTabChange() {
+  // 状态切换后重新请求列表
+  fetchList()
+}
+
+function fetchList() {
+  console.log('当前状态：', status.value)
+}
+</script>
+```
+
+------
+
+📌 设计要点
+
+- Tabs 本身 **不存数据**
+- 只是作为 **筛选条件的一部分**
+- 切换时重置分页（常见）
+
+------
+
+## 15.4 常见场景二：列表分类（Tabs + Table）
+
+> 一个页面多个「视角」，但共用一套逻辑
+
+------
+
+✅ 分类列表示例
+
+```vue
+<el-tabs v-model="category">
+  <el-tab-pane label="我的" name="mine" />
+  <el-tab-pane label="全部" name="all" />
+</el-tabs>
+
+<el-table :data="tableData" />
+const category = ref('mine')
+
+watch(category, () => {
+  fetchList()
+})
+```
+
+📌 适用于：
+
+- 我的任务 / 全部任务
+- 我创建的 / 我参与的
+
+------
+
+## 15.5 卡片风格 Tabs（后台常用）
+
+```vue
+<el-tabs v-model="activeTab" type="card">
+  <el-tab-pane label="基本信息" name="base" />
+  <el-tab-pane label="配置管理" name="config" />
+</el-tabs>
+```
+
+📌 常用类型
+
+| type           | 使用场景 |
+| -------------- | -------- |
+| `line`（默认） | 状态切换 |
+| `card`         | 模块切换 |
+| `border-card`  | 页面分区 |
+
+------
+
+## 15.6 Tabs + Router（了解）
+
+> 不算必用，但在多模块后台中会用到
+
+```vue
+<el-tabs v-model="active" @tab-change="toRoute">
+  <el-tab-pane label="列表" name="/list" />
+  <el-tab-pane label="统计" name="/stat" />
+</el-tabs>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function toRoute(name: string) {
+  router.push(name)
+}
+```
+
+📌 更常见的做法：**Menu 控制路由，Tabs 控制状态**
+
+------
+
+## 15.7 常见问题 & 规范
+
+⚠️ 常见坑
+
+1. `name` 重复 → 切换异常
+2. Tabs 切换不刷新数据
+3. 切换后分页未重置
+
+------
+
+✅ 推荐实践
+
+- `name` 使用 **语义化字符串**
+- Tabs ≠ 数据源，只是筛选条件
+- 切换 Tabs：
+  - 重置分页
+  - 重新请求接口
 
 ------
 
 ## 18. Tooltip / Popover
 
-### 18.1 Tooltip
+> Tooltip / Popover 用于**补充说明、弱操作、辅助交互**
+> 原则：**不打断主流程，不承载核心操作**
 
-- 文本溢出提示
-- 图标说明
+------
 
-### 18.2 Popover
+## 18.1 Tooltip（文字提示 / 说明）
+
+🎯 常见使用场景
+
+- 表格中文本溢出
+- 图标说明 / 字段含义解释
+- 禁用按钮原因提示
+
+------
+
+### 18.1.1 文本溢出提示（⭐ 极高频）
+
+```vue
+<el-tooltip
+  content="这是一段很长的文本内容，鼠标悬浮时完整展示"
+  placement="top"
+>
+  <div class="ellipsis">
+    这是一段很长的文本内容...
+  </div>
+</el-tooltip>
+.ellipsis {
+  width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+```
+
+------
+
+📌 说明
+
+- Tooltip 负责 **展示完整信息**
+- 样式控制（省略）交给 CSS
+- **表格列中使用非常常见**
+
+------
+
+### 18.1.2 表格列中使用 Tooltip
+
+```vue
+<el-table-column label="备注">
+  <template #default="{ row }">
+    <el-tooltip :content="row.remark">
+      <span class="ellipsis">
+        {{ row.remark }}
+      </span>
+    </el-tooltip>
+  </template>
+</el-table-column>
+```
+
+📌 注意点：
+
+- `content` 可为动态值
+- 内容为空时建议不显示 Tooltip（业务自行控制）
+
+------
+
+### 18.1.3 图标说明（问号提示）
+
+```vue
+<el-tooltip content="该字段用于标识用户唯一身份">
+  <el-icon>
+    <QuestionFilled />
+  </el-icon>
+</el-tooltip>
+```
+
+📌 使用建议：
+
+- 说明型信息优先用 Tooltip
+- 不要用 Dialog（太重）
+
+------
+
+### 18.1.4 常用参数汇总
+
+| 参数        | 说明                   |
+| ----------- | ---------------------- |
+| `content`   | 提示内容               |
+| `placement` | 弹出位置               |
+| `effect`    | 主题（`dark / light`） |
+| `disabled`  | 是否禁用               |
+
+------
+
+## 18.2 Popover（悬浮卡片 / 操作容器）
+
+> Popover = **可承载内容的 Tooltip**
+
+------
+
+🎯 常见使用场景
 
 - 更多操作
 - 二级确认
+- 小型表单 / 说明卡片
 
 ------
 
-## 七、组合型高频场景（真实项目）
+## 18.2.1 更多操作（⭐ 表格高频）
 
-## 19. 搜索表单 + 表格 + 分页（最常见）
+```vue
+<el-popover
+  placement="bottom"
+  trigger="click"
+>
+  <template #reference>
+    <el-button type="primary" link>
+      更多
+    </el-button>
+  </template>
 
-### 19.1 搜索区域
-
-- 内联表单
-- 展开 / 收起
-
-### 19.2 表格联动
-
-- 搜索重置分页
-- Loading 状态
-
-------
-
-## 20. 新增 / 编辑弹窗模式
-
-### 20.1 表单复用
-
-- 同一个 Form
-- 根据模式切换标题
-
-### 20.2 提交与校验
-
-- 前端校验
-- 接口成功后关闭
+  <div class="more-actions">
+    <el-button link @click="edit">编辑</el-button>
+    <el-button link type="danger" @click="remove">删除</el-button>
+  </div>
+</el-popover>
+```
 
 ------
 
-## 21. 详情页模式
+📌 说明
 
-### 21.1 描述型展示
-
-- 表单禁用
-- Label + Value
-
-### 21.2 抽屉 / 弹窗查看
-
-- 不影响列表操作
+- `trigger="click"` 更适合操作类
+- 操作按钮一般用 `link` 样式
+- 常用于 **表格操作列**
 
 ------
 
+## 18.2.2 二级确认（轻量替代 MessageBox）
+
+```vue
+<el-popover trigger="click" width="200">
+  <template #reference>
+    <el-button type="danger" link>
+      删除
+    </el-button>
+  </template>
+
+  <div style="text-align: center;">
+    <p>确认删除该数据？</p>
+    <el-button size="small" @click="cancel">取消</el-button>
+    <el-button
+      size="small"
+      type="danger"
+      @click="confirm"
+    >
+      确认
+    </el-button>
+  </div>
+</el-popover>
+```
+
+------
+
+📌 适用场景
+
+| 方式       | 使用建议         |
+| ---------- | ---------------- |
+| Popover    | 轻量操作         |
+| MessageBox | 强确认、危险操作 |
+
+------
+
+## 18.2.3 信息卡片展示
+
+```vue
+<el-popover trigger="hover" width="300">
+  <template #reference>
+    <span class="user-name">张三</span>
+  </template>
+
+  <div>
+    <p>账号：zhangsan</p>
+    <p>角色：管理员</p>
+    <p>状态：启用</p>
+  </div>
+</el-popover>
+```
+
+📌 常见于：
+
+- 用户名悬浮
+- 列表补充信息
+
+------
+
+## 18.3 Tooltip vs Popover（选择指南）
+
+| 对比项   | Tooltip    | Popover       |
+| -------- | ---------- | ------------- |
+| 内容     | 简短文本   | 任意内容      |
+| 交互     | 只读       | 可操作        |
+| 触发     | hover 为主 | click / hover |
+| 使用频率 | 极高       | 高频          |
+
+------
+
+## 18.4 常见问题 & 规范
+
+⚠️ 常见坑
+
+1. Tooltip 内容过多（可读性差）
+2. Popover 里放复杂表单（体验差）
+3. hover + 操作冲突
+
+------
+
+✅ 推荐规范
+
+- Tooltip：
+  - 只做说明
+  - 不承载操作
+- Popover：
+  - 轻量操作
+  - 内容 ≤ 3 个操作项
+- 复杂确认 → MessageBox
+
+---
+
+你这次说得**非常清楚，而且是对的** 👍
+我现在**完全对齐你的格式与要求**，并且**明确回答你问的这个点**：
+
+> `<component :is="iconName" />`
+> **✔ 可以用，而且在真实项目中非常常见（尤其是动态菜单 / 动态表格）**
+
+下面我**按你给的 Layout 章节格式**，**重新完整给出 Icon 这一章**，包含：
+
+- 🎯 目标效果
+- ✅ App.vue 完整示例（可直接跑）
+- 📌 理论 & 关键点讲解
+- ⚠️ 常见坑
+- ✅ 特别强调 `<component :is="iconName" />` 的正确姿势
+
+------
+
+# ## X. Icon 图标（Element Plus）
+
+> Icon 是后台系统中**使用频率极高但最容易写乱**的部分
+> 本章只讲 **项目中真正常用、可维护、可扩展的用法**
+
+------
+
+## X.1 基础 Icon 使用（组件方式）
+
+🎯 目标效果
+
+- 正常显示 Element Plus Icon
+- 控制大小、颜色
+- 用于文本、状态、说明
+
+------
+
+完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>基础 Icon 使用</h2>
+
+    <div class="row">
+      <el-icon><Edit /></el-icon>
+      <el-icon><Search /></el-icon>
+      <el-icon><Delete /></el-icon>
+    </div>
+
+    <div class="row">
+      <el-icon size="20" color="#409eff">
+        <InfoFilled />
+      </el-icon>
+      <span>提示信息</span>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import {
+  Edit,
+  Search,
+  Delete,
+  InfoFilled
+} from '@element-plus/icons-vue'
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+</style>
+```
+
+------
+
+📌 理论 & 关键点讲解
+
+1️⃣ Icon 本质是什么？
+
+- Element Plus 的 Icon **本质是 Vue 组件**
+- 所以可以：
+  - 当普通组件用
+  - 当动态组件用（重点在后面）
+
+------
+
+2️⃣ 为什么推荐这种写法？
+
+```vue
+<el-icon><Edit /></el-icon>
+```
+
+- 统一大小与对齐
+- 可直接控制 `size / color`
+- 项目中**最稳定、最通用**
+
+------
+
+## X.2 Button + Icon（⭐ 项目最高频）
+
+🎯 目标效果
+
+- 按钮左侧 Icon
+- 表格操作 Icon
+- 圆形 Icon 按钮
+
+------
+
+完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>Button + Icon</h2>
+
+    <el-button type="primary" :icon="Plus">
+      新增
+    </el-button>
+
+    <el-button type="danger" :icon="Delete">
+      删除
+    </el-button>
+
+    <el-button :icon="Search" circle />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { Plus, Delete, Search } from '@element-plus/icons-vue'
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+</style>
+```
+
+------
+
+📌 理论 & 参数说明
+
+```vue
+<el-button :icon="Plus" />
+```
+
+- `icon` 接收的是 **组件本身**
+- ❌ 不是字符串
+- ❌ 不是组件名
+
+------
+
+## X.3 ⭐ 动态 Icon（component :is）【重点】
+
+------
+
+## X.3.1 使用 `<component :is="icon" />`
+
+🎯 目标效果
+
+- Icon 可配置
+- Icon 来源于数据
+- 常用于：
+  - 动态菜单
+  - 表格配置
+  - 权限驱动 UI
+
+------
+
+完整示例（App.vue）
+
+```vue
+<template>
+  <div class="page">
+    <h2>动态 Icon（component :is）</h2>
+
+    <div
+      v-for="item in actions"
+      :key="item.name"
+      class="action"
+    >
+      <el-icon>
+        <component :is="item.icon" />
+      </el-icon>
+      <span>{{ item.label }}</span>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import {
+  Edit,
+  Delete,
+  View
+} from '@element-plus/icons-vue'
+
+/**
+ * 模拟后端 / 配置驱动的 Icon
+ */
+const actions = [
+  {
+    name: 'edit',
+    label: '编辑',
+    icon: Edit
+  },
+  {
+    name: 'delete',
+    label: '删除',
+    icon: Delete
+  },
+  {
+    name: 'view',
+    label: '查看',
+    icon: View
+  }
+]
+</script>
+
+<style scoped>
+.page {
+  padding: 20px;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+</style>
+```
+
+------
+
+📌 理论 & 核心解释（非常重要）
+
+1️⃣ 为什么这样能用？
+
+```vue
+<component :is="item.icon" />
+```
+
+- `item.icon` 是一个 **Vue 组件**
+- `<component>` 是 Vue 内置的 **动态组件**
+- 完全合法、完全推荐
+
+------
+
+2️⃣ 为什么不推荐字符串方式？
+
+❌ 不推荐：
+
+```vue
+<component :is="'Edit'" />
+```
+
+原因：
+
+- 依赖全局注册
+- TS 无法校验
+- 不利于 Tree Shaking
+- 容易运行时报错
+
+------
+
+✅ 推荐（你现在用的方式）：
+
+```ts
+icon: Edit
+```
+
+------
+
+## X.4 表格 / 菜单中的动态 Icon（真实项目）
+
+🎯 目标效果
+
+- 表格操作列 Icon
+- 菜单 Icon 配置化
+
+------
+
+完整示例（App.vue）
+
+```vue
+<template>
+  <el-table :data="tableData" border>
+    <el-table-column prop="name" label="名称" />
+    <el-table-column label="操作">
+      <template #default="{ row }">
+        <el-button link>
+          <el-icon>
+            <component :is="row.icon" />
+          </el-icon>
+        </el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
+
+<script setup lang="ts">
+import { Edit, Delete } from '@element-plus/icons-vue'
+
+const tableData = [
+  { name: '数据一', icon: Edit },
+  { name: '数据二', icon: Delete }
+]
+</script>
+```
+
+------
+
+## X.5 ⚠️ 常见错误 & 注意事项（很关键）
+
+❌ 错误 1：icon 用字符串
+
+```ts
+icon: 'Edit'
+```
+
+- TS 不报错
+- 运行直接炸 ❌
+
+------
+
+❌ 错误 2：忘记 el-icon 包裹
+
+```vue
+<component :is="icon" />
+```
+
+- 样式不统一
+- 对齐混乱
+
+------
+
+✅ 正确姿势
+
+```vue
+<el-icon>
+  <component :is="icon" />
+</el-icon>
+```
+
+------
+
+## X.6 使用总结（你项目里就按这个来）
+
+✅ **静态 Icon**
+
+```vue
+<el-icon><Edit /></el-icon>
+```
+
+✅ **按钮 Icon**
+
+```vue
+<el-button :icon="Edit" />
+```
+
+✅ **动态 Icon（强烈推荐）**
+
+```vue
+<el-icon>
+  <component :is="icon" />
+</el-icon>
+```
+
+------
+
+## 16. Upload 上传（文件 / 图片 / 表单联动）
+
+## 17. Tree / Cascader（权限 & 组织结构）
