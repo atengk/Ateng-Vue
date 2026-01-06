@@ -1,30 +1,57 @@
 <template>
-  <el-form :model="form" label-width="100px">
-    <el-form-item label="所属部门" prop="deptId">
-      <el-cascader
-          v-model="form.deptId"
-          :options="options"
-          :props="{ emitPath: false }"
-          clearable
-      />
-    </el-form-item>
-  </el-form>
+  <div class="app-root">
+    <h1>System Monitor</h1>
+    <!-- 表格区 -->
+    <div>
+      <el-table
+          :data="tableData"
+          stripe
+          border
+          highlight-current-row
+          height="360"
+      >
+        <el-table-column prop="id" label="ID" width="80" />
+        <el-table-column prop="name" label="Service Name" />
+        <el-table-column prop="status" label="Status" width="120">
+          <template #default="{ row }">
+            <el-tag
+                :type="row.status === 'Running' ? 'success' : 'danger'"
+                effect="dark"
+            >
+              {{ row.status }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="cpu" label="CPU (%)" width="120" />
+        <el-table-column prop="memory" label="Memory (MB)" width="140" />
+        <el-table-column label="Action" width="160">
+          <template #default>
+            <el-button size="small" type="primary">Detail</el-button>
+            <el-button size="small" type="danger">Stop</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+interface ServiceInfo {
+  id: number
+  name: string
+  status: 'Running' | 'Stopped'
+  cpu: number
+  memory: number
+}
 
-const form = reactive({
-  deptId: null as string | null,
-})
-
-const options = [
-  {
-    value: '1',
-    label: '总部',
-    children: [
-      { value: '11', label: '研发部' },
-    ],
-  },
+const tableData: ServiceInfo[] = [
+  { id: 1, name: 'Auth Service', status: 'Running', cpu: 12, memory: 256 },
+  { id: 2, name: 'Gateway', status: 'Running', cpu: 28, memory: 512 },
+  { id: 3, name: 'Order Service', status: 'Stopped', cpu: 0, memory: 0 },
+  { id: 4, name: 'Message Queue', status: 'Running', cpu: 35, memory: 768 },
+  { id: 5, name: 'File Storage', status: 'Running', cpu: 18, memory: 384 },
 ]
 </script>
+
+<style scoped>
+</style>

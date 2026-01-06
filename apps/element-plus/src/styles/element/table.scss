@@ -1,0 +1,138 @@
+/* ============================================================
+ * Element Plus - 科技风 Table 全量定制
+ * 文件路径：src/styles/element/table.scss
+ * ============================================================
+ */
+
+/* ========================
+ * Table 整体容器
+ * ======================== */
+.el-table {
+  --el-table-border-color: rgba(0, 255, 255, 0.15);
+  --el-table-text-color: #cfefff;
+  --el-table-header-text-color: #eaffff;
+
+  background-color: rgba(10, 25, 40, 0.85);
+  color: var(--el-table-text-color);
+  border-radius: 8px;
+  overflow: hidden;
+
+  box-shadow:
+          inset 0 0 18px rgba(0, 255, 255, 0.08),
+          0 0 18px rgba(0, 255, 255, 0.12);
+}
+
+/* ========================
+ * 表头
+ * ======================== */
+.el-table__header-wrapper {
+  background: linear-gradient(
+                  180deg,
+                  rgba(0, 255, 255, 0.18),
+                  rgba(0, 120, 255, 0.08)
+  );
+}
+
+.el-table th.el-table__cell {
+  background: transparent;
+  color: var(--el-table-header-text-color);
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.35);
+
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.35);
+}
+
+/* ========================
+ * 表体
+ * ======================== */
+.el-table__body-wrapper {
+  background: rgba(5, 20, 35, 0.9);
+}
+
+.el-table td.el-table__cell {
+  background: transparent;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.08);
+  font-size: 13px;
+  color: var(--el-table-text-color);
+}
+
+/* ========================
+ * 行 hover 高亮（核心）
+ * ======================== */
+.el-table--enable-row-hover .el-table__body tr:hover > td {
+  background: linear-gradient(
+                  90deg,
+                  rgba(0, 255, 255, 0.12),
+                  rgba(0, 120, 255, 0.06)
+  );
+
+  box-shadow:
+          inset 0 0 12px rgba(0, 255, 255, 0.35);
+}
+
+/* ========================
+ * 选中行
+ * ======================== */
+.el-table__body tr.current-row > td {
+  background: linear-gradient(
+                  90deg,
+                  rgba(0, 255, 255, 0.25),
+                  rgba(0, 120, 255, 0.12)
+  );
+
+  box-shadow:
+          inset 0 0 16px rgba(0, 255, 255, 0.55);
+}
+
+/* ========================
+ * 斑马纹（如果你开了 stripe）
+ * ======================== */
+.el-table--striped
+.el-table__body
+tr.el-table__row--striped
+td {
+  background: rgba(0, 255, 255, 0.03);
+}
+
+/* ========================
+ * 表格边框（border 模式）
+ * ======================== */
+.el-table--border {
+  border: 1px solid rgba(0, 255, 255, 0.25);
+}
+
+.el-table--border td,
+.el-table--border th {
+  border-right: 1px solid rgba(0, 255, 255, 0.15);
+}
+
+/* ========================
+ * 空数据
+ * ======================== */
+.el-table__empty-text {
+  color: #8fdada;
+  font-size: 13px;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
+}
+
+/* ========================
+ * 滚动条（表格内）
+ * ======================== */
+.el-table__body-wrapper::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.el-table__body-wrapper::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+                  180deg,
+                  #00ffff,
+                  #0066ff
+  );
+  border-radius: 4px;
+}
+
+.el-table__body-wrapper::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,167 @@
+/* ============================================================
+ * Element Plus - 科技风按钮全量定制
+ * 文件路径：src/styles/element/button.scss
+ * ============================================================
+ */
+
+/* ========================
+ * 通用按钮基础样式
+ * ======================== */
+.el-button {
+  --el-button-bg-color: transparent;
+  --el-button-border-color: rgba(0, 255, 255, 0.5);
+  --el-button-text-color: #cfffff;
+
+  background: linear-gradient(
+                  135deg,
+                  rgba(0, 255, 255, 0.12),
+                  rgba(0, 120, 255, 0.05)
+  );
+
+  border: 1px solid var(--el-button-border-color);
+  border-radius: 6px;
+
+  box-shadow:
+          inset 0 0 6px rgba(0, 255, 255, 0.25),
+          0 0 10px rgba(0, 255, 255, 0.25);
+
+  transition:
+          background 0.25s ease,
+          box-shadow 0.25s ease,
+          transform 0.15s ease;
+
+  &:hover {
+    background: linear-gradient(
+                    135deg,
+                    rgba(0, 255, 255, 0.28),
+                    rgba(0, 120, 255, 0.12)
+    );
+
+    box-shadow:
+            inset 0 0 10px rgba(0, 255, 255, 0.45),
+            0 0 16px rgba(0, 255, 255, 0.55);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow:
+            inset 0 0 8px rgba(0, 255, 255, 0.6);
+  }
+}
+
+/* ========================
+ * Primary - 主科技色
+ * ======================== */
+.el-button--primary {
+  --el-button-border-color: #00ffff;
+  --el-button-text-color: #eaffff;
+
+  background: linear-gradient(
+                  135deg,
+                  #00ffff,
+                  #0066ff
+  );
+
+  box-shadow:
+          0 0 14px rgba(0, 255, 255, 0.7);
+
+  &:hover {
+    background: linear-gradient(
+                    135deg,
+                    #33ffff,
+                    #3388ff
+    );
+    box-shadow:
+            0 0 22px rgba(0, 255, 255, 0.9);
+  }
+}
+
+/* ========================
+ * Success - 能量绿
+ * ======================== */
+.el-button--success {
+  --el-button-border-color: #00ff88;
+  --el-button-text-color: #eafff3;
+
+  background: linear-gradient(
+                  135deg,
+                  #00ff88,
+                  #00aa66
+  );
+
+  box-shadow:
+          0 0 12px rgba(0, 255, 136, 0.6);
+
+  &:hover {
+    background: linear-gradient(
+                    135deg,
+                    #33ff99,
+                    #00cc77
+    );
+    box-shadow:
+            0 0 20px rgba(0, 255, 136, 0.85);
+  }
+}
+
+/* ========================
+ * Warning - 能量橙
+ * ======================== */
+.el-button--warning {
+  --el-button-border-color: #ffaa00;
+  --el-button-text-color: #fff2cc;
+
+  background: linear-gradient(
+                  135deg,
+                  #ffaa00,
+                  #ff8800
+  );
+
+  box-shadow:
+          0 0 12px rgba(255, 170, 0, 0.6);
+
+  &:hover {
+    background: linear-gradient(
+                    135deg,
+                    #ffcc33,
+                    #ffaa00
+    );
+    box-shadow:
+            0 0 20px rgba(255, 170, 0, 0.85);
+  }
+}
+
+/* ========================
+ * Danger - 警告红
+ * ======================== */
+.el-button--danger {
+  --el-button-border-color: #ff0033;
+  --el-button-text-color: #ffe5eb;
+
+  background: linear-gradient(
+                  135deg,
+                  #ff0033,
+                  #cc0033
+  );
+
+  box-shadow:
+          0 0 12px rgba(255, 0, 51, 0.6);
+
+  &:hover {
+    background: linear-gradient(
+                    135deg,
+                    #ff3355,
+                    #ff0033
+    );
+    box-shadow:
+            0 0 20px rgba(255, 0, 51, 0.85);
+  }
+}
+
+/* ========================
+ * Disabled 状态
+ * ======================== */
+.el-button.is-disabled {
+  opacity: 0.4;
+  box-shadow: none !important;
+  filter: grayscale(0.6);
+}
