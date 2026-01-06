@@ -2,11 +2,11 @@
 
 
 
-## 一、布局与基础结构
+## 布局与基础结构
 
-## 1. Layout 布局（Container）
+### Layout 布局（Container）
 
-## 1.1 基本页面结构（Header 固定 + Main 滚动）
+#### 基本页面结构（Header 固定 + Main 滚动）
 
 🎯 目标效果
 
@@ -138,7 +138,7 @@ overflow: auto;
 
 ------
 
-## 1.2 左右布局（后台系统最常用）
+#### 左右布局（后台系统最常用）
 
 这是 **后台管理系统的核心布局模型**。
 
@@ -300,14 +300,14 @@ const isCollapse = ref(false)
 
 ------
 
-## 2. Grid 栅格（Row / Col）
+### Grid 栅格（Row / Col）
 
 > Element Plus 的 `Row / Col`
 > 👉 本质：**24 栅格的响应式 Flex 布局系统**
 
 ------
 
-## 2.1 基础栅格
+#### 基础栅格
 
 🎯 目标效果
 
@@ -414,7 +414,7 @@ const isCollapse = ref(false)
 
 ------
 
-## 2.2 响应式栅格
+#### 响应式栅格
 
 🎯 目标效果
 
@@ -518,7 +518,7 @@ const isCollapse = ref(false)
 
 ------
 
-## 2.3 常见表单 / 搜索布局（高频实战）
+#### 常见表单 / 搜索布局（高频实战）
 
 这是你 **项目里出现次数最多的 Grid 用法**。
 
@@ -644,16 +644,16 @@ xs = 24  // 1 行 1 个
 
 ------
 
-## 二、表单与数据录入（高频核心）
+## 表单与数据录入（高频核心）
 
-## 3. Form 表单（el-form）
+### Form 表单（el-form）
 
 > `el-form` 本质是一个 **表单容器 + 校验系统**
 > 子组件如 `el-input / el-select / el-date-picker` 等，都可以通过 `prop` 与 `rules` 绑定验证。
 
 ------
 
-## 3.1 基础表单结构
+#### 基础表单结构
 
 🎯 目标效果
 
@@ -786,7 +786,7 @@ const resetForm = () => {
 
 ------
 
-## 3.2 表单校验（必用）
+#### 表单校验（必用）
 
 🎯 目标效果
 
@@ -931,7 +931,7 @@ formRef.value?.validate((valid) => { ... })
 
 ------
 
-## 3.3 表单禁用 / 只读态
+#### 表单禁用 / 只读态
 
 🎯 目标效果
 
@@ -973,9 +973,9 @@ const isDisabled = ref(false)
 
 ------
 
-## 4. Input 输入类组件
+### Input 输入类组件
 
-## 4.1 el-input 基础使用
+#### el-input 基础使用
 
 🎯 目标效果
 
@@ -1080,7 +1080,7 @@ const form = reactive({
 
 ------
 
-## 4.2 前后缀插槽
+#### 前后缀插槽
 
 🎯 目标效果
 
@@ -1170,9 +1170,9 @@ const clearEmail = () => {
 
 ------
 
-## 5. Select 选择器
+### Select 选择器
 
-## 5.1 el-select + el-option 基础使用
+#### el-select + el-option 基础使用
 
 🎯 目标效果
 
@@ -1286,7 +1286,7 @@ const form = reactive({
 
 ------
 
-## 5.2 常见业务场景
+#### 常见业务场景
 
 1️⃣ 下拉字典（字典表 / 枚举）
 
@@ -1358,9 +1358,9 @@ const roleEnum = {
 
 ------
 
-## 6. DatePicker 时间选择
+### DatePicker 时间选择
 
-## 6.1 单个时间选择
+#### 单个时间选择
 
 🎯 目标效果
 
@@ -1453,7 +1453,7 @@ const form = reactive({
 
 ------
 
-## 6.2 时间范围选择（高频使用）
+#### 时间范围选择（高频使用）
 
 🎯 目标效果
 
@@ -1565,9 +1565,9 @@ const shortcuts = [
 
 ------
 
-## 7. Radio / Checkbox
+### Radio / Checkbox
 
-## 7.1 el-radio-group 单选
+#### el-radio-group 单选
 
 🎯 目标效果
 
@@ -1644,7 +1644,7 @@ const form = reactive({
 
 ------
 
-## 7.2 el-checkbox-group 多选
+#### el-checkbox-group 多选
 
 🎯 目标效果
 
@@ -1755,11 +1755,11 @@ const handleCheckedChange = (val: string[]) => {
 
 ------
 
-## 三、数据展示（**后台最核心**）
+## 数据展示（**后台最核心**）
 
-## 8. Table 表格（核心组件）
+### Table 表格（核心组件）
 
-## 8.1 基础表格
+#### 基础表格
 
 🎯 目标效果
 
@@ -1821,7 +1821,7 @@ const tableData = reactive([
 
 ------
 
-## 8.2 列配置
+#### 列配置
 
 - 控制列显示内容、宽度、对齐
 
@@ -1836,7 +1836,7 @@ const tableData = reactive([
 
 ------
 
-## 8.3 插槽列（自定义渲染，非常常用）
+#### 插槽列（自定义渲染，非常常用）
 
 - 自定义单元格内容
 - 状态标签
@@ -1860,7 +1860,7 @@ const tableData = reactive([
 
 ------
 
-## 8.4 固定列 & 横向滚动
+#### 固定列 & 横向滚动
 
 ```vue
 <el-table
@@ -1888,7 +1888,7 @@ const tableData = reactive([
 
 ------
 
-## 8.5 表格选择（批量操作）
+8.5 表格选择（批量操作）
 
 ```vue
 <el-table
@@ -1924,7 +1924,7 @@ const batchDelete = () => {
 
 ------
 
-## 8.6 空数据 & Loading
+#### 空数据 & Loading
 
 ```vue
 <el-table
@@ -1947,9 +1947,9 @@ const loading = ref(false)
 
 ------
 
-## 9. Pagination 分页
+### Pagination 分页
 
-## 9.1 基础分页
+#### 基础分页
 
 🎯 目标效果
 
@@ -2012,7 +2012,7 @@ const total = ref(95) // 总条数
 
 ------
 
-## 9.2 常用事件
+#### 常用事件
 
 ```vue
 <el-pagination
@@ -2056,7 +2056,7 @@ const fetchTableData = () => {
 
 ------
 
-## 9.3 与 Table 联动（高频实战）
+#### 与 Table 联动（高频实战）
 
 ```vue
 <template>
@@ -2191,7 +2191,7 @@ fetchTableData()
 4. **表格 + 复选框**
    - 批量操作 + 分页结合 → 需要考虑跨页选择逻辑
 
-## 9.4 跨页选择
+#### 跨页选择
 
 ```vue
 <template>
@@ -2400,11 +2400,11 @@ fetchTableData()
 
 ------
 
-## 四、反馈与交互
+## 反馈与交互
 
-## 10. Dialog 弹窗（高频）
+### Dialog 弹窗（高频）
 
-## 10.1 基础用法
+#### 基础用法
 
 🎯 使用场景
 
@@ -2470,7 +2470,7 @@ const dialogVisible = ref(false)
 
 ------
 
-## 10.2 底部操作区（footer 插槽）
+#### 底部操作区（footer 插槽）
 
 🎯 使用场景
 
@@ -2521,7 +2521,7 @@ const handleConfirm = () => {
 
 ------
 
-## 10.3 表单弹窗（新增 / 编辑共用，核心）
+#### 表单弹窗（新增 / 编辑共用，核心）
 
 这是 **最重要的一节**。
 
@@ -2701,9 +2701,9 @@ const handleBeforeClose = (done) => {
 
 ------
 
-## 11. Drawer 抽屉
+### Drawer 抽屉
 
-## 11.1 基础抽屉
+#### 基础抽屉
 
 🎯 使用场景
 
@@ -2777,7 +2777,7 @@ const drawerVisible = ref(false)
 
 ------
 
-## 11.2 详情页展示（高频实战）
+#### 详情页展示（高频实战）
 
 🎯 目标效果
 
@@ -2924,11 +2924,11 @@ const openDetail = () => {
 
 ------
 
-## 12. Message / MessageBox
+### Message / MessageBox
 
-## 12.1 Message（轻量提示）
+#### Message（轻量提示）
 
-### 12.1.0 使用场景与定位
+##### 使用场景与定位
 
 🎯 使用场景
 
@@ -2944,7 +2944,7 @@ const openDetail = () => {
 
 ---
 
-### 12.1.1 基础用法（必会）
+##### 基础用法（必会）
 
 > 本节只关注：**如何快速、正确地使用 Message**
 
@@ -2984,7 +2984,7 @@ const showError = () => {
 
 ---
 
-### 12.1.2 展示行为控制（UI 层）
+##### 展示行为控制（UI 层）
 
 > 本节关注 **Message 的展示方式**，不涉及业务逻辑
 
@@ -3028,7 +3028,7 @@ const showWithVariable = () => {
 
 ---
 
-### 12.1.3 消息管理策略（防滥用）
+##### 消息管理策略（防滥用）
 
 > 本节关注：**如何避免 Message 滥用或刷屏**
 
@@ -3075,7 +3075,7 @@ const handleClick = () => {
 
 ---
 
-### 12.1.4 业务场景示例（接口请求）
+##### 业务场景示例（接口请求）
 
 > Message 在真实项目中，通常配合接口请求使用
 
@@ -3108,7 +3108,7 @@ const mockRequest = async () => {
 
 ---
 
-### 12.1.5 使用原则（实战经验）
+##### 使用原则（实战经验）
 
 📌 实战经验：
 
@@ -3124,7 +3124,7 @@ const mockRequest = async () => {
 
 ------
 
-## 12.2 MessageBox（确认框）
+#### MessageBox（确认框）
 
 🎯 使用场景
 
@@ -3193,7 +3193,7 @@ const handleDelete = async () => {
 
 ------
 
-## 12.2（进阶）危险操作二次确认
+（进阶）危险操作二次确认
 
 ```ts
 const handleDanger = async () => {
@@ -3225,7 +3225,7 @@ const handleDanger = async () => {
 
 ------
 
-## 12.3 Message vs MessageBox（选型总结）
+#### Message vs MessageBox（选型总结）
 
 | 场景         | 推荐       |
 | ------------ | ---------- |
@@ -3248,9 +3248,9 @@ const handleDanger = async () => {
 
 ------
 
-## 14. Notification 通知
+### Notification 通知
 
-## 14.1 基础通知
+#### 基础通知
 
 🎯 使用场景
 
@@ -3339,7 +3339,7 @@ const notifyError = () => {
 
 ------
 
-## 14.2 常用配置参数（高频）
+#### 常用配置参数（高频）
 
 ```ts
 ElNotification({
@@ -3365,7 +3365,7 @@ ElNotification({
 
 ------
 
-## 14.3 手动关闭 / 持久通知
+#### 手动关闭 / 持久通知
 
 🎯 使用场景
 
@@ -3392,7 +3392,7 @@ ElNotification({
 
 ------
 
-## 14.4 Notification vs Message（关键区别）
+#### Notification vs Message（关键区别）
 
 | 维度     | Message  | Notification |
 | -------- | -------- | ------------ |
@@ -3408,7 +3408,7 @@ ElNotification({
 
 ------
 
-## 14.5 实际项目高频场景示例
+#### 实际项目高频场景示例
 
 1️⃣ 导出完成通知
 
@@ -3441,7 +3441,7 @@ ElNotification({
 
 ------
 
-## 14.6 常见坑 & 使用规范
+#### 常见坑 & 使用规范
 
 ⚠️ 常见问题
 
@@ -3461,9 +3461,9 @@ ElNotification({
 
 ------
 
-## 13. Loading
+### Loading
 
-## 13.1 指令方式（`v-loading`）
+#### 指令方式（`v-loading`）
 
 🎯 使用场景
 
@@ -3558,7 +3558,7 @@ const loadData = () => {
 
 ------
 
-## 13.2 全屏 Loading（请求期间锁屏）
+#### 全屏 Loading（请求期间锁屏）
 
 🎯 使用场景
 
@@ -3619,7 +3619,7 @@ const doHeavyTask = () => {
 
 ------
 
-## 13.2（进阶）配合接口请求（真实项目）
+#### 配合接口请求（真实项目）
 
 ```ts
 let loadingInstance: any
@@ -3643,7 +3643,7 @@ const endLoading = () => {
 
 ------
 
-## 13.3 Loading 使用规范（非常重要）
+#### Loading 使用规范（非常重要）
 
 ✅ 推荐
 
@@ -3658,7 +3658,7 @@ const endLoading = () => {
 
 ------
 
-## 13.4 常见坑 & 注意事项
+#### 常见坑 & 注意事项
 
 1. **忘记 close()**
    - 页面会被永久锁死
@@ -3669,17 +3669,17 @@ const endLoading = () => {
 
 ------
 
-## 五、导航与页面结构
+## 导航与页面结构
 
 ------
 
-## 14. Menu 菜单
+### Menu 菜单
 
 > Menu 通常与 `Layout + Router` 强绑定，是后台系统**导航体系的核心**
 
 ------
 
-## 14.1 基础菜单
+#### 基础菜单
 
 🎯 组成结构
 
@@ -3730,9 +3730,9 @@ const endLoading = () => {
 
 ------
 
-## 14.2 常用配置（高频）
+#### 常用配置（高频）
 
-### 14.2.1 default-active（当前激活菜单）
+default-active（当前激活菜单）
 
 ```vue
 <el-menu default-active="/dashboard">
@@ -3745,7 +3745,7 @@ const endLoading = () => {
 
 ------
 
-### 14.2.2 router（结合 vue-router）
+router（结合 vue-router）
 
 > **后台项目强烈推荐开启**
 
@@ -3769,7 +3769,7 @@ const endLoading = () => {
 
 ------
 
-### 14.2.3 collapse（侧边栏折叠）
+collapse（侧边栏折叠）
 
 ```vue
 <el-menu :collapse="isCollapse">
@@ -3783,7 +3783,7 @@ const isCollapse = ref(false)
 
 ------
 
-## 14.3 Router 菜单完整示例（真实项目）
+#### Router 菜单完整示例（真实项目）
 
 ✅ 示例：SideMenu.vue
 
@@ -3841,7 +3841,7 @@ const route = useRoute()
 
 ------
 
-## 14.4 动态菜单（权限 / 后端驱动）
+#### 动态菜单（权限 / 后端驱动）
 
 > **90% 中大型后台都会用**
 
@@ -3902,7 +3902,7 @@ const menus = [
 
 ------
 
-## 14.5 常见问题 & 规范
+#### 常见问题 & 规范
 
 ⚠️ 常见坑
 
@@ -3915,14 +3915,14 @@ const menus = [
 
 ------
 
-## 15. Tabs 标签页
+### Tabs 标签页
 
 > Tabs 常用于 **状态切换、分类筛选、模块分区展示**
 > 本质是一个「**受控组件**」，核心是 `v-model`
 
 ------
 
-## 15.1 基础 Tabs
+#### 基础 Tabs
 
 🎯 核心组件
 
@@ -3968,7 +3968,7 @@ const activeTab = ref('user')
 
 ------
 
-## 15.2 Tabs 内容区域（实际使用）
+#### Tabs 内容区域
 
 ✅ 带内容的 Tabs
 
@@ -3989,7 +3989,7 @@ const activeTab = ref('user')
 
 ------
 
-## 15.3 常见场景一：多状态切换（⭐ 极高频）
+#### 多状态切换
 
 > 用 Tabs 替代「状态下拉框」，**体验更好**
 
@@ -4045,7 +4045,7 @@ function fetchList() {
 
 ------
 
-## 15.4 常见场景二：列表分类（Tabs + Table）
+#### 列表分类
 
 > 一个页面多个「视角」，但共用一套逻辑
 
@@ -4074,7 +4074,7 @@ watch(category, () => {
 
 ------
 
-## 15.5 卡片风格 Tabs（后台常用）
+#### 卡片风格 Tabs（后台常用）
 
 ```vue
 <el-tabs v-model="activeTab" type="card">
@@ -4093,7 +4093,7 @@ watch(category, () => {
 
 ------
 
-## 15.6 Tabs + Router（了解）
+#### Tabs + Router（了解）
 
 > 不算必用，但在多模块后台中会用到
 
@@ -4115,7 +4115,7 @@ function toRoute(name: string) {
 
 ------
 
-## 15.7 常见问题 & 规范
+#### 常见问题 & 规范
 
 ⚠️ 常见坑
 
@@ -4135,14 +4135,14 @@ function toRoute(name: string) {
 
 ------
 
-## 18. Tooltip / Popover
+### Tooltip / Popover
 
 > Tooltip / Popover 用于**补充说明、弱操作、辅助交互**
 > 原则：**不打断主流程，不承载核心操作**
 
 ------
 
-## 18.1 Tooltip（文字提示 / 说明）
+#### Tooltip（文字提示 / 说明）
 
 🎯 常见使用场景
 
@@ -4152,7 +4152,7 @@ function toRoute(name: string) {
 
 ------
 
-### 18.1.1 文本溢出提示（⭐ 极高频）
+#### 文本溢出提示
 
 ```vue
 <el-tooltip
@@ -4181,7 +4181,7 @@ function toRoute(name: string) {
 
 ------
 
-### 18.1.2 表格列中使用 Tooltip
+#### 表格列中使用 Tooltip
 
 ```vue
 <el-table-column label="备注">
@@ -4202,7 +4202,7 @@ function toRoute(name: string) {
 
 ------
 
-### 18.1.3 图标说明（问号提示）
+#### 图标说明（问号提示）
 
 ```vue
 <el-tooltip content="该字段用于标识用户唯一身份">
@@ -4219,7 +4219,7 @@ function toRoute(name: string) {
 
 ------
 
-### 18.1.4 常用参数汇总
+#### 常用参数汇总
 
 | 参数        | 说明                   |
 | ----------- | ---------------------- |
@@ -4230,7 +4230,7 @@ function toRoute(name: string) {
 
 ------
 
-## 18.2 Popover（悬浮卡片 / 操作容器）
+### Popover（悬浮卡片 / 操作容器）
 
 > Popover = **可承载内容的 Tooltip**
 
@@ -4244,7 +4244,7 @@ function toRoute(name: string) {
 
 ------
 
-## 18.2.1 更多操作（⭐ 表格高频）
+#### 更多操作
 
 ```vue
 <el-popover
@@ -4274,7 +4274,7 @@ function toRoute(name: string) {
 
 ------
 
-## 18.2.2 二级确认（轻量替代 MessageBox）
+#### 二级确认（轻量替代 MessageBox）
 
 ```vue
 <el-popover trigger="click" width="200">
@@ -4309,7 +4309,7 @@ function toRoute(name: string) {
 
 ------
 
-## 18.2.3 信息卡片展示
+#### 信息卡片展示
 
 ```vue
 <el-popover trigger="hover" width="300">
@@ -4332,7 +4332,7 @@ function toRoute(name: string) {
 
 ------
 
-## 18.3 Tooltip vs Popover（选择指南）
+#### Tooltip vs Popover（选择指南）
 
 | 对比项   | Tooltip    | Popover       |
 | -------- | ---------- | ------------- |
@@ -4343,7 +4343,7 @@ function toRoute(name: string) {
 
 ------
 
-## 18.4 常见问题 & 规范
+#### 常见问题 & 规范
 
 ⚠️ 常见坑
 
@@ -4381,14 +4381,14 @@ function toRoute(name: string) {
 
 ------
 
-## ## X. Icon 图标（Element Plus）
+###  Icon 图标（Element Plus）
 
 > Icon 是后台系统中**使用频率极高但最容易写乱**的部分
 > 本章只讲 **项目中真正常用、可维护、可扩展的用法**
 
 ------
 
-## X.1 基础 Icon 使用（组件方式）
+#### 基础 Icon 使用（组件方式）
 
 🎯 目标效果
 
@@ -4468,7 +4468,7 @@ import {
 
 ------
 
-## X.2 Button + Icon（⭐ 项目最高频）
+#### Button + Icon（⭐ 项目最高频）
 
 🎯 目标效果
 
@@ -4522,11 +4522,11 @@ import { Plus, Delete, Search } from '@element-plus/icons-vue'
 
 ------
 
-## X.3 ⭐ 动态 Icon（component :is）【重点】
+#### 动态 Icon（component :is）【重点】
 
 ------
 
-## X.3.1 使用 `<component :is="icon" />`
+使用 `<component :is="icon" />`
 
 🎯 目标效果
 
@@ -4638,7 +4638,7 @@ icon: Edit
 
 ------
 
-## X.4 表格 / 菜单中的动态 Icon（真实项目）
+#### 表格 / 菜单中的动态 Icon（真实项目）
 
 🎯 目标效果
 
@@ -4676,7 +4676,7 @@ const tableData = [
 
 ------
 
-## X.5 ⚠️ 常见错误 & 注意事项（很关键）
+#### 常见错误 & 注意事项（很关键）
 
 ------
 
@@ -4701,7 +4701,7 @@ const tableData = [
 
 ------
 
-## X.6 使用总结（你项目里就按这个来）
+#### 使用总结（你项目里就按这个来）
 
 ✅ **静态 Icon**
 
@@ -4725,14 +4725,14 @@ const tableData = [
 
 ------
 
-## Upload 上传（文件 / 图片 / 预览 / 拖拽 / 表单联动）
+### Upload 上传（文件 / 图片 / 预览 / 拖拽 / 表单联动）
 
 > Upload 是后台系统里**坑最多、组合最多**的组件之一
 > 本章只覆盖 **真实项目 90% 会用到的场景**
 
 ------
 
-## 16.1 基础文件上传（单文件）
+#### 基础文件上传（单文件）
 
 🎯 目标效果
 
@@ -4809,7 +4809,7 @@ const handleRemove = (file: UploadFile) => {
 
 ------
 
-## 16.2 图片上传 + 预览（⭐ 极高频）
+#### 图片上传 + 预览（⭐ 极高频）
 
 🎯 目标效果
 
@@ -4881,7 +4881,7 @@ const handlePreview = (file: UploadFile) => {
 
 ------
 
-## 16.3 拖拽上传（Drag）
+#### 拖拽上传（Drag）
 
 🎯 目标效果
 
@@ -4954,7 +4954,7 @@ const handleRemove = (_file: UploadFile, files: UploadFiles) => {
 
 ------
 
-## 16.6 上传限制
+#### 上传限制
 
 **单文件上传**
 
@@ -5057,7 +5057,7 @@ const handleExceed = (files: File[]) => {
 </script>
 ```
 
-## 16.4 Upload + 表单联动（⭐ 真实项目）
+#### Upload + 表单联动（⭐ 真实项目）
 
 🎯 目标效果
 
@@ -5157,7 +5157,7 @@ const submit = () => {
 
 ------
 
-## 上传到服务器
+#### 上传到服务器
 
 **自动上传**
 
@@ -5371,7 +5371,7 @@ const submitUpload = () => {
 </script>
 ```
 
-## 16.5 常见坑 & 注意事项（必看）
+#### 常见坑 & 注意事项（必看）
 
 ⚠️ 坑 1：直接依赖 Upload 内部状态
 
@@ -5404,14 +5404,14 @@ form.file
 
 ------
 
-## Tree 树形控件（权限 / 组织结构 / 菜单）
+### Tree 树形控件（权限 / 组织结构 / 菜单）
 
 > **Tree 是后台系统里最容易写“能跑但不可用”的组件**
 > 下面所有示例都来自 **真实项目写法**，不是 API Demo。
 
 ------
 
-## 1. 基础 Tree（展示 + 展开）
+#### 基础 Tree（展示 + 展开）
 
 🎯 使用场景
 
@@ -5478,7 +5478,7 @@ const treeData = [
 
 ------
 
-## 2. 复选 Tree（权限分配核心）
+#### 复选 Tree（权限分配核心）
 
 🎯 使用场景
 
@@ -5563,7 +5563,7 @@ const getChecked = () => {
 
 ------
 
-## 3. 默认回显（编辑必用）
+####  默认回显（编辑必用）
 
 🎯 使用场景
 
@@ -5643,7 +5643,7 @@ const setChecked = async () => {
 
 ------
 
-## 4. Tree + Dialog（真实业务形态）
+#### Tree + Dialog（真实业务形态）
 
 🎯 使用场景
 
@@ -5740,7 +5740,7 @@ const submit = () => {
 
 ------
 
-## 5. Tree 常用配置速查（项目级）
+#### Tree 常用配置速查（项目级）
 
 ```vue
 <el-tree
@@ -5761,7 +5761,7 @@ const submit = () => {
 
 ------
 
-## 6. 懒加载 Tree（大数据量必用）
+#### 懒加载 Tree（大数据量必用）
 
 > **Tree 节点一多，不懒加载 = 卡死页面**
 
@@ -5840,13 +5840,13 @@ const loadNode = (
 
 ---
 
-## 7. Tree 勾选规则控制（权限最容易出 Bug）
+#### Tree 勾选规则控制（权限最容易出 Bug）
 
 > **90% 的权限 Bug 都是「勾选规则没想清楚」**
 
 ---
 
-### 7.1 父子不联动（按钮级权限）
+父子不联动（按钮级权限）
 
 ```vue
 <el-tree
@@ -5863,7 +5863,7 @@ const loadNode = (
 
 ---
 
-### 7.2 禁用某些节点（只读权限）
+禁用某些节点（只读权限）
 
 ```vue
 const treeProps = {
@@ -5885,7 +5885,7 @@ const treeProps = {
 
 ---
 
-## 8. Tree 搜索 / 过滤（组织 & 菜单必备）
+#### Tree 搜索 / 过滤（组织 & 菜单必备）
 
 🎯 使用场景
 
@@ -5955,7 +5955,7 @@ watch(keyword, (val) => {
 
 ---
 
-## 9. Tree 与 Table / 表单联动（高频实战）
+#### Tree 与 Table / 表单联动（高频实战）
 
 🎯 使用场景
 
@@ -5983,7 +5983,7 @@ const handleSelect = (node: any) => {
 
 ---
 
-## 10. Tree 状态重置（编辑 / 新增必备）
+#### Tree 状态重置（编辑 / 新增必备）
 
 > **Tree 最大的坑：状态残留**
 
@@ -6009,14 +6009,14 @@ treeRef.value?.setCheckedKeys([])
 treeKey.value++
 ```
 
-# Cascader 级联选择器（区域 / 组织 / 表单联动）
+### Cascader 级联选择器（区域 / 组织 / 表单联动）
 
 > **Cascader ≠ 下拉框**
 > 它解决的是：**层级关系 + 选择约束 + 数据联动**
 
 ------
 
-## 1. 基础 Cascader（展示 + 选择）
+#### 基础 Cascader（展示 + 选择）
 
 🎯 使用场景
 
@@ -6093,7 +6093,7 @@ const options = [
 
 ------
 
-## 2. 只返回最后一级（表单最常用）
+#### 只返回最后一级（表单最常用）
 
 🎯 使用场景
 
@@ -6160,7 +6160,7 @@ const options = [
 
 ------
 
-## 3. 禁止选择非叶子节点（真实业务）
+#### 禁止选择非叶子节点（真实业务）
 
 🎯 使用场景
 
@@ -6228,7 +6228,7 @@ const options = [
 
 ------
 
-## 4. 可搜索 Cascader（数据多必用）
+#### 可搜索 Cascader（数据多必用）
 
 🎯 使用场景
 
@@ -6289,7 +6289,7 @@ const options = [
 
 ------
 
-## 5. 动态加载（懒加载，接口必备）
+#### 动态加载（懒加载，接口必备）
 
 🎯 使用场景
 
@@ -6357,7 +6357,7 @@ const cascaderProps = {
 
 ------
 
-## 6. Cascader + Form（高频组合）
+#### Cascader + Form（高频组合）
 
 🎯 使用场景
 
@@ -6412,7 +6412,7 @@ const options = [
 
 ------
 
-## 7. Cascader 项目级配置速查
+#### Cascader 项目级配置速查
 
 ```ts
 :props="{
