@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import "echarts";  // 引入整个 ECharts
+/** 注册 ECharts 模块 */
+import "@/plugins/echarts";
 
 const app = createApp(App);
 
