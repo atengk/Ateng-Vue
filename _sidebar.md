@@ -19,7 +19,7 @@
 
 - 图表
   - [Apache ECharts（待）](/apps/apache-echarts/)
-  - [Vue3 ECharts（待）](/apps/vue3-echarts/)
+  - [Vue3 ECharts](/apps/vue3-echarts/)
 
 - 工具
   - [Vite](/apps/vite/)
