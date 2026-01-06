@@ -1,0 +1,39 @@
+.code-wrapper {
+    margin: 16px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f6f8fa;
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
+    font-size: 12px;
+    background: #f0f2f5;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.code-lang {
+    font-weight: 600;
+    color: #57606a;
+    text-transform: lowercase;
+}
+
+.code-copy {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #0969da;
+}
+
+.code-copy:hover {
+    text-decoration: underline;
+}
+
+.code-wrapper pre {
+    margin: 0;
+    padding: 12px;
+    background: transparent;
+}
