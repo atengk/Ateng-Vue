@@ -24,7 +24,7 @@
     - [Element Plus（待）](/apps/element-plus/)
 
 - 图表
-    - [Apache ECharts（待）](/apps/apache-echarts/)
+    - [Apache ECharts](/apps/apache-echarts/)
     - [Vue3 ECharts](/apps/vue3-echarts/)
 
 - 工具
