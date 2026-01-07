@@ -2,6 +2,12 @@
 
 ---
 
+## 开始项目工程
+
+参考文档：[链接](/deploy.md)
+
+---
+
 ## 📚 全站索引
 
 - 网络请求
@@ -21,8 +27,10 @@
     - [SCSS](/apps/scss/)
 
 - UI
-    - [Element Plus（待）](/apps/element-plus/)
-
+    - [Element Plus](/apps/element-plus/)
+    - [Element Plus 全局使用](/apps/element-plus/global.md)
+    - [Element Plus 示例使用](/apps/element-plus/examples.md)
+    
 - 图表
     - [Apache ECharts](/apps/apache-echarts/)
     - [Vue3 ECharts](/apps/vue3-echarts/)
