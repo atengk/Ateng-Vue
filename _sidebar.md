@@ -47,5 +47,6 @@
     - [html2canvas HTML渲染器](/apps/html2canvas/)
     - [DOM to Image 生成图像](/apps/dom-to-image/)
     - [vue-cropper 图片裁剪](/apps/vue-cropper/)
-- AI
-    - [Markdown 解析器](/apps/markdown-it/)
+- Markdown渲染
+    - [markdown-it](/apps/markdown-it/)
+    - [Marked](/apps/marked/)
