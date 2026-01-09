@@ -9,7 +9,7 @@ Vben Admin 5 是一套基于 Vue3、Vite、TypeScript 的现代化中后台管�
 ## 当前环境
 
 ```
-node: v22.21.1
+node: v22
 pnpm: 10.12.4
 ```
 
@@ -66,7 +66,7 @@ pnpm run dev:ele
 ```
 rm -rf apps/web-ele/node_modules
 cp -r apps/web-ele apps/ateng-web
-rm -rf apps/backend-mock apps/web-antd apps/web-ele apps/web-naive apps/web-tdesign 
+rm -rf apps/web-antd apps/web-ele apps/web-naive apps/web-tdesign 
 ```
 
 修改应用名称
@@ -91,13 +91,6 @@ rm -rf playground
 rm -rf docs
 ```
 
-如果你不需要`Mock`服务，你可以直接删除`apps/backend-mock`文件夹。同时在你的应用下`.env.development`文件中删除`VITE_NITRO_MOCK`变量。
-
-```
-# 是否开启 Nitro Mock服务，true 为开启，false 为关闭
-VITE_NITRO_MOCK=false
-```
-
 如果你想更进一步精简，你可以删除参考以下文件或者文件夹的作用，判断自己是否需要，不需要删除即可：
 
 ```
@@ -117,6 +110,12 @@ rm -rf .changeset .github .vscode scripts/deploy
 }
 ```
 
+**清理依赖**
+
+```
+pnpm prune
+```
+
 **安装依赖**
 
 ```
@@ -130,3 +129,77 @@ pnpm run dev:web
 ```
 
 ![image-20260109075158376](./assets/image-20260109075158376.png)
+
+
+
+## 添加页面
+
+参考文档：[链接](https://doc.vben.pro/guide/essentials/route.html)
+
+**添加页面**
+
+`src/views/system/user/index.vue`
+
+```vue
+<script lang="ts" setup>
+import { Page } from '@vben/common-ui';
+</script>
+
+<template>
+  <Page title="用户管理" description="Hello World 示例">
+    Hello, Vben Admin with Element Plus! 👋
+  </Page>
+</template>
+```
+
+**添加路由**
+
+`src/router/routes/modules/system.ts`
+
+```ts
+import type { RouteRecordRaw } from 'vue-router';
+
+const routes: RouteRecordRaw[] = [
+  {
+    meta: {
+      icon: 'ic:baseline-view-in-ar',
+      keepAlive: true,
+      order: 1000,
+      title: '系统管理',
+    },
+    name: 'System',
+    path: '/system',
+    children: [
+      {
+        meta: {
+          title: '用户管理',
+        },
+        name: 'user',
+        path: '/system/user',
+        component: () => import('#/views/system/user/index.vue'),
+      },
+    ],
+  },
+];
+
+export default routes;
+```
+
+
+
+## 组件使用
+
+### Page 常规页面组件
+
+提供一个常规页面布局的组件，包括头部、内容区域、底部三个部分。
+
+参考文档：[链接](https://doc.vben.pro/components/layout-ui/page.html)
+
+### Form 表单
+
+参考文档：[链接](https://doc.vben.pro/components/common-ui/vben-form.html)
+
+### Vxe Table 表格
+
+参考文档：[链接](https://doc.vben.pro/components/common-ui/vben-vxe-table.html)
+
