@@ -10,18 +10,18 @@
     - [Vue3组件](/apps/vue3-component/)
     - [TypeScript](/apps/typescript/)
 - 样式
-  - [CSS](/apps/css/)
-  - [SCSS](/apps/scss/)
+    - [CSS](/apps/css/)
+    - [SCSS](/apps/scss/)
 - UI
     - [Element Plus](/apps/element-plus/)
     - [Element Plus 全局使用](/apps/element-plus/global.md)
     - [Element Plus 示例使用](/apps/element-plus/examples.md)
 - 图表
-  - [Apache ECharts](/apps/apache-echarts/)
-  - [Vue3 ECharts](/apps/vue3-echarts/)
+    - [Apache ECharts](/apps/apache-echarts/)
+    - [Vue3 ECharts](/apps/vue3-echarts/)
 - 工具
-  - [Vite](/apps/vite/)
-  - [自定义工具类](/apps/custom-utils/)
+    - [Vite](/apps/vite/)
+    - [自定义工具类](/apps/custom-utils/)
 - 插件
     - [Number-Flow 数字流动动画](/apps/number-flow/)
     - [vue-offce 文档预览](/apps/vue-office/)
@@ -51,3 +51,9 @@
 - Markdown渲染
     - [markdown-it](/apps/markdown-it/)
     - [Marked](/apps/marked/)
+- VueUse 工具库
+    -  [core](/apps/vueuse-core/)
+    -  [integrations 代办](/apps/vueuse-integrations/)
+    -  [router 代办](/apps/vueuse-router/)
+    -  [math 代办](/apps/vueuse-math/)
+    -  [motion 代办](/apps/vueuse-motion/)
