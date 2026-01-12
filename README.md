@@ -35,6 +35,7 @@
     - [Vite](/apps/vite/)
     - [自定义工具类](/apps/custom-utils/)
 - 插件
+    - [autofit.js 窗口自适应工具](/apps/autofit/)
     - [Number-Flow 数字流动动画](/apps/number-flow/)
     - [vue-offce 文档预览](/apps/vue-office/)
     - [EmbedPDF PDF嵌入](/apps/embedpdf/)
