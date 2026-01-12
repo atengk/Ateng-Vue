@@ -1,22 +1,35 @@
 <template>
   <div class="app">
-    <h1>VueUse - useNProgress</h1>
+    <h1>用户信息</h1>
 
-    <button @click="load">模拟加载 2 秒</button>
+    <p v-if="payload">
+      用户名：{{ payload.name }} <br />
+      用户ID：{{ payload.userId }} <br />
+      权限：{{ payload.role }} <br />
+      Token 状态：
+      <strong>{{ isExpired ? '已过期' : '有效' }}</strong>
+    </p>
 
-    <p v-if="isLoading">加载中...</p>
+    <button @click="logout">清除 Token</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useNProgress } from '@vueuse/integrations/useNProgress'
+import { ref, computed } from 'vue'
+import { useCookies } from '@vueuse/integrations/useCookies'
+import { useJwt } from '@vueuse/integrations/useJwt'
 
-const { isLoading, start, done } = useNProgress()
+const cookies = useCookies()
+const token = ref(cookies.get<string>('token') || '')
 
-async function load() {
-  start()
-  await new Promise(resolve => setTimeout(resolve, 2000))
-  done()
+const { payload } = useJwt(token)
+
+const now = computed(() => Math.floor(Date.now() / 1000))
+const isExpired = computed(() => payload.value?.exp && payload.value.exp < now.value)
+
+function logout() {
+  cookies.remove('token', { path: '/' })
+  token.value = ''
 }
 </script>
 
@@ -25,7 +38,7 @@ async function load() {
   padding: 24px;
   font-family: sans-serif;
 }
-button {
-  padding: 8px 16px;
+strong {
+  color: #67c23a;
 }
 </style>

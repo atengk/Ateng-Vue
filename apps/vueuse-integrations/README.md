@@ -1649,6 +1649,14 @@ cookies.set('session', 'xxx', {
 
 ------
 
+**安装依赖**
+
+```
+pnpm add jwt-decode @vueuse/integrations
+```
+
+---
+
 **基本示例：解析 JWT Payload**
 
 > 输入一个 JWT 自动解析出 claims 信息
