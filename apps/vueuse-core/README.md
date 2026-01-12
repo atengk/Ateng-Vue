@@ -3093,8 +3093,6 @@ const str = useToString(timestamp)
 
 ## 传感器 / 用户交互（UI 体验）
 
-## 传感器 / 用户交互（UI 体验常用）
-
 ### onClickOutside（点击外部关闭组件）
 
 `onClickOutside` 是 VueUse 里**使用频率极高**的一个 Hook，用来监听：
@@ -3182,53 +3180,1428 @@ button {
 </style>
 ```
 
+### useIntersectionObserver（元素可见性监听 / 懒加载）
 
+`useIntersectionObserver` 是对浏览器 `IntersectionObserver` 的响应式封装，用来判断：
 
-### onClickOutside（点击外部关闭组件）
+> 一个元素是否进入了视口（可见区域）
 
-### useIntersectionObserver（元素进入视口监听）
+这是实现以下功能的核心：
+
+- 图片懒加载
+- 列表懒加载 / 无限滚动
+- 页面曝光埋点
+- 组件进入视口才渲染
+- 动画触发时机控制
+
+------
+
+完整可运行示例（模拟懒加载区块）
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useIntersectionObserver } from '@vueuse/core'
+
+/**
+ * 被监听的目标元素
+ */
+const targetRef = ref<HTMLElement | null>(null)
+
+/**
+ * 是否已经进入视口
+ */
+const isVisible = ref(false)
+
+/**
+ * 使用 useIntersectionObserver
+ */
+useIntersectionObserver(
+  targetRef,
+  ([{ isIntersecting }]) => {
+    isVisible.value = isIntersecting
+  },
+  {
+    threshold: 0.3,
+  }
+)
+</script>
+
+<template>
+  <div class="container">
+    <h1>useIntersectionObserver（元素可见性监听 / 懒加载）</h1>
+
+    <p>向下滚动，当灰色区域进入视口时触发加载效果</p>
+
+    <!-- 制造滚动空间 -->
+    <div class="spacer">上方占位区域</div>
+
+    <div ref="targetRef" class="observer-box">
+      <template v-if="isVisible">
+        <h2>内容已加载</h2>
+        <p>这个内容是进入视口后才显示的</p>
+      </template>
+      <template v-else>
+        <h2>等待进入视口...</h2>
+      </template>
+    </div>
+
+    <div class="spacer">下方占位区域</div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+}
+
+.spacer {
+  height: 500px;
+  background: repeating-linear-gradient(
+    45deg,
+    #f2f2f2,
+    #f2f2f2 10px,
+    #e5e5e5 10px,
+    #e5e5e5 20px
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888888;
+}
+
+.observer-box {
+  height: 200px;
+  margin: 40px 0;
+  border-radius: 8px;
+  background-color: #409eff;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+</style>
+```
 
 ### useElementSize（元素尺寸响应式）
 
+`useElementSize` 是对 `ResizeObserver` 的高级封装，用来让某个 DOM 元素的：
+
+- 宽度（width）
+- 高度（height）
+
+变成**响应式数据**。
+
+这是做以下功能的核心能力：
+
+- 图表组件自适应父容器
+- 拖拽面板尺寸变化
+- 自适应卡片布局
+- 编辑器 / 大屏组件自动重算尺寸
+
+------
+
+完整可运行示例（元素尺寸实时监听）
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useElementSize } from '@vueuse/core'
+
+/**
+ * 目标元素
+ */
+const boxRef = ref<HTMLElement | null>(null)
+
+/**
+ * 使用 useElementSize
+ */
+const { width, height } = useElementSize(boxRef)
+</script>
+
+<template>
+  <div class="container">
+    <h1>useElementSize（元素尺寸响应式）</h1>
+
+    <div ref="boxRef" class="resize-box">
+      <p>拖动浏览器窗口改变这个区域大小</p>
+      <p>宽度：{{ width }} px</p>
+      <p>高度：{{ height }} px</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+}
+
+.resize-box {
+  resize: both;
+  overflow: auto;
+  width: 300px;
+  height: 200px;
+  border: 2px dashed #409eff;
+  border-radius: 6px;
+  padding: 12px;
+  box-sizing: border-box;
+  background-color: #f5f9ff;
+}
+</style>
+```
+
+------
+
 ### useMouseInElement（鼠标在元素内的位置）
+
+`useMouseInElement` 用来获取**鼠标相对于某个元素内部的位置坐标**，而不是相对于整个窗口。
+
+它会给你一组非常实用的响应式数据：
+
+- `elementX` / `elementY` → 鼠标在元素内部的坐标
+- `elementWidth` / `elementHeight` → 元素尺寸
+- `isOutside` → 鼠标是否已移出元素
+
+典型应用：
+
+- 图片放大镜
+- hover 高亮区域
+- 跟随鼠标的小提示
+- 图表 tooltip 自定义定位
+- 卡片 3D 跟随效果
+
+------
+
+完整可运行示例（鼠标跟随点）
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useMouseInElement } from '@vueuse/core'
+
+/**
+ * 目标元素
+ */
+const boxRef = ref<HTMLElement | null>(null)
+
+/**
+ * 使用 useMouseInElement
+ */
+const {
+  elementX,
+  elementY,
+  isOutside,
+} = useMouseInElement(boxRef)
+</script>
+
+<template>
+  <div class="container">
+    <h1>useMouseInElement（鼠标在元素内的位置）</h1>
+
+    <div ref="boxRef" class="mouse-box">
+      <div
+        v-if="!isOutside"
+        class="dot"
+        :style="{
+          left: elementX + 'px',
+          top: elementY + 'px',
+        }"
+      ></div>
+      <p class="info">
+        X: {{ Math.round(elementX) }} ,
+        Y: {{ Math.round(elementY) }}
+      </p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+}
+
+.mouse-box {
+  position: relative;
+  width: 400px;
+  height: 260px;
+  border: 2px solid #409eff;
+  border-radius: 8px;
+  background-color: #f0f6ff;
+  overflow: hidden;
+}
+
+.dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #f56c6c;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.info {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+</style>
+```
+
+------
 
 ### useResizeObserver（DOM 尺寸变化监听）
 
-### useMagicKeys（快捷键系统）
+`useResizeObserver` 是对浏览器原生 `ResizeObserver` 的响应式封装，用来监听某个 DOM 元素尺寸变化时触发回调。
+
+它比 `useElementSize` 更“底层”，适合这些场景：
+
+- 你不只关心宽高，还要自己处理更多逻辑
+- 图表组件 resize
+- 虚拟列表重新计算布局
+- 复杂容器尺寸变化联动
+- 自定义自适应算法
+
+一句话定位：
+
+> useResizeObserver = ResizeObserver 的 Vue 响应式工程版
+
+------
+
+完整可运行示例（监听并显示元素尺寸变化）
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useResizeObserver } from '@vueuse/core'
+
+/**
+ * 目标元素
+ */
+const boxRef = ref<HTMLElement | null>(null)
+
+/**
+ * 当前尺寸信息
+ */
+const size = ref({
+  width: 0,
+  height: 0,
+})
+
+/**
+ * 使用 useResizeObserver 监听尺寸变化
+ */
+useResizeObserver(boxRef, (entries) => {
+  const entry = entries[0]
+  if (!entry) return
+  const { width, height } = entry.contentRect
+  size.value.width = Math.round(width)
+  size.value.height = Math.round(height)
+})
+</script>
+
+<template>
+  <div class="container">
+    <h1>useResizeObserver（DOM 尺寸变化监听）</h1>
+
+    <div ref="boxRef" class="resize-box">
+      <p>拖动右下角改变大小</p>
+      <p>当前宽度：{{ size.width }} px</p>
+      <p>当前高度：{{ size.height }} px</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+}
+
+.resize-box {
+  resize: both;
+  overflow: auto;
+  width: 300px;
+  height: 200px;
+  border: 2px solid #67c23a;
+  border-radius: 6px;
+  padding: 12px;
+  box-sizing: border-box;
+  background-color: #f0f9eb;
+}
+</style>
+```
+
+### useMagicKeys（键盘快捷键与组合键监听）
+
+`useMagicKeys` 用来将**键盘按键状态变成响应式数据**，让你可以非常优雅地实现：
+
+- 单键监听（Enter、Esc、Space…）
+- 组合键（Ctrl + S、Ctrl + Shift + K…）
+- 连续操作快捷键
+- 全局快捷键系统
+
+这是做：
+
+- 编辑器类系统
+- 后台管理系统快捷键
+- 设计工具
+- 大屏系统快捷操作
+
+的必备 Hook。
+
+------
+
+完整可运行示例（监听常见快捷键）
+
+```vue
+<script setup lang="ts">
+import { watch } from 'vue'
+import { useMagicKeys } from '@vueuse/core'
+
+/**
+ * 使用 useMagicKeys
+ */
+const keys = useMagicKeys()
+
+/**
+ * 定义快捷键
+ */
+const ctrlS = keys['Ctrl+S']
+const esc = keys.Escape
+const enter = keys.Enter
+const ctrlShiftK = keys['Ctrl+Shift+K']
+</script>
+
+<template>
+  <div class="container">
+    <h1>useMagicKeys（键盘快捷键与组合键监听）</h1>
+
+    <div class="card">
+      <p>按下：</p>
+      <ul>
+        <li><b>Ctrl + S</b> → 模拟保存</li>
+        <li><b>Enter</b> → 确认操作</li>
+        <li><b>Esc</b> → 取消操作</li>
+        <li><b>Ctrl + Shift + K</b> → 组合操作</li>
+      </ul>
+    </div>
+
+    <div class="card status">
+      <p>Ctrl + S：{{ ctrlS ? '按下中' : '未按下' }}</p>
+      <p>Enter：{{ enter ? '按下中' : '未按下' }}</p>
+      <p>Esc：{{ esc ? '按下中' : '未按下' }}</p>
+      <p>Ctrl + Shift + K：{{ ctrlShiftK ? '按下中' : '未按下' }}</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+}
+
+.card {
+  border: 1px solid #dcdcdc;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.status p {
+  font-family: monospace;
+}
+</style>
+```
+
+------
+
+更工程化写法（只在触发时执行一次逻辑）：
+
+```ts
+import { watch } from 'vue'
+
+watch(ctrlS, (v) => {
+  if (v) {
+    console.log('触发保存逻辑')
+  }
+})
+
+watch(esc, (v) => {
+  if (v) {
+    console.log('触发取消逻辑')
+  }
+})
+```
+
+------
 
 ### useIdle（用户闲置检测）
+
+`useIdle` 用来检测用户是否在一段时间内**没有任何操作行为**，并将状态变成响应式数据。
+
+它内部监听：
+
+- 鼠标移动
+- 键盘输入
+- 点击
+- 触摸
+- 滚动等
+
+常见业务场景：
+
+- 后台系统自动退出登录
+- 页面长时间无操作锁屏
+- 重要操作前的活跃校验
+- 提示“你还在吗？”
+
+一句话定位：
+
+> useIdle = 前端版“心跳检测”
+
+------
+
+完整可运行示例（10 秒无操作即进入闲置）
+
+```vue
+<script setup lang="ts">
+import {useIdle} from '@vueuse/core'
+
+/**
+ * 10 秒无操作视为闲置
+ */
+const {
+  idle,
+  lastActive,
+} = useIdle(10_000)
+</script>
+
+<template>
+  <div class="container">
+    <h1>useIdle（用户闲置检测）</h1>
+
+    <div class="card">
+      <p>状态：{{ idle ? '闲置中' : '活跃中' }}</p>
+      <p>最后一次操作时间：{{ new Date(lastActive).toLocaleTimeString() }}</p>
+    </div>
+
+    <div class="tip">
+      <p>尝试：</p>
+      <ul>
+        <li>保持不操作 10 秒 → 进入闲置</li>
+        <li>移动鼠标或点击 → 立刻恢复活跃</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+}
+
+.card {
+  border: 1px solid #dcdcdc;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.tip {
+  background-color: #f8f8f8;
+  padding: 12px;
+  border-radius: 6px;
+}
+</style>
+```
 
 ---
 
 ## 状态 & 响应式增强（工程核心）
 
-useAsyncState（异步状态管理）
+### useAsyncState（异步状态管理）
 
-useRefHistory（状态历史 / 撤销重做）
+`useAsyncState` 是 VueUse 里最“工程化”的 Hook 之一，它把你平时手写的：
 
-useStorage（统一 Storage 抽象）
+- loading
+- error
+- data
+- retry
+- 执行状态控制
 
-useLocalStorageAsync（异步本地存储）
+全部封装成一个标准模型。
 
-createGlobalState（全局状态容器）
+一句话定位：
 
-createSharedComposable（共享组合式函数）
+> useAsyncState = async + loading + error 的标准化解决方案
 
----
+在真实项目中，它几乎就是：
+
+```ts
+const { state, isLoading, error, execute } = useAsyncState(...)
+```
+
+替代你 10 多行样板代码。
+
+------
+
+完整可运行示例（模拟接口请求）
+
+```vue
+<script setup lang="ts">
+import { useAsyncState } from '@vueuse/core'
+
+/**
+ * 模拟一个异步接口
+ */
+function mockRequest() {
+  return new Promise<string>((resolve, reject) => {
+    setTimeout(() => {
+      if (Math.random() > 0.3) {
+        resolve('请求成功：' + new Date().toLocaleTimeString())
+      } else {
+        reject(new Error('请求失败，请重试'))
+      }
+    }, 1500)
+  })
+}
+
+/**
+ * 使用 useAsyncState
+ */
+const {
+  state,
+  isLoading,
+  error,
+  execute,
+} = useAsyncState(mockRequest, '', {
+  immediate: false,
+})
+</script>
+
+<template>
+  <div class="container">
+    <h1>useAsyncState（异步状态管理）</h1>
+
+    <button @click="execute()" :disabled="isLoading">
+      {{ isLoading ? '请求中...' : '发送请求' }}
+    </button>
+
+    <div class="card">
+      <p v-if="isLoading">加载中...</p>
+      <p v-else-if="error">错误：{{ error }}</p>
+      <p v-else>结果：{{ state }}</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+}
+
+button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  background-color: #409eff;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #a0cfff;
+  cursor: not-allowed;
+}
+
+.card {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+}
+</style>
+```
+
+------
+
+### useRefHistory（状态历史 / 撤销重做）
+
+`useRefHistory` 用来给任意一个 `ref` 增加“历史记录能力”，也就是：
+
+- 记录每一次状态变化
+- 支持撤销（undo）
+- 支持重做（redo）
+- 非常适合表单编辑、画布编辑、配置修改等场景
+
+一句话定位：
+
+> useRefHistory = 前端 Undo / Redo 的标准实现
+
+------
+
+完整可运行示例（文本编辑撤销/重做）
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRefHistory } from '@vueuse/core'
+
+/**
+ * 被记录历史的状态
+ */
+const text = ref('Hello VueUse')
+
+/**
+ * 使用 useRefHistory
+ */
+const {
+  history,
+  undo,
+  redo,
+  canUndo,
+  canRedo,
+  clear,
+} = useRefHistory(text, {
+  capacity: 20,
+})
+</script>
+
+<template>
+  <div class="container">
+    <h1>useRefHistory（状态历史 / 撤销重做）</h1>
+
+    <textarea
+      v-model="text"
+      rows="4"
+      class="input"
+      placeholder="修改内容后尝试撤销 / 重做"
+    ></textarea>
+
+    <div class="actions">
+      <button @click="undo" :disabled="!canUndo">撤销 Undo</button>
+      <button @click="redo" :disabled="!canRedo">重做 Redo</button>
+      <button @click="clear">清空历史</button>
+    </div>
+
+    <div class="card">
+      <p>当前值：{{ text }}</p>
+      <p>历史长度：{{ history.length }}</p>
+      <p>可撤销：{{ canUndo }}</p>
+      <p>可重做：{{ canRedo }}</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.actions {
+  margin-top: 12px;
+}
+
+.actions button {
+  margin-right: 8px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  background-color: #409eff;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.actions button:disabled {
+  background-color: #a0cfff;
+  cursor: not-allowed;
+}
+
+.card {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+}
+</style>
+```
+
+------
+
+### createGlobalState（全局状态容器）
+
+`createGlobalState` 用来创建一个**真正的全局响应式状态**，
+无论在多少个组件中调用，拿到的都是**同一份数据实例**。
+
+它本质上就是 VueUse 给你提供的一个“轻量版全局 Store”。
+
+一句话定位：
+
+> createGlobalState = 不用 Pinia / Vuex 也能优雅管理全局状态
+
+非常适合：
+
+- 用户信息
+- 主题设置
+- 权限数据
+- 全局配置
+- 是否登录状态
+
+------
+
+完整可运行示例（在 App.vue 里模拟多个组件共享状态）
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { createGlobalState } from '@vueuse/core'
+
+/**
+ * 创建一个全局状态
+ * 只会初始化一次
+ */
+const useGlobalCounter = createGlobalState(() => {
+  const count = ref(0)
+
+  function increment() {
+    count.value++
+  }
+
+  function decrement() {
+    count.value--
+  }
+
+  function reset() {
+    count.value = 0
+  }
+
+  return {
+    count,
+    increment,
+    decrement,
+    reset,
+  }
+})
+
+/**
+ * 模拟两个“组件”同时使用同一个全局状态
+ */
+const counterA = useGlobalCounter()
+const counterB = useGlobalCounter()
+</script>
+
+<template>
+  <div class="container">
+    <h1>createGlobalState（全局状态容器）</h1>
+
+    <div class="card">
+      <h2>组件 A</h2>
+      <p>count：{{ counterA.count }}</p>
+      <button @click="counterA.increment">+1</button>
+      <button @click="counterA.decrement">-1</button>
+    </div>
+
+    <div class="card">
+      <h2>组件 B</h2>
+      <p>count：{{ counterB.count }}</p>
+      <button @click="counterB.increment">+1</button>
+      <button @click="counterB.decrement">-1</button>
+      <button @click="counterB.reset">重置</button>
+    </div>
+
+    <div class="card result">
+      <h2>说明</h2>
+      <p>无论操作 A 还是 B，本质都在修改同一个全局状态。</p>
+      <p>这就是 createGlobalState 的核心价值。</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.card {
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+button {
+  margin-right: 6px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #409eff;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.result {
+  background-color: #f8f8f8;
+}
+</style>
+```
+
+------
+
+### createSharedComposable（共享组合式函数）
+
+`createSharedComposable` 用来让一个组合式函数在多个地方调用时，
+**共享同一份内部状态，而不是每次都重新创建一份。**
+
+一句话定位：
+
+> createSharedComposable = 让普通 useXxx 变成“可共享状态”的 useXxx
+
+适合场景：
+
+- 多个组件共用一个请求结果
+- 多个组件共用一个计时器
+- 多个组件共用一份缓存数据
+- 避免重复初始化副作用逻辑
+
+------
+
+完整可运行示例（在 App.vue 中模拟多个组件共享一个组合式函数）
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { createSharedComposable, useIntervalFn } from '@vueuse/core'
+
+/**
+ * 普通组合式函数
+ * 内部有状态和副作用
+ */
+function useSharedCounterBase() {
+  const count = ref(0)
+
+  // 每秒自增
+  const { pause, resume } = useIntervalFn(() => {
+    count.value++
+  }, 1000)
+
+  function reset() {
+    count.value = 0
+  }
+
+  return {
+    count,
+    pause,
+    resume,
+    reset,
+  }
+}
+
+/**
+ * 通过 createSharedComposable 包装
+ * 多个地方调用时共享同一个实例
+ */
+const useSharedCounter = createSharedComposable(useSharedCounterBase)
+
+/**
+ * 模拟两个“组件”同时使用
+ */
+const counterA = useSharedCounter()
+const counterB = useSharedCounter()
+</script>
+
+<template>
+  <div class="container">
+    <h1>createSharedComposable（共享组合式函数）</h1>
+
+    <div class="card">
+      <h2>组件 A</h2>
+      <p>count：{{ counterA.count }}</p>
+      <button @click="counterA.resume">开始</button>
+      <button @click="counterA.pause">暂停</button>
+      <button @click="counterA.reset">重置</button>
+    </div>
+
+    <div class="card">
+      <h2>组件 B</h2>
+      <p>count：{{ counterB.count }}</p>
+      <button @click="counterB.resume">开始</button>
+      <button @click="counterB.pause">暂停</button>
+      <button @click="counterB.reset">重置</button>
+    </div>
+
+    <div class="card result">
+      <h2>说明</h2>
+      <p>组件 A 和 组件 B 拿到的是同一个计数器实例。</p>
+      <p>无论在哪个地方操作，count 都会同步变化。</p>
+      <p>这就是 createSharedComposable 的核心作用。</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.card {
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+button {
+  margin-right: 6px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #409eff;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.result {
+  background-color: #f8f8f8;
+}
+</style>
+```
+
+------
 
 ## 实用工具（效率型）
 
-useEventBus（全局事件总线）
+### useEventBus（全局事件总线）
 
-useCounter（计数器模型）
+`useEventBus` 提供了一个**超轻量级的事件通信机制**，
+用来在组件之间进行“发布-订阅”式通信，不需要父子关系、不用 props / emit。
 
-useCycleList（循环切换值）
+一句话定位：
 
-useBase64（Base64 编解码）
+> useEventBus = Vue 里的小型 EventEmitter
 
-useConfirmDialog（事件式确认框）
+适合场景：
 
-useWebWorkerFn（Worker 多线程）
+- 跨组件通知（刷新列表、关闭弹窗）
+- 解耦模块之间的通信
+- 简单事件广播（不值得上 Pinia 的那种）
 
----
+------
+
+完整可运行示例（在 App.vue 中模拟多个组件通信）
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useEventBus } from '@vueuse/core'
+
+/**
+ * 创建一个事件总线
+ * key 只要保证全局唯一即可
+ */
+type Message = {
+  from: string
+  text: string
+}
+
+const messageBus = useEventBus<Message>('global-message-bus')
+
+/**
+ * 模拟组件 A：发送消息
+ */
+function sendFromA() {
+  messageBus.emit({
+    from: '组件 A',
+    text: 'Hello from A',
+  })
+}
+
+/**
+ * 模拟组件 B：发送消息
+ */
+function sendFromB() {
+  messageBus.emit({
+    from: '组件 B',
+    text: 'Hi from B',
+  })
+}
+
+/**
+ * 模拟组件 C：接收消息
+ */
+const messages = ref<Message[]>([])
+
+messageBus.on((event) => {
+  messages.value.push(event)
+})
+</script>
+
+<template>
+  <div class="container">
+    <h1>useEventBus（全局事件总线）</h1>
+
+    <div class="card">
+      <h2>组件 A</h2>
+      <button @click="sendFromA">发送消息</button>
+    </div>
+
+    <div class="card">
+      <h2>组件 B</h2>
+      <button @click="sendFromB">发送消息</button>
+    </div>
+
+    <div class="card">
+      <h2>组件 C（消息接收方）</h2>
+      <ul>
+        <li v-for="(item, index) in messages" :key="index">
+          {{ item.from }}：{{ item.text }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="card result">
+      <h2>说明</h2>
+      <p>组件 A 和 B 通过 useEventBus 发送消息。</p>
+      <p>组件 C 订阅事件后，可以收到所有广播的数据。</p>
+      <p>三者之间完全解耦，没有任何父子关系依赖。</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.card {
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+button {
+  margin-right: 6px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #409eff;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.result {
+  background-color: #f8f8f8;
+}
+</style>
+```
+
+------
+
+### useCounter（计数器模型）
+
+`useCounter` 是一个开箱即用的计数器 Hook，
+帮你封装了「加 / 减 / 设值 / 重置」这些最常见的操作。
+
+一句话定位：
+
+> useCounter = 标准化的计数器状态模型
+
+------
+
+完整可运行示例（App.vue）
+
+```vue
+<script setup lang="ts">
+import { useCounter } from '@vueuse/core'
+
+/**
+ * 初始化一个计数器
+ * 默认值为 0
+ * 可以传入初始值：useCounter(10)
+ */
+const {
+  count,
+  inc,
+  dec,
+  set,
+  reset,
+} = useCounter(0, {
+  min: 0,
+  max: 10,
+})
+</script>
+
+<template>
+  <div class="container">
+    <h1>useCounter（计数器模型）</h1>
+
+    <div class="card">
+      <p>当前值：{{ count }}</p>
+
+      <button @click="dec()">-1</button>
+      <button @click="inc()">+1</button>
+      <button @click="set(5)">设为 5</button>
+      <button @click="reset()">重置</button>
+    </div>
+
+    <div class="card result">
+      <h2>说明</h2>
+      <p>这是一个带最小值 0、最大值 10 的计数器。</p>
+      <p>超过范围时，值会被自动限制在区间内。</p>
+      <p>适用于数量选择、页码控制、步进器等场景。</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.card {
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+button {
+  margin-right: 6px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #409eff;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.result {
+  background-color: #f8f8f8;
+}
+</style>
+```
+
+------
+
+### useCycleList（循环切换值）
+
+`useCycleList` 用来在一组固定值中**循环切换当前值**，
+非常适合做主题切换、状态切换、模式轮询等功能。
+
+一句话定位：
+
+> useCycleList = 在一个数组里不断 next / prev 循环切换
+
+------
+
+完整可运行示例（App.vue）
+
+```vue
+<script setup lang="ts">
+import { useCycleList } from '@vueuse/core'
+
+/**
+ * 定义一个循环列表
+ * 可以是字符串、数字、对象等任意类型
+ */
+const {
+  state,
+  next,
+  prev,
+  index,
+} = useCycleList(['春天', '夏天', '秋天', '冬天'])
+</script>
+
+<template>
+  <div class="container">
+    <h1>useCycleList（循环切换值）</h1>
+
+    <div class="card">
+      <p>当前索引：{{ index }}</p>
+      <p>当前值：{{ state }}</p>
+
+      <button @click="prev()">上一个</button>
+      <button @click="next()">下一个</button>
+    </div>
+
+    <div class="card result">
+      <h2>说明</h2>
+      <p>点击“下一个”会在数组末尾自动回到开头。</p>
+      <p>点击“上一个”会在数组开头自动回到末尾。</p>
+      <p>整个过程是一个无限循环。</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.card {
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+button {
+  margin-right: 6px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #409eff;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.result {
+  background-color: #f8f8f8;
+}
+</style>
+```
+
+------
+
+### useWebWorkerFn（Worker 多线程）
+
+`useWebWorkerFn` 用来把一个**计算密集型函数放入 Web Worker**，
+在后台线程运行而不会阻塞主线程，返回结果是 Promise 异步响应。
+
+一句话定位：
+
+> useWebWorkerFn = 前端计算密集任务“搬到后台线程”轻松处理
+
+------
+
+完整可运行示例（App.vue）
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useWebWorkerFn } from '@vueuse/core'
+
+// 定义一个计算密集型函数（例如大数组求和）
+function heavySum(n: number) {
+  let sum = 0
+  for (let i = 0; i < n; i++) {
+    sum += i
+  }
+  return sum
+}
+
+// 将函数包装为 Web Worker 版本
+const { workerFn } = useWebWorkerFn(heavySum)
+
+const input = ref(100000000)
+const result = ref<number | null>(null)
+const loading = ref(false)
+
+async function handleCompute() {
+  loading.value = true
+  result.value = await workerFn(input.value)
+  loading.value = false
+}
+</script>
+
+<template>
+  <div class="container">
+    <h1>useWebWorkerFn（Worker 多线程）</h1>
+
+    <div class="card">
+      <label>输入数字：</label>
+      <input type="number" v-model.number="input" />
+
+      <button @click="handleCompute" :disabled="loading">
+        {{ loading ? '计算中...' : '开始计算' }}
+      </button>
+
+      <p v-if="result !== null">计算结果：{{ result }}</p>
+    </div>
+
+    <div class="card result">
+      <h2>说明</h2>
+      <p>heavySum 函数在 Web Worker 中执行，不阻塞主线程。</p>
+      <p>即使计算大量数据，页面依然可以响应用户操作。</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.card {
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+input {
+  width: 100%;
+  padding: 6px 8px;
+  margin: 8px 0;
+  border-radius: 4px;
+  border: 1px solid #dcdcdc;
+}
+
+button {
+  margin-right: 6px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #409eff;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #a0cfff;
+  cursor: not-allowed;
+}
+
+.result {
+  background-color: #f8f8f8;
+}
+</style>
+```
 

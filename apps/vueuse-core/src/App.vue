@@ -1,38 +1,49 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onClickOutside } from '@vueuse/core'
+import { useWebWorkerFn } from '@vueuse/core'
 
-/**
- * 弹窗是否显示
- */
-const visible = ref(false)
+// 定义一个计算密集型函数（例如大数组求和）
+function heavySum(n: number) {
+  let sum = 0
+  for (let i = 0; i < n; i++) {
+    sum += i
+  }
+  return sum
+}
 
-/**
- * 弹窗 DOM 引用
- */
-const popupRef = ref<HTMLElement | null>(null)
+// 将函数包装为 Web Worker 版本
+const { workerFn } = useWebWorkerFn(heavySum)
 
-/**
- * 监听点击弹窗外部
- */
-onClickOutside(popupRef, () => {
-  visible.value = false
-})
+const input = ref(100000000)
+const result = ref<number | null>(null)
+const loading = ref(false)
+
+async function handleCompute() {
+  loading.value = true
+  result.value = await workerFn(input.value)
+  loading.value = false
+}
 </script>
 
 <template>
   <div class="container">
-    <h1>onClickOutside（点击外部关闭组件）</h1>
+    <h1>useWebWorkerFn（Worker 多线程）</h1>
 
-    <button @click="visible = true">打开弹窗</button>
+    <div class="card">
+      <label>输入数字：</label>
+      <input type="number" v-model.number="input" />
 
-    <div
-        v-if="visible"
-        ref="popupRef"
-        class="popup"
-    >
-      <h3>我是弹窗</h3>
-      <p>点击弹窗外部区域会自动关闭</p>
+      <button @click="handleCompute" :disabled="loading">
+        {{ loading ? '计算中...' : '开始计算' }}
+      </button>
+
+      <p v-if="result !== null">计算结果：{{ result }}</p>
+    </div>
+
+    <div class="card result">
+      <h2>说明</h2>
+      <p>heavySum 函数在 Web Worker 中执行，不阻塞主线程。</p>
+      <p>即使计算大量数据，页面依然可以响应用户操作。</p>
     </div>
   </div>
 </template>
@@ -40,24 +51,40 @@ onClickOutside(popupRef, () => {
 <style scoped>
 .container {
   padding: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.card {
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+input {
+  width: 100%;
+  padding: 6px 8px;
+  margin: 8px 0;
+  border-radius: 4px;
+  border: 1px solid #dcdcdc;
 }
 
 button {
-  padding: 6px 14px;
+  margin-right: 6px;
+  padding: 6px 12px;
   border: none;
+  border-radius: 4px;
   background-color: #409eff;
   color: #ffffff;
-  border-radius: 4px;
   cursor: pointer;
 }
 
-.popup {
-  width: 260px;
-  margin-top: 16px;
-  padding: 16px;
-  border: 1px solid #dcdcdc;
-  border-radius: 6px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+button:disabled {
+  background-color: #a0cfff;
+  cursor: not-allowed;
+}
+
+.result {
+  background-color: #f8f8f8;
 }
 </style>
