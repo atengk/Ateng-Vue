@@ -22,6 +22,7 @@
 - 工具
     - [Vite](/apps/vite/)
     - [自定义工具类](/apps/custom-utils/)
+    - [Day.js 时间处理库](/apps/dayjs/)
 - 插件
     - [autofit.js 窗口自适应工具](/apps/autofit/)
     - [Number-Flow 数字流动动画](/apps/number-flow/)
