@@ -55,9 +55,6 @@
 - VueUse 工具库
     - [core](/apps/vueuse-core/)
     - [integrations](/apps/vueuse-integrations/)
-    - [router 代办](/apps/vueuse-router/)
-    - [math 代办](/apps/vueuse-math/)
-    - [motion 代办](/apps/vueuse-motion/)
 - WebSocket
     - [WebSocket](/apps/web-socket/)
     - [STOMP](/apps/stomp/)
