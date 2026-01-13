@@ -1,32 +1,55 @@
 <template>
   <div class="app">
-    <h1>Day.js 时区与标准时间类示例</h1>
+    <h1>Day.js 基础日期能力示例（严格 TS 类型版）</h1>
 
-    <!-- 1. UTC 时间处理 -->
+    <!-- 1. 日期创建与获取 -->
     <section>
-      <h2>1. UTC 时间处理</h2>
-      <p>本地当前时间：{{ localNow }}</p>
-      <p>UTC 当前时间：{{ utcNow }}</p>
-      <p>UTC 转为本地时间：{{ utcToLocal }}</p>
+      <h2>1. 日期创建与获取</h2>
+      <p>当前时间：{{ now }}</p>
+      <p>指定字符串创建：{{ fromString }}</p>
+      <p>指定时间戳创建：{{ fromTimestamp }}</p>
     </section>
 
-    <!-- 2. 时区时间处理 -->
+    <!-- 2. 日期格式化 -->
     <section>
-      <h2>2. 时区时间处理</h2>
-      <p>原始时间（UTC）：{{ baseUtcTime }}</p>
-      <p>上海时间（Asia/Shanghai）：{{ shanghaiTime }}</p>
-      <p>东京时间（Asia/Tokyo）：{{ tokyoTime }}</p>
-      <p>纽约时间（America/New_York）：{{ newYorkTime }}</p>
+      <h2>2. 日期格式化</h2>
+      <p>YYYY-MM-DD：{{ formattedDate }}</p>
+      <p>YYYY-MM-DD HH:mm:ss：{{ formattedDateTime }}</p>
     </section>
 
-    <!-- 3. 与后端时间格式统一处理 -->
+    <!-- 3. 日期解析 -->
     <section>
-      <h2>3. 与后端时间格式统一处理</h2>
+      <h2>3. 日期解析</h2>
+      <p>解析字符串 "2026/01/13"：{{ parsedDate }}</p>
+    </section>
 
-      <p>后端返回时间（ISO/UTC）：{{ backendTime }}</p>
-      <p>前端展示用本地时间：{{ frontendDisplayTime }}</p>
+    <!-- 4. 获取时间戳 -->
+    <section>
+      <h2>4. 获取时间戳</h2>
+      <p>当前时间戳（毫秒）：{{ timestamp }}</p>
+    </section>
 
-      <p>前端提交给后端（统一 UTC ISO）：{{ frontendSubmitTime }}</p>
+    <!-- 5. 时间戳转日期 -->
+    <section>
+      <h2>5. 时间戳转日期</h2>
+      <p>时间戳 {{ timestamp }} 转日期：{{ timestampToDate }}</p>
+    </section>
+
+    <!-- 6. 判断日期是否合法 -->
+    <section>
+      <h2>6. 判断日期是否合法</h2>
+      <p>"2026-01-13" 是否合法：{{ validDate }}</p>
+      <p>"invalid-date" 是否合法：{{ invalidDate }}</p>
+    </section>
+
+    <!-- 7. 序列化与反序列化 -->
+    <section>
+      <h2>7. 序列化与反序列化</h2>
+      <p>序列化为字符串：{{ serializedString }}</p>
+      <p>反序列化字符串后格式化：{{ deserializedFromString }}</p>
+
+      <p>序列化为时间戳：{{ serializedTimestamp }}</p>
+      <p>反序列化时间戳后格式化：{{ deserializedFromTimestamp }}</p>
     </section>
   </div>
 </template>
@@ -34,66 +57,77 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import dayjs, { Dayjs } from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 
-dayjs.extend(utc)
-dayjs.extend(timezone)
+dayjs.extend(customParseFormat)
 
 /**
- * 一、UTC 时间处理
+ * 统一的格式常量，避免魔法字符串
  */
-const localNowDayjs: Dayjs = dayjs()
-const utcNowDayjs: Dayjs = dayjs().utc()
-
-const localNow = ref<string>(localNowDayjs.format('YYYY-MM-DD HH:mm:ss'))
-const utcNow = ref<string>(utcNowDayjs.format('YYYY-MM-DD HH:mm:ss [UTC]'))
-
-const utcToLocal = ref<string>(
-    utcNowDayjs.local().format('YYYY-MM-DD HH:mm:ss')
-)
+type DateFormat = 'YYYY-MM-DD' | 'YYYY-MM-DD HH:mm:ss'
+const DATE_FORMAT: DateFormat = 'YYYY-MM-DD'
+const DATETIME_FORMAT: DateFormat = 'YYYY-MM-DD HH:mm:ss'
 
 /**
- * 二、时区时间处理
- * 统一基准时间使用 UTC，避免跨系统时间偏差
+ * 1. 日期创建与获取
  */
-const baseUtcDayjs: Dayjs = dayjs.utc('2026-01-13T08:00:00Z')
-const baseUtcTime = ref<string>(baseUtcDayjs.format())
+const nowDayjs: Dayjs = dayjs()
+const now = ref<string>(nowDayjs.format(DATETIME_FORMAT))
 
-const shanghaiTime = ref<string>(
-    baseUtcDayjs.tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')
-)
+const fromStringDayjs: Dayjs = dayjs('2026-01-13')
+const fromString = ref<string>(fromStringDayjs.format(DATE_FORMAT))
 
-const tokyoTime = ref<string>(
-    baseUtcDayjs.tz('Asia/Tokyo').format('YYYY-MM-DD HH:mm:ss')
-)
-
-const newYorkTime = ref<string>(
-    baseUtcDayjs.tz('America/New_York').format('YYYY-MM-DD HH:mm:ss')
+const fromTimestampDayjs: Dayjs = dayjs(1700000000000)
+const fromTimestamp = ref<string>(
+    fromTimestampDayjs.format(DATETIME_FORMAT)
 )
 
 /**
- * 三、与后端时间格式统一处理
+ * 2. 日期格式化
+ */
+const formattedDate = ref<string>(nowDayjs.format(DATE_FORMAT))
+const formattedDateTime = ref<string>(nowDayjs.format(DATETIME_FORMAT))
+
+/**
+ * 3. 日期解析
+ */
+const parsedDayjs: Dayjs = dayjs('2026/01/13', 'YYYY/MM/DD')
+const parsedDate = ref<string>(parsedDayjs.format(DATE_FORMAT))
+
+/**
+ * 4. 获取时间戳
+ */
+const timestamp = ref<number>(nowDayjs.valueOf())
+
+/**
+ * 5. 时间戳转日期
+ */
+const timestampToDate = ref<string>(
+    dayjs(timestamp.value).format(DATETIME_FORMAT)
+)
+
+/**
+ * 6. 判断日期是否合法
+ */
+const validDate = ref<boolean>(dayjs('2026-01-13').isValid())
+const invalidDate = ref<boolean>(dayjs('invalid-date').isValid())
+
+/**
+ * 7. 序列化与反序列化
  * 约定：
- * - 后端统一使用 UTC + ISO8601
- * - 前端展示转为本地时间
- * - 前端提交再转回 UTC
+ * - 字符串序列化使用 ISO8601
+ * - 时间戳序列化使用毫秒级 number
  */
+const serializedString = ref<string>(nowDayjs.toISOString())
 
-// 模拟后端返回的时间（UTC ISO 格式）
-const backendTime = ref<string>('2026-01-13T08:00:00Z')
-
-// 前端解析后端时间并转为本地时间展示
-const frontendDisplayTime = ref<string>(
-    dayjs.utc(backendTime.value).local().format('YYYY-MM-DD HH:mm:ss')
+const deserializedFromString = ref<string>(
+    dayjs(serializedString.value).format(DATETIME_FORMAT)
 )
 
-// 前端用户编辑后的时间（假设是本地时间字符串）
-const userInputLocalTime = '2026-01-13 20:00:00'
+const serializedTimestamp = ref<number>(nowDayjs.valueOf())
 
-// 提交给后端时统一转为 UTC ISO 格式
-const frontendSubmitTime = ref<string>(
-    dayjs(userInputLocalTime).utc().toISOString()
+const deserializedFromTimestamp = ref<string>(
+    dayjs(serializedTimestamp.value).format(DATETIME_FORMAT)
 )
 </script>
 

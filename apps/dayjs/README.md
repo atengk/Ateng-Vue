@@ -29,7 +29,7 @@ pnpm add dayjs@1.11.19
 ```vue
 <template>
   <div class="app">
-    <h1>Day.js 基础日期能力示例</h1>
+    <h1>Day.js 基础日期能力示例（严格 TS 类型版）</h1>
 
     <!-- 1. 日期创建与获取 -->
     <section>
@@ -85,57 +85,78 @@ pnpm add dayjs@1.11.19
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 
 dayjs.extend(customParseFormat)
 
 /**
+ * 统一的格式常量，避免魔法字符串
+ */
+type DateFormat = 'YYYY-MM-DD' | 'YYYY-MM-DD HH:mm:ss'
+const DATE_FORMAT: DateFormat = 'YYYY-MM-DD'
+const DATETIME_FORMAT: DateFormat = 'YYYY-MM-DD HH:mm:ss'
+
+/**
  * 1. 日期创建与获取
  */
-const now = ref(dayjs().format('YYYY-MM-DD HH:mm:ss'))
-const fromString = ref(dayjs('2026-01-13').format('YYYY-MM-DD'))
-const fromTimestamp = ref(dayjs(1700000000000).format('YYYY-MM-DD HH:mm:ss'))
+const nowDayjs: Dayjs = dayjs()
+const now = ref<string>(nowDayjs.format(DATETIME_FORMAT))
+
+const fromStringDayjs: Dayjs = dayjs('2026-01-13')
+const fromString = ref<string>(fromStringDayjs.format(DATE_FORMAT))
+
+const fromTimestampDayjs: Dayjs = dayjs(1700000000000)
+const fromTimestamp = ref<string>(
+  fromTimestampDayjs.format(DATETIME_FORMAT)
+)
 
 /**
  * 2. 日期格式化
  */
-const formattedDate = ref(dayjs().format('YYYY-MM-DD'))
-const formattedDateTime = ref(dayjs().format('YYYY-MM-DD HH:mm:ss'))
+const formattedDate = ref<string>(nowDayjs.format(DATE_FORMAT))
+const formattedDateTime = ref<string>(nowDayjs.format(DATETIME_FORMAT))
 
 /**
  * 3. 日期解析
  */
-const parsed = dayjs('2026/01/13', 'YYYY/MM/DD')
-const parsedDate = ref(parsed.format('YYYY-MM-DD'))
+const parsedDayjs: Dayjs = dayjs('2026/01/13', 'YYYY/MM/DD')
+const parsedDate = ref<string>(parsedDayjs.format(DATE_FORMAT))
 
 /**
  * 4. 获取时间戳
  */
-const timestamp = ref(dayjs().valueOf())
+const timestamp = ref<number>(nowDayjs.valueOf())
 
 /**
  * 5. 时间戳转日期
  */
-const timestampToDate = ref(dayjs(timestamp.value).format('YYYY-MM-DD HH:mm:ss'))
+const timestampToDate = ref<string>(
+  dayjs(timestamp.value).format(DATETIME_FORMAT)
+)
 
 /**
  * 6. 判断日期是否合法
  */
-const validDate = ref(dayjs('2026-01-13').isValid())
-const invalidDate = ref(dayjs('invalid-date').isValid())
+const validDate = ref<boolean>(dayjs('2026-01-13').isValid())
+const invalidDate = ref<boolean>(dayjs('invalid-date').isValid())
 
 /**
  * 7. 序列化与反序列化
+ * 约定：
+ * - 字符串序列化使用 ISO8601
+ * - 时间戳序列化使用毫秒级 number
  */
-const serializedString = ref(dayjs().toISOString())
-const deserializedFromString = ref(
-  dayjs(serializedString.value).format('YYYY-MM-DD HH:mm:ss')
+const serializedString = ref<string>(nowDayjs.toISOString())
+
+const deserializedFromString = ref<string>(
+  dayjs(serializedString.value).format(DATETIME_FORMAT)
 )
 
-const serializedTimestamp = ref(dayjs().valueOf())
-const deserializedFromTimestamp = ref(
-  dayjs(serializedTimestamp.value).format('YYYY-MM-DD HH:mm:ss')
+const serializedTimestamp = ref<number>(nowDayjs.valueOf())
+
+const deserializedFromTimestamp = ref<string>(
+  dayjs(serializedTimestamp.value).format(DATETIME_FORMAT)
 )
 </script>
 
