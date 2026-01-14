@@ -24,8 +24,10 @@
     - [自定义工具类](/apps/custom-utils/)
     - [Day.js 时间处理库](/apps/dayjs/)
     - [Lodash ES 工具库](/apps/lodash-es/)
-- 插件
+- 大屏自适应
     - [autofit.js 窗口自适应工具](/apps/autofit/)
+    - [v-scale-screen 大屏自适应容器组件](/apps/v-scale-screen/)
+- 插件
     - [Number-Flow 数字流动动画](/apps/number-flow/)
     - [vue-offce 文档预览](/apps/vue-office/)
     - [EmbedPDF PDF嵌入](/apps/embedpdf/)
