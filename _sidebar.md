@@ -59,6 +59,8 @@
 - VueUse 工具库
     - [core](/apps/vueuse-core/)
     - [integrations](/apps/vueuse-integrations/)
-- WebSocket
+- 实时通信
     - [WebSocket](/apps/web-socket/)
     - [STOMP](/apps/stomp/)
+    - [SSE](/apps/sse/)
+    - [MQTT](/apps/mqtt/)

@@ -4,6 +4,8 @@ STOMP 是一种基于文本的简单消息传输协议，建立在 WebSocket 之
 
 - [官网地址](https://stomp.github.io/)
 
+- [后端参考](https://atengk.github.io/dev/#/work/Ateng-Java/realtime/stomp/)
+
 
 
 ## 基础配置
