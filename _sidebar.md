@@ -18,7 +18,7 @@
     - [Element Plus 示例使用](/apps/element-plus/examples.md)
 - 图表
     - [Apache ECharts](/apps/apache-echarts/)
-    - [Vue3 ECharts](/apps/vue3-echarts/)
+    - [Vue3 ECharts](/apps/vue-echarts/)
 - 工具
     - [Vite](/apps/vite/)
     - [自定义工具类](/apps/custom-utils/)
