@@ -4,6 +4,8 @@ SSE（Server-Sent Events）是一种基于 HTTP 的服务器主动推送技术�
 
 - [官网地址](https://developer.mozilla.org/zh-CN/docs/Web/API/EventSource)
 
+- [后端参考](https://atengk.github.io/dev/#/work/Ateng-Java/realtime/sse/)
+
 
 
 ## 基础配置
