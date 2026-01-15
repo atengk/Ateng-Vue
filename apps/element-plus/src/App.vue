@@ -1,57 +1,19 @@
 <template>
-  <div class="app-root">
-    <h1>System Monitor</h1>
-    <!-- 表格区 -->
-    <div>
-      <el-table
-          :data="tableData"
-          stripe
-          border
-          highlight-current-row
-          height="360"
-      >
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="name" label="Service Name" />
-        <el-table-column prop="status" label="Status" width="120">
-          <template #default="{ row }">
-            <el-tag
-                :type="row.status === 'Running' ? 'success' : 'danger'"
-                effect="dark"
-            >
-              {{ row.status }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="cpu" label="CPU (%)" width="120" />
-        <el-table-column prop="memory" label="Memory (MB)" width="140" />
-        <el-table-column label="Action" width="160">
-          <template #default>
-            <el-button size="small" type="primary">Detail</el-button>
-            <el-button size="small" type="danger">Stop</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-  </div>
+  <el-image :src="imgUrl" style="width: 200px; height: 120px;" />
+  <el-button @click="switchImg">切换图片</el-button>
 </template>
 
 <script setup lang="ts">
-interface ServiceInfo {
-  id: number
-  name: string
-  status: 'Running' | 'Stopped'
-  cpu: number
-  memory: number
-}
+import { ref } from 'vue';
 
-const tableData: ServiceInfo[] = [
-  { id: 1, name: 'Auth Service', status: 'Running', cpu: 12, memory: 256 },
-  { id: 2, name: 'Gateway', status: 'Running', cpu: 28, memory: 512 },
-  { id: 3, name: 'Order Service', status: 'Stopped', cpu: 0, memory: 0 },
-  { id: 4, name: 'Message Queue', status: 'Running', cpu: 35, memory: 768 },
-  { id: 5, name: 'File Storage', status: 'Running', cpu: 18, memory: 384 },
-]
+const list = [
+  'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
+  'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg'
+];
+
+const imgUrl = ref(list[0]);
+
+const switchImg = () => {
+  imgUrl.value = imgUrl.value === list[0] ? list[1] : list[0];
+};
 </script>
-
-<style scoped>
-</style>

@@ -5404,6 +5404,919 @@ form.file
 
 ------
 
+### Image 图片
+
+#### 基础显示图片
+
+`el-image` 最基础的用法，用于展示网络图片或静态资源图片。
+
+📌 **示例：网络图片加载**
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>基础显示图片示例</h3>
+
+      <el-image
+          src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+          style="width: 200px; height: 120px; border-radius: 4px;"
+      />
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+// 无业务逻辑
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+</style>
+```
+
+📌 **说明**
+
+- `src` 属性用于指定图片资源
+- 通过 `style` 或 `class` 控制宽高和圆角
+- 若不指定宽高，图片会按原始尺寸渲染
+
+📌 **支持的类型**
+
+`src` 支持：
+
+- 网络地址（HTTP / HTTPS）
+- 本地静态资源（需 import / new URL）
+- Base64
+- Blob URL
+
+```ts
+const imgBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...'
+const imgBlob = URL.createObjectURL(file)
+```
+
+> 后面章节会讲静态资源图片与预览功能。
+
+------
+
+#### 加载失败占位 (`slot="error"`)
+
+当图片加载失败时，可以通过 `error` 插槽展示自定义兜底 UI（如提示文本、图标等）。
+
+📌 **示例**
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>加载失败占位示例</h3>
+
+      <!-- 使用错误地址模拟加载失败 -->
+      <el-image
+        src="https://xxx-not-exist.png"
+        style="width: 200px; height: 120px;"
+      >
+        <!-- 加载失败的兜底内容 -->
+        <template #error>
+          <div class="image-slot">加载失败</div>
+        </template>
+      </el-image>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+// 无逻辑
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+
+.image-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #f56c6c;
+  font-size: 14px;
+  background: #fef0f0;
+  border: 1px solid #fde2e2;
+  border-radius: 4px;
+}
+</style>
+```
+
+---
+
+📌 **说明**
+
+* `slot="error"` 用于定义图片加载失败时的占位内容
+* 通常用于显示：
+  ✔ 提示文案
+  ✔ 占位图
+  ✔ 错误图标
+  ✔ 重试按钮
+
+示例中的 `src` 使用不存在的链接模拟加载失败，便于演示。
+
+---
+
+#### 加载中占位 (`slot="placeholder"`)
+
+当图片正在加载过程中，可以使用 `placeholder` 插槽展示 **加载中占位元素**（例如：骨架屏、loading 图标等），改善用户体验。
+
+------
+
+📌 **示例**
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>加载中占位示例</h3>
+
+      <!-- 使用真实存在的图片模拟加载过程 -->
+      <el-image
+        src="https://element-plus.org/images/element-plus-logo.svg"
+        style="width: 200px; height: 120px;"
+      >
+        <!-- 加载中的占位内容 -->
+        <template #placeholder>
+          <div class="placeholder-slot">加载中...</div>
+        </template>
+      </el-image>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+// 无逻辑
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+
+.placeholder-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 14px;
+  color: #909399;
+  background: #f4f4f5;
+  border-radius: 4px;
+}
+</style>
+```
+
+------
+
+📌 **说明**
+
+- `slot="placeholder"` 会在图片加载完成之前显示
+- 推荐用于：
+  ✔ loading 图标
+  ✔ 骨架屏
+  ✔ 字样提示
+
+📌 **与 `slot="error"` 区别**
+
+| 插槽        | 触发时机   |
+| ----------- | ---------- |
+| placeholder | 图片加载中 |
+| error       | 加载失败   |
+
+------
+
+#### fit 图片填充模式
+
+`el-image` 的 `fit` 属性类似于 CSS 的 `object-fit`，用于控制图片如何在容器中显示。
+常用的 5 个模式：
+
+- `fill`
+- `contain`
+- `cover`
+- `none`
+- `scale-down`
+
+下面示例展示这些模式在固定容器下的不同效果。
+
+------
+
+📌 **示例**
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>fit 图片填充模式示例</h3>
+
+      <div class="fit-list">
+        <div class="fit-item" v-for="mode in fitModes" :key="mode">
+          <p class="fit-title">{{ mode }}</p>
+          <el-image
+            src="https://element-plus.org/images/element-plus-logo.svg"
+            :fit="mode"
+          />
+        </div>
+      </div>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+const fitModes = ['fill', 'contain', 'cover', 'none', 'scale-down'];
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+
+.fit-list {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.fit-item {
+  width: 150px;
+  text-align: center;
+}
+
+.fit-title {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #606266;
+}
+
+.fit-item .el-image {
+  width: 150px;
+  height: 100px;
+  border-radius: 4px;
+  background: #f5f7fa;
+  border: 1px solid #ebeef5;
+}
+</style>
+```
+
+------
+
+📌 **模式说明**
+
+| fit          | 效果说明                                | 适用场景                       |
+| ------------ | --------------------------------------- | ------------------------------ |
+| `fill`       | 拉伸铺满，会变形                        | 不建议（除非确定宽高相同比例） |
+| `contain`    | 保持比例完整展示，可能留白              | 海报、商品图片                 |
+| `cover`      | 裁切铺满，不留白                        | 头像、banner                   |
+| `none`       | 使用原始大小                            | 精细图查看                     |
+| `scale-down` | 取 `none` 与 `contain` 中较小的显示方式 | 图标、logo                     |
+
+------
+
+好的，继续给出 **图片预览功能** 示例，使用 Element Plus 官网图片资源，保持文档风格一致。
+
+------
+
+#### 图片预览功能
+
+通过设置 `preview-src-list` 属性，可以开启点击图片时的预览（Lightbox）功能。
+支持：
+
+✔ 放大缩小
+✔ 拖拽移动
+✔ Esc 退出
+✔ 点击遮罩关闭
+
+------
+
+📌 **示例**
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>图片预览功能示例</h3>
+
+      <el-image
+        style="width: 200px; height: 120px; cursor: pointer;"
+        src="https://element-plus.org/images/element-plus-logo.svg"
+        :preview-src-list="previewList"
+      />
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+const previewList = [
+  'https://element-plus.org/images/element-plus-logo.svg'
+];
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+</style>
+```
+
+------
+
+📌 **说明**
+
+- `preview-src-list` **必须是数组**
+- 当点击图片时，会自动打开预览弹层
+- 预览层显示列表中的所有图片（当前图匹配第一张）
+
+------
+
+📌 **多图切换提示**
+
+虽然这里示例只有 1 张图片，`preview-src-list` 为数组是为了支持多图浏览（下一节会写）。
+
+------
+
+#### 多图预览
+
+当有多张图片时，只要这些图片的 `preview-src-list` 属性传入同一数组，就可以实现 **点击任意一张 → 进入多图切换预览** 功能。
+
+在预览 viewer 中可以：
+
+✔ 左右切换
+✔ 缩放/拖拽
+✔ Esc 退出
+
+------
+
+📌 **示例**
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>多图预览示例</h3>
+
+      <div class="multi-list">
+        <el-image
+          v-for="(url, index) in previewList"
+          :key="index"
+          :src="url"
+          :preview-src-list="previewList"
+          style="width: 200px; height: 120px; cursor: pointer;"
+        />
+      </div>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+const previewList = [
+  'https://element-plus.org/images/element-plus-logo.svg',
+  'https://element-plus.org/images/element-plus-logo-light.svg',
+  'https://element-plus.org/images/element-plus-logo-small.svg'
+];
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+
+.multi-list {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+</style>
+```
+
+------
+
+📌 **实现关键点**
+
+1. 每一个 `el-image` 的 `preview-src-list` 要传递 **同一个数组**
+2. 数组中的顺序就是预览时的左右切换顺序
+3. `cursor: pointer;` 手势提示用户可预览
+
+------
+
+📌 **实战场景**
+
+多图预览非常常见于：
+
+✔ 个人中心 → 照片上传
+✔ 产品管理后台 → 商品图库
+✔ 工单系统 → 附件图片集
+✔ 社区或问答 → 图片内容展示
+
+------
+
+#### 静态资源图片支持（Vite 中必须）
+
+在 Vite 中，如果要显示项目中的本地静态图片（如 `src/assets` 下的文件），必须正确处理路径，否则无法加载。
+
+Element Plus 的 `el-image` 支持以下方式：
+
+------
+
+✅ **方式一：使用 `import` 引入**
+
+适用于 TypeScript + Vite（推荐方式）
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>静态资源图片（import）示例</h3>
+
+      <el-image
+        style="width: 200px; height: 120px;"
+        :src="logo"
+      />
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+import logo from '@/assets/element-logo.png';
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+</style>
+```
+
+📌 **特点**
+
+- 支持构建打包
+- 路径经过 Vite 处理，不会失效
+- 支持类型推导
+
+------
+
+✅ **方式二：使用 `new URL()`（官方推荐 Vite 方案）**
+
+适用于不想 `import` 的情况：
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>静态资源图片（URL）示例</h3>
+
+      <el-image
+        style="width: 200px; height: 120px;"
+        :src="logoUrl"
+      />
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+const logoUrl = new URL('@/assets/element-logo.png', import.meta.url).href;
+</script>
+```
+
+📌 **适用场景**
+
+- 图片名称动态（如根据变量拼接）
+- 动态主题切换
+- 不走 `import` 的组件封装
+
+------
+
+#### 响应式显示（结合 CSS）
+
+`el-image` 本身不会强制控制图片比例，因此在实际业务中常与 CSS 配合实现各种响应式效果，例如：
+
+✔ 缩略图
+✔ 宽度自适应
+✔ 图片网格展示
+✔ 等比例裁切（配合 `fit`）
+
+下面展示常用的响应式缩略图布局。
+
+------
+
+📌 **示例：等比例缩略图 + 自适应布局**
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>响应式显示（缩略图示例）</h3>
+
+      <div class="responsive-list">
+        <el-image
+          v-for="(url, index) in imgList"
+          :key="index"
+          :src="url"
+          fit="cover"
+          class="thumb"
+        />
+      </div>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+const imgList = [
+  'https://element-plus.org/images/element-plus-logo.svg',
+  'https://element-plus.org/images/element-plus-logo-light.svg',
+  'https://element-plus.org/images/element-plus-logo-small.svg',
+  'https://element-plus.org/images/element-plus-logo.svg',
+  'https://element-plus.org/images/element-plus-logo-light.svg'
+];
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+
+/* 响应式图片容器 */
+.responsive-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* 缩略图样式 */
+.thumb {
+  width: 150px;
+  height: 100px;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #f5f7fa;
+  border: 1px solid #ebeef5;
+}
+</style>
+```
+
+------
+
+📌 **说明**
+
+- `fit="cover"` 用于裁切铺满容器（常见缩略图方案）
+- `.responsive-list` 使用 `flex-wrap` 实现自动换行
+- `width` 和 `height` 控制缩略图展示尺寸
+- 可通过媒体查询实现更高级响应式
+
+------
+
+📌 **扩展：宽度自适应容器**
+
+如果希望按容器宽度自动缩放：
+
+```css
+.thumb {
+  width: 100%;
+  height: auto;
+}
+```
+
+但此时建议配合 `object-fit` 或 `fit` 控制比例：
+
+```vue
+<el-image fit="contain" />
+```
+
+------
+
+📌 **实战场景**
+
+响应式显示在后台系统中非常常见：
+
+✔ 商品图片列表
+✔ 工单附件图展示
+✔ 用户上传相册预览
+✔ CMS 缩略图展示
+✔ 内容流瀑布布局（配合 Masonry）
+
+------
+
+#### 图片懒加载（`lazy`）
+
+通过为 `el-image` 添加 `lazy` 属性，可以实现当图片进入可视区域时再加载，从而提升长列表或大量图片页面的性能。
+
+懒加载适用于：
+
+✔ 图片较多（如相册、商品列表）
+✔ 页面较长（如 feed 流、动态列表）
+✔ 大图场景节省带宽
+
+------
+
+📌 **示例：懒加载长列表**
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>图片懒加载示例（可滚动容器）</h3>
+
+      <!-- 模拟一个小窗口 -->
+      <div class="scroll-box">
+        <div class="lazy-list">
+          <el-image
+              v-for="(url, index) in imgList"
+              :key="index"
+              :src="url"
+              lazy
+              class="lazy-item"
+              fit="cover"
+          />
+        </div>
+      </div>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+// 多放点图片，更容易看到懒加载效果
+const imgList = Array.from({ length: 30 }).map((_, i) => {
+  const imgs = [
+    'https://element-plus.org/images/element-plus-logo.svg',
+    'https://element-plus.org/images/element-plus-logo-light.svg',
+    'https://element-plus.org/images/element-plus-logo-small.svg'
+  ]
+  return imgs[i % 3]
+})
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+
+/* 模拟一个“小窗口” */
+.scroll-box {
+  width: 260px;
+  height: 300px;
+  border: 1px solid #dcdfe6;
+  border-radius: 6px;
+  overflow-y: auto;
+  padding: 12px;
+  background: #fff;
+}
+
+/* 图片列表 */
+.lazy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 单个图片 */
+.lazy-item {
+  width: 200px;
+  height: 120px;
+  border-radius: 6px;
+  background: #f5f7fa;
+  border: 1px solid #ebeef5;
+}
+</style>
+```
+
+------
+
+📌 **说明**
+
+- 添加 `lazy` 后图片只有在进入视口时才会触发加载
+- `fit="cover"` 确保缩略图裁切且不变形
+
+------
+
+📌 **注意事项**
+
+1. `lazy` 依赖浏览器的 `IntersectionObserver`
+    - 若浏览器不支持，需要自行 polyfill
+2. 懒加载默认监听窗口滚动，如果在滚动容器内使用，需要保证容器有 `overflow: auto`：
+
+```html
+<div style="height: 400px; overflow: auto;">
+  <!-- 懒加载图片 -->
+</div>
+```
+
+------
+
+📌 **适用场景**
+
+- 商品相册
+- 用户照片墙
+- 工单附件图片
+- 内容流（如朋友圈、feed）
+- 大屏展示
+
+------
+
+#### 控制预览行为
+
+`el-image` 的图片预览功能支持多种行为控制，可通过以下属性调整：
+
+- `initial-index`：进入预览时的初始图片索引
+- `hide-on-click-modal`：点击遮罩是否关闭
+- `zoom-rate`：缩放速率
+- `min-scale` / `max-scale`：缩放范围
+- `preview-teleported`：预览层是否 Teleport 到 `body`
+
+下面示例展示最常见的行为控制。
+
+------
+
+📌 **示例：设置初始预览索引**
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>控制预览行为示例（初始索引）</h3>
+
+      <div class="control-list">
+        <el-image
+          v-for="(url, index) in previewList"
+          :key="index"
+          :src="url"
+          :preview-src-list="previewList"
+          :initial-index="2"
+          class="control-item"
+          fit="cover"
+        />
+      </div>
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+const previewList = [
+  'https://element-plus.org/images/element-plus-logo.svg',
+  'https://element-plus.org/images/element-plus-logo-light.svg',
+  'https://element-plus.org/images/element-plus-logo-small.svg'
+];
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+
+.control-list {
+  display: flex;
+  gap: 16px;
+}
+
+.control-item {
+  width: 200px;
+  height: 120px;
+  cursor: pointer;
+  border-radius: 6px;
+  background: #f5f7fa;
+  border: 1px solid #ebeef5;
+}
+</style>
+```
+
+------
+
+📌 **说明**
+
+在上述示例中：
+
+- `:initial-index="2"` 表示无论点击哪一张图片，进入预览后默认展示数组中 **第 3 张图片**
+- 实际应用中可以动态控制预览的起点（例如查看某条评论对应的图片）
+
+------
+
+📌 **其他行为控制字段（补充说明）**
+
+以下为 `el-image-viewer`（内置 Viewer 组件）支持的一些有用行为控制：
+
+| 属性                  | 类型      | 功能                                   |
+| --------------------- | --------- | -------------------------------------- |
+| `initial-index`       | `number`  | 初始显示的图片下标                     |
+| `hide-on-click-modal` | `boolean` | 点击遮罩是否关闭                       |
+| `zoom-rate`           | `number`  | 缩放速率                               |
+| `min-scale`           | `number`  | 最小缩放比例                           |
+| `max-scale`           | `number`  | 最大缩放比例                           |
+| `preview-teleported`  | `boolean` | Teleport 到 body（避免 overflow 隐藏） |
+
+------
+
+📌 **实战用途示例**
+
+- 图片列表有分页 → 打开指定页对应的图片
+- 聊天窗口/工单系统 → 打开指定附件图片
+- 内容评论区 → 点击图片预览从当前那张开始
+
+------
+
+#### 禁止点击预览
+
+当图片只用于展示（例如 Logo、背景图、缩略图等），不希望用户点击后进入预览模式时，可以通过以下方式禁用预览：
+
+**方式一：不设置 `preview-src-list` 属性（最推荐）**
+
+------
+
+📌 **示例**
+
+```vue
+<template>
+  <el-container class="page-container">
+    <el-main>
+      <h3>禁止点击预览示例</h3>
+
+      <el-image
+        style="width: 200px; height: 120px;"
+        src="https://element-plus.org/images/element-plus-logo.svg"
+        fit="cover"
+        class="no-preview-item"
+      />
+    </el-main>
+  </el-container>
+</template>
+
+<script setup lang="ts">
+// 无业务逻辑
+</script>
+
+<style scoped>
+.page-container {
+  padding: 16px;
+}
+
+.no-preview-item {
+  border-radius: 6px;
+  background: #f5f7fa;
+  border: 1px solid #ebeef5;
+}
+</style>
+```
+
+------
+
+📌 **说明**
+
+- 只要不提供 `preview-src-list`，图片点击后不会进入预览层
+- 推荐这种方式控制行为，简单且明确
+
+------
+
+**方式二：给空数组**
+
+```vue
+<el-image :preview-src-list="[]" src="..." />
+```
+
+但这种方式不如不写属性直观，通常不推荐。
+
+------
+
+📌 **适用场景**
+
+✔ LOGO 展示
+✔ Avatar 头像（点击进入编辑而非预览）
+✔ 业务纯展示图片（如推广图、图标）
+✔ UI 背景图
+
+------
+
+#### 数据切换图片
+
+当响应式数据中的图片地址变化时，`el-image` **会自动更新显示**。
+
+```vue
+<template>
+  <el-image :src="imgUrl" style="width: 200px; height: 120px;" />
+  <el-button @click="switchImg">切换图片</el-button>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const list = [
+  'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
+  'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg'
+];
+
+const imgUrl = ref(list[0]);
+
+const switchImg = () => {
+  imgUrl.value = imgUrl.value === list[0] ? list[1] : list[0];
+};
+</script>
+```
+
+
 ### Tree 树形控件（权限 / 组织结构 / 菜单）
 
 > **Tree 是后台系统里最容易写“能跑但不可用”的组件**
