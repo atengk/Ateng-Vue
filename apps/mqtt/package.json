@@ -11,6 +11,7 @@
     "build:test": "vite build --mode test"
   },
   "dependencies": {
+    "mqtt": "^5.14.1",
     "vue": "^3.5.21"
   },
   "devDependencies": {
