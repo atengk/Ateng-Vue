@@ -54,6 +54,7 @@
     - [DOM to Image 生成图像](/apps/dom-to-image/)
     - [vue-cropper 图片裁剪](/apps/vue-cropper/)
 - Markdown渲染
+    - [markstream-vue](/apps/markstream-vue/)
     - [markdown-it](/apps/markdown-it/)
     - [Marked](/apps/marked/)
 - VueUse 工具库
