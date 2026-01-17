@@ -31,7 +31,7 @@ import 'markstream-vue/index.css'
 **安装依赖**
 
 ```
-pnpm add markstream-vue stream-markdown monaco-editor stream-monaco shiki mermaid katex @antv/infographic @antv/g6 stream-markdown-parser
+pnpm add markstream-vue stream-markdown monaco-editor stream-monaco shiki mermaid katex @antv/infographic @antv/g6
 ```
 
 **全局引入样式**
