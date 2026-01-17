@@ -27,6 +27,7 @@
 - 大屏自适应
     - [autofit.js 窗口自适应工具](/apps/autofit/)
     - [v-scale-screen 大屏自适应容器组件](/apps/v-scale-screen/)
+    - [screenfull 全屏组件](/apps/screenfull/)
 - 插件
     - [Number-Flow 数字流动动画](/apps/number-flow/)
     - [vue-offce 文档预览](/apps/vue-office/)
