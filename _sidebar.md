@@ -55,6 +55,7 @@
     - [html2canvas HTML渲染器](/apps/html2canvas/)
     - [DOM to Image 生成图像](/apps/dom-to-image/)
     - [vue-cropper 图片裁剪](/apps/vue-cropper/)
+    - [Browser Image Compression 图像压缩](/apps/browser-image-compression/)
 - Markdown渲染
     - [markstream-vue](/apps/markstream-vue/)
     - [markdown-it](/apps/markdown-it/)
