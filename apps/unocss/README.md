@@ -802,15 +802,121 @@ createApp(App).mount('#app');
 
 ### 基础写法
 
-- `p="4"`
-- `m="2"`
-- `text="red-500 xl"`
-- `bg="gray-100"`
+```vue
+<template>
+  <div
+    p="6"
+    bg="gray-100"
+    class="space-y-4"
+  >
+    <!-- 基础间距 -->
+    <div
+      p="4"
+      m="2"
+      bg="white"
+      rounded
+      shadow
+    >
+      基础 p / m 示例
+    </div>
+
+    <!-- 文字样式 -->
+    <div
+      p="4"
+      text="red-500 xl"
+      bg="gray-50"
+      rounded
+    >
+      红色 + 大字号文本
+    </div>
+
+    <!-- 混合使用响应式 -->
+    <div
+      p="2 md:6"
+      text="blue-600 sm lg"
+      bg="blue-50"
+      rounded
+    >
+      响应式 Attributify 示例
+    </div>
+  </div>
+</template>
+```
+
+| 属性写法                | 作用                             | 等价 Tailwind 类                      | 等价 CSS                                 |
+| ----------------------- | -------------------------------- | ------------------------------------- | ---------------------------------------- |
+| `p="4"`                 | 内边距 1rem                      | `p-4`                                 | `padding: 1rem;`                         |
+| `m="2"`                 | 外边距 0.5rem                    | `m-2`                                 | `margin: 0.5rem;`                        |
+| `text="red-500"`        | 文字颜色红色                     | `text-red-500`                        | `color: #ef4444;`                        |
+| `text="xl"`             | 大字号文本                       | `text-xl`                             | `font-size: 1.25rem;`                    |
+| `text="red-500 xl"`     | 文字颜色 + 字号组合              | `text-red-500 text-xl`                | 颜色 + 字号                              |
+| `bg="gray-100"`         | 背景浅灰                         | `bg-gray-100`                         | `background-color: #f3f4f6;`             |
+| `p="2 md:6"`            | 小屏 padding 0.5rem，大屏 1.5rem | `p-2 md:p-6`                          | 媒体查询控制 padding                     |
+| `text="blue-600 sm lg"` | 响应式字号                       | `text-blue-600 sm:text-sm lg:text-lg` | 不同断点不同字号                         |
+| `rounded`               | 圆角                             | `rounded`                             | `border-radius: 0.25rem;`                |
+| `shadow`                | 阴影                             | `shadow`                              | `box-shadow: 0 1px 3px rgba(0,0,0,0.1);` |
+
+> Attributify 模式本质就是：
+> 把原本写在 `class` 里的工具类，拆分成**语义化属性**，
+> 更适合 Vue / JSX 场景，结构更清晰，特别适合复杂组件和表单布局。
 
 ### 布局属性化
 
-- `flex="~ col"`
-- `grid="~ cols-3 gap-4"`
+```vue
+<template>
+  <div p="6" bg="gray-100" class="space-y-6">
+
+    <!-- Flex 布局属性化 -->
+    <div
+      flex="~ col"
+      gap="4"
+      p="4"
+      bg="white"
+      rounded
+      shadow
+    >
+      <div class="bg-blue-100 p-2 rounded">Item 1</div>
+      <div class="bg-blue-100 p-2 rounded">Item 2</div>
+      <div class="bg-blue-100 p-2 rounded">Item 3</div>
+    </div>
+
+    <!-- Grid 布局属性化 -->
+    <div
+      grid="~ cols-3 gap-4"
+      p="4"
+      bg="white"
+      rounded
+      shadow
+    >
+      <div class="bg-green-100 p-2 rounded">A</div>
+      <div class="bg-green-100 p-2 rounded">B</div>
+      <div class="bg-green-100 p-2 rounded">C</div>
+      <div class="bg-green-100 p-2 rounded">D</div>
+      <div class="bg-green-100 p-2 rounded">E</div>
+      <div class="bg-green-100 p-2 rounded">F</div>
+    </div>
+
+  </div>
+</template>
+```
+
+| 属性写法                | 作用                   | 等价类名写法             | 等价 CSS                                 |
+| ----------------------- | ---------------------- | ------------------------ | ---------------------------------------- |
+| `flex="~"`              | 启用 flex 布局         | `flex`                   | `display: flex;`                         |
+| `flex="~ col"`          | 纵向 flex 容器         | `flex flex-col`          | `display: flex; flex-direction: column;` |
+| `flex="~ row"`          | 横向 flex 容器（默认） | `flex flex-row`          | `display: flex; flex-direction: row;`    |
+| `grid="~"`              | 启用 grid 布局         | `grid`                   | `display: grid;`                         |
+| `grid="~ cols-3"`       | 3 列网格               | `grid-cols-3`            | `grid-template-columns: repeat(3, 1fr);` |
+| `grid="~ gap-4"`        | 网格间距               | `gap-4`                  | `gap: 1rem;`                             |
+| `grid="~ cols-3 gap-4"` | 3 列 + 间距组合        | `grid grid-cols-3 gap-4` | 同上组合                                 |
+| `gap="4"`               | 子元素间距             | `gap-4`                  | `gap: 1rem;`                             |
+| `p="4"`                 | 内边距                 | `p-4`                    | `padding: 1rem;`                         |
+| `bg="white"`            | 白色背景               | `bg-white`               | `background-color: #ffffff;`             |
+| `rounded`               | 圆角                   | `rounded`                | `border-radius: 0.25rem;`                |
+| `shadow`                | 阴影                   | `shadow`                 | `box-shadow: 0 1px 3px rgba(0,0,0,0.1);` |
+
+> 这套 `flex="~"` / `grid="~"` 写法是 UnoCSS Attributify 最有“工程价值”的能力之一：
+> 布局语义极其清晰，HTML 结构可读性比 class 堆叠高一个数量级，非常适合 Vue3 + 组件化项目。
 
 ### 组合使用
 
