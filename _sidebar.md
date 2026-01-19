@@ -40,6 +40,7 @@
     - [Vue Print Next打印库](/apps/vue-print-next/)
     - [Vue 图标库](/apps/iconify/)
     - [SimplebarVue 滚动条](/apps/simplebar/)
+    - [Vue Json Pretty JSON树视图组件](/apps/vue-json-pretty/)
 - 文本编辑器
     - [WangEditor v5 富文本编辑器](/apps/wangeditor/)
     - [UEditorPlus 富文本编辑器](/apps/ueditor-plus/)
