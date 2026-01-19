@@ -98,7 +98,7 @@ createApp(App).mount('#app');
 
 ![image-20260119154011247](./assets/image-20260119154011247.png)
 
-## 一、基础原子能力
+## 基础原子能力
 
 ### 布局与盒模型
 
@@ -387,7 +387,7 @@ createApp(App).mount('#app');
 
 ------
 
-## 二、交互状态控制
+## 交互状态控制
 
 ### Hover
 
@@ -654,7 +654,7 @@ createApp(App).mount('#app');
 
 ------
 
-## 三、响应式系统
+## 响应式系统
 
 ### 断点前缀
 
@@ -796,9 +796,7 @@ createApp(App).mount('#app');
 
 这三种是后台系统和管理端页面中**使用频率最高的响应式组合场景**，基本覆盖了 90% 的适配需求。
 
-------
-
-## 四、Attributify 属性化模式
+## Attributify 属性化模式
 
 ### 基础写法
 
@@ -920,152 +918,1201 @@ createApp(App).mount('#app');
 
 ### 组合使用
 
-- 模板更干净
-- 适合复杂表单与后台页面
+```vue
+<template>
+  <!-- 整个页面容器 -->
+  <div
+    flex="~ col"
+    h="screen"
+    bg="gray-100"
+  >
+    <!-- 顶部栏 -->
+    <header
+      flex="~"
+      items="center"
+      justify="between"
+      p="4"
+      bg="white"
+      shadow
+    >
+      <span text="lg bold">后台管理系统</span>
+      <span text="sm gray-500">Admin</span>
+    </header>
+
+    <!-- 主体区域 -->
+    <main
+      flex="~"
+      flex-1
+    >
+      <!-- 侧边栏 -->
+      <aside
+        w="56"
+        bg="gray-200"
+        p="4"
+        flex="~ col"
+        gap="2"
+      >
+        <div p="2" bg="white" rounded shadow>菜单 1</div>
+        <div p="2" bg="white" rounded shadow>菜单 2</div>
+        <div p="2" bg="white" rounded shadow>菜单 3</div>
+      </aside>
+
+      <!-- 内容区 -->
+      <section
+        flex="~ col"
+        flex-1
+        p="6"
+        gap="4"
+      >
+        <!-- 表单区域 -->
+        <div
+          grid="~ cols-2 gap-4"
+          bg="white"
+          p="4"
+          rounded
+          shadow
+        >
+          <input
+            p="2"
+            border
+            rounded
+            placeholder="用户名"
+          />
+          <input
+            p="2"
+            border
+            rounded
+            placeholder="邮箱"
+          />
+          <input
+            p="2"
+            border
+            rounded
+            placeholder="手机号"
+          />
+          <input
+            p="2"
+            border
+            rounded
+            placeholder="角色"
+          />
+        </div>
+
+        <!-- 表格区域 -->
+        <div
+          flex="~ col"
+          bg="white"
+          p="4"
+          rounded
+          shadow
+        >
+          <div
+            flex="~"
+            justify="between"
+            mb="2"
+          >
+            <span text="md bold">用户列表</span>
+            <button
+              px="3"
+              py="1"
+              bg="blue-500"
+              text="white"
+              rounded
+              hover:bg="blue-600"
+              active:scale-95
+              transition
+            >
+              新增
+            </button>
+          </div>
+          <div text="sm gray-500">
+            这里是表格内容区域
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</template>
+```
+
+| 用法                               | 说明                 | 优势                   |
+| ---------------------------------- | -------------------- | ---------------------- |
+| `flex="~ col"` + `grid="~ cols-*"` | Flex + Grid 混合布局 | 复杂后台布局最优组合   |
+| `p="*"`, `m="*"`, `gap="*"`        | 间距统一用属性控制   | 结构比 class 更直观    |
+| `bg="*"`, `text="*"`               | 颜色与文字语义化     | 样式语义更强           |
+| `rounded`, `shadow`, `border`      | 视觉层级快速搭建     | 页面立体感明显         |
+| Hover / Active / Transition        | 按钮交互反馈         | 产品质感明显提升       |
+| 响应式前缀 (`sm:`, `md:`)          | 多端适配             | 后台系统必备           |
+| Attributify + class 混用           | 复杂场景灵活         | 不牺牲 UnoCSS 完整能力 |
+
+> 这种“组合使用”模式，正是 UnoCSS 在 Vue3 + Vite 项目里最适合做：
+> 后台管理、表单密集型系统、配置页面、仪表盘页面。
+> 模板会非常干净，布局结构一眼可读，维护成本比纯 class 堆叠低很多。
 
 ------
 
-## 五、图标系统（preset-icons）
+## 图标系统（preset-icons）
+
+vite.config.ts
+
+```ts
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import path from 'path';
+import UnoCSS from 'unocss/vite';
+import Icons from 'unplugin-icons/vite'
+import IconsResolver from 'unplugin-icons/resolver'
+import Components from 'unplugin-vue-components/vite'
+
+export default defineConfig({
+    plugins: [
+        vue(),
+        UnoCSS(),
+        Components({
+            resolvers: [
+                IconsResolver({ prefix: 'Icon' }) // 自动识别 IconXxx
+            ],
+        }),
+        Icons({
+            autoInstall: true, // 缺失图标自动安装
+        }),
+    ],
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'src'),
+        }
+    }
+});
+```
 
 ### Iconify 图标
 
-- `i-mdi-home`
-- `i-mdi-account`
-- `i-carbon-search`
+```vue
+<template>
+  <div class="p-6 bg-gray-100 space-y-6">
+
+    <!-- 常用图标示例 -->
+    <div class="flex items-center gap-4">
+      <i-mdi-home text="2xl blue-500"></i-mdi-home>
+      <span text="lg">首页</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <i-mdi-account text="2xl green-500"></i-mdi-account>
+      <span text="lg">账号</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <i-carbon-search text="2xl red-500"></i-carbon-search>
+      <span text="lg">搜索</span>
+    </div>
+
+    <!-- 响应式图标大小 -->
+    <div class="flex items-center gap-4 mt-4">
+      <i-mdi-home text="xl sm:2xl md:3xl"></i-mdi-home>
+      <span text="sm md:base lg:lg">响应式图标</span>
+    </div>
+
+  </div>
+</template>
+```
+
+| 类名 / 标签               | 作用                           | 等价 CSS / 描述                                  |
+| ------------------------- | ------------------------------ | ------------------------------------------------ |
+| `i-mdi-home`              | 引入 Material Design Home 图标 | 使用 Iconify 组件，自动加载图标                  |
+| `i-mdi-account`           | 引入 Material Design 账号图标  | 同上                                             |
+| `i-carbon-search`         | 引入 Carbon Design 搜索图标    | 同上                                             |
+| `text="2xl"`              | 设置图标大小为 2xl             | `font-size: 1.5rem;`                             |
+| `text="xl sm:2xl md:3xl"` | 响应式字号                     | 小屏 xl，中屏 2xl，大屏 3xl                      |
+| `text="blue-500"`         | 图标颜色蓝色                   | `color: #3b82f6;`                                |
+| `text="green-500"`        | 图标颜色绿色                   | `color: #22c55e;`                                |
+| `text="red-500"`          | 图标颜色红色                   | `color: #ef4444;`                                |
+| `flex items-center gap-4` | 图标 + 文本排列                | `display: flex; align-items: center; gap: 1rem;` |
+| `mt-4`                    | 上外边距                       | `margin-top: 1rem;`                              |
+
+> 说明：
+> UnoCSS `preset-icons` 基于 Iconify，支持**上千图标集**（Material Design, Carbon, FontAwesome, RemixIcon 等），
+> 可直接在模板中通过 `i-图标名` 使用，并可结合 `text-*` 控制大小和颜色，非常适合后台系统和工具面板。
 
 ### 图标控制能力
 
-- 颜色控制
-- 大小控制
-- 旋转与动画
-- 与文字自然对齐
+```vue
+<template>
+  <div class="p-6 bg-gray-100 space-y-6">
+
+    <!-- 1. 颜色控制 -->
+    <div class="flex items-center gap-4">
+      <i-mdi-home text="2xl blue-500"></i-mdi-home>
+      <i-mdi-home text="2xl red-500"></i-mdi-home>
+      <span text="lg">不同颜色图标</span>
+    </div>
+
+    <!-- 2. 大小控制 -->
+    <div class="flex items-center gap-4 mt-4">
+      <i-mdi-account text="xl"></i-mdi-account>
+      <i-mdi-account text="2xl"></i-mdi-account>
+      <i-mdi-account text="3xl"></i-mdi-account>
+      <span text="lg">不同大小图标</span>
+    </div>
+
+    <!-- 3. 旋转与动画 -->
+    <div class="flex items-center gap-4 mt-4">
+      <i-carbon-search text="2xl" rotate="45"></i-carbon-search>
+      <i-carbon-search text="2xl" spin></i-carbon-search>
+      <span text="lg">旋转与旋转动画</span>
+    </div>
+
+    <!-- 4. 与文字自然对齐 -->
+    <div class="flex items-center gap-2 mt-4">
+      <i-mdi-home text="xl"></i-mdi-home>
+      <span text="base">文字垂直居中对齐</span>
+    </div>
+
+  </div>
+</template>
+```
+
+| 功能     | 属性 / 类名             | 作用                 | 等价 CSS / 描述                           |
+| -------- | ----------------------- | -------------------- | ----------------------------------------- |
+| 颜色控制 | `text="red-500"`        | 改变图标颜色         | `color: #ef4444;`                         |
+| 颜色控制 | `text="blue-500"`       | 改变图标颜色         | `color: #3b82f6;`                         |
+| 大小控制 | `text="xl" / 2xl / 3xl` | 控制图标尺寸         | `font-size: 1.25rem / 1.5rem / 1.875rem;` |
+| 旋转     | `rotate="45"`           | 旋转图标 45°         | `transform: rotate(45deg);`               |
+| 旋转动画 | `spin`                  | 图标持续旋转         | `animation: spin 1s linear infinite;`     |
+| 对齐     | `flex items-center`     | 与文字自然垂直居中   | `display: flex; align-items: center;`     |
+| 间距     | `gap-2 / gap-4`         | 图标与文字或图标间距 | `gap: 0.5rem / 1rem;`                     |
+
+> 说明：
+> Iconify 图标在 UnoCSS 中不仅可随意控制颜色和大小，还可以**旋转、添加动画、与文字自然对齐**，非常适合后台操作按钮、状态指示器、加载图标等场景。
 
 ------
 
-## 六、Shortcuts（语义化类名）
+## Shortcuts（语义化类名）
 
-### 基础概念
+```vue
+<template>
+  <div page-container>
 
-- 把多个原子类合成一个业务类名
+    <!-- 按钮示例 -->
+    <button btn-primary>主操作按钮</button>
+    <button btn-secondary>次操作按钮</button>
 
-### 常见业务类
+    <!-- 卡片示例 -->
+    <div card>
+      <h3 text="lg bold mb-2">卡片标题</h3>
+      <p text="sm gray-600">卡片内容示例</p>
+      <div class="mt-4">
+        <button btn-primary>确认</button>
+        <button btn-secondary>取消</button>
+      </div>
+    </div>
 
-- `btn-primary`
-- `btn-secondary`
-- `card`
-- `page-container`
-- `form-item`
+    <!-- 表单项示例 -->
+    <div form-item>
+      <label text="sm bold mb-1 block">用户名</label>
+      <input type="text" placeholder="请输入用户名" />
+    </div>
 
-### 使用价值
+  </div>
+</template>
+```
 
-- 统一样式规范
-- 降低模板复杂度
-- 强化项目结构感
+| Shortcut 名称    | 原子类组合                                                   | 作用         | 优势                   |
+| ---------------- | ------------------------------------------------------------ | ------------ | ---------------------- |
+| `btn-primary`    | `px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 active:scale-95 transition` | 主要操作按钮 | 样式统一、减少模板重复 |
+| `btn-secondary`  | `px-4 py-2 bg-gray-200 text-gray-700 rounded shadow hover:bg-gray-300 active:scale-95 transition` | 次要操作按钮 | 统一次级按钮视觉       |
+| `card`           | `p-4 bg-white rounded shadow`                                | 卡片容器     | 复用性高，快速布局     |
+| `page-container` | `p-6 bg-gray-100 min-h-screen`                               | 页面整体容器 | 保持整体布局统一       |
+| `form-item`      | `mb-4 flex flex-col`                                         | 表单行布局   | 简化表单模板结构       |
+
+> 使用 Shortcuts 的核心价值：
+>
+> 1. **统一样式规范**：项目中相同类型组件外观一致；
+> 2. **降低模板复杂度**：避免大量原子类堆叠，HTML 更清晰；
+> 3. **强化项目结构感**：业务语义明确，维护和扩展成本低。
+
+> 实际项目中，**按钮、卡片、表单、页面容器**通常都是最常用的 Shortcut 组合，可以根据业务进一步扩展，如 `table-row`, `modal-container`, `input-group` 等。
 
 ------
 
-## 七、Rules（自定义原子规则）
+## Rules（自定义原子规则）
 
-### 使用场景
+```ts
+// uno.config.ts 示例
+import { defineConfig, presetUno, presetIcons } from 'unocss'
 
-- 设计稿有非标准尺寸
-- 业务需要语义化原子类
-- 特殊布局需求
+export default defineConfig({
+  presets: [presetUno(), presetIcons()],
+  rules: [
+    // 安全区顶部
+    ['safe-top', { paddingTop: 'env(safe-area-inset-top)' }],
+    // 导航栏高度
+    ['nav-height', { height: '56px' }],
+    // 内容区撑满剩余空间
+    ['content-full', { flex: '1 1 auto' }],
+    // 顶部偏移（可带数字）
+    [/^header-offset-(\d+)$/, ([, d]) => ({ marginTop: `${d}px` })],
+  ],
+})
+```
 
-### 常见语义
+```vue
+<template>
+  <div flex="~ col h-screen">
 
-- `safe-top`
-- `nav-height`
-- `content-full`
-- `header-offset-*`
+    <header nav-height bg="blue-500 text-white flex items-center justify-center">
+      顶部导航栏
+    </header>
+
+    <main content-full bg="gray-100 p-6 safe-top">
+      <p>内容区自动撑满剩余空间，并适配刘海屏安全区</p>
+      <div header-offset-20 bg="white p-4 rounded shadow mt-2">
+        偏移 20px 的区域
+      </div>
+    </main>
+
+  </div>
+</template>
+```
+
+| 语义类                    | 作用                   | 等价 CSS                                 |
+| ------------------------- | ---------------------- | ---------------------------------------- |
+| `safe-top`                | 适配刘海屏安全区顶部   | `padding-top: env(safe-area-inset-top);` |
+| `nav-height`              | 统一导航栏高度         | `height: 56px;`                          |
+| `content-full`            | 主内容区域撑满剩余空间 | `flex: 1 1 auto;`                        |
+| `header-offset-20`        | 顶部偏移 20px          | `margin-top: 20px;`                      |
+| `/^header-offset-(\d+)$/` | 动态偏移，可自定义 px  | `margin-top: ${d}px;`                    |
+
+> 使用 Rules 的价值：
+>
+> * **非标准尺寸**：快速应对设计稿里没有现成 Tailwind 类的尺寸；
+> * **业务语义化**：将业务含义直接映射到类名，更直观；
+> * **特殊布局**：解决 flex / grid / safe-area / sticky 等场景下的边界问题。
+
+> Tips：动态规则（如 `header-offset-*`）是 UnoCSS 最强大的功能之一，可以根据数字自动生成 CSS，非常适合响应业务需求。
 
 ------
 
-## 八、主题系统（Design Token）
+## 主题系统（Design Token）
 
-### 颜色体系
+### 主题系统（Design Token）
 
-- 主色
-- 成功色
-- 警告色
-- 错误色
+```ts
+// uno.config.ts 主题配置示例
+import { defineConfig, presetUno } from 'unocss'
+
+export default defineConfig({
+  presets: [presetUno()],
+  theme: {
+    colors: {
+      primary: '#3b82f6',    // 主色
+      success: '#22c55e',    // 成功色
+      warning: '#f59e0b',    // 警告色
+      error: '#ef4444',      // 错误色
+      background: '#f3f4f6', // 背景色
+      text: '#111827',       // 默认文字色
+    },
+  },
+})
+```
+
+```vue
+<template>
+  <div p="6" bg="background" class="space-y-4">
+
+    <!-- 主色按钮 -->
+    <button
+      px="4" py="2" rounded text="white"
+      bg="primary"
+      hover:bg="primary/80"
+    >
+      主操作
+    </button>
+
+    <!-- 成功提示 -->
+    <div p="4" rounded bg="success/20" text="success">
+      操作成功
+    </div>
+
+    <!-- 警告提示 -->
+    <div p="4" rounded bg="warning/20" text="warning">
+      警告信息
+    </div>
+
+    <!-- 错误提示 -->
+    <div p="4" rounded bg="error/20" text="error">
+      错误信息
+    </div>
+
+  </div>
+</template>
+```
+
+| Token 名称              | 作用                        | 等价 CSS / 说明                              |
+| ----------------------- | --------------------------- | -------------------------------------------- |
+| `primary`               | 主色，用于品牌色 / 主要按钮 | `background-color: #3b82f6; color: #ffffff;` |
+| `success`               | 成功色，用于提示 / 状态     | `color: #22c55e; background-color: #d1fae5;` |
+| `warning`               | 警告色，用于提示 / 警告     | `color: #f59e0b; background-color: #fef3c7;` |
+| `error`                 | 错误色，用于提示 / 错误     | `color: #ef4444; background-color: #fee2e2;` |
+| `background`            | 页面背景色                  | `background-color: #f3f4f6;`                 |
+| `text`                  | 默认文字色                  | `color: #111827;`                            |
+| `/20`                   | 半透明背景（20% 不透明度）  | `background-color: rgba(..., 0.2)`           |
+| `hover:bg="primary/80"` | 鼠标悬停改变透明度          | `background-color: rgba(59,130,246,0.8)`     |
+
+> 使用主题系统的好处：
+>
+> 1. **统一颜色体系**：整个项目风格一致；
+> 2. **可维护**：修改 token 自动生效全局；
+> 3. **适配暗黑模式 / 多主题**：只需切换 token 值，无需修改每个组件。
 
 ### 尺寸体系
 
-- 间距规范
-- 圆角规范
-- 字号规范
+```ts
+// uno.config.ts 尺寸体系示例
+import { defineConfig, presetUno } from 'unocss'
+
+export default defineConfig({
+  presets: [presetUno()],
+  theme: {
+    spacing: {
+      xs: '4px',
+      sm: '8px',
+      md: '16px',
+      lg: '24px',
+      xl: '32px',
+      '2xl': '48px',
+    },
+    borderRadius: {
+      none: '0px',
+      sm: '4px',
+      DEFAULT: '8px',
+      lg: '12px',
+      full: '9999px',
+    },
+    fontSize: {
+      xs: '0.75rem',   // 12px
+      sm: '0.875rem',  // 14px
+      base: '1rem',    // 16px
+      lg: '1.125rem',  // 18px
+      xl: '1.25rem',   // 20px
+      '2xl': '1.5rem', // 24px
+      '3xl': '1.875rem', // 30px
+    },
+  },
+})
+```
+
+```vue
+<template>
+  <div p="md" bg="background" class="space-y-lg">
+
+    <!-- 间距规范 -->
+    <div p="sm" bg="white" rounded shadow>
+      内边距小 (sm)
+    </div>
+    <div p="md" bg="white" rounded shadow>
+      内边距中 (md)
+    </div>
+    <div p="lg" bg="white" rounded shadow>
+      内边距大 (lg)
+    </div>
+
+    <!-- 圆角规范 -->
+    <div p="4" bg="primary" text="white" rounded="sm">圆角 sm</div>
+    <div p="4" bg="primary" text="white" rounded="DEFAULT">圆角默认</div>
+    <div p="4" bg="primary" text="white" rounded="lg">圆角 lg</div>
+    <div p="4" bg="primary" text="white" rounded="full">圆形</div>
+
+    <!-- 字号规范 -->
+    <p text="xs">文字 xs</p>
+    <p text="sm">文字 sm</p>
+    <p text="base">文字 base</p>
+    <p text="lg">文字 lg</p>
+    <p text="xl">文字 xl</p>
+    <p text="2xl">文字 2xl</p>
+    <p text="3xl">文字 3xl</p>
+
+  </div>
+</template>
+```
+
+| 体系     | 类名 / 属性                     | 作用         | 等价 CSS                              |
+| -------- | ------------------------------- | ------------ | ------------------------------------- |
+| 间距     | `p-sm/md/lg`                    | 内边距规范   | `padding: 8px/16px/24px;`             |
+| 间距     | `m-sm/md/lg`                    | 外边距规范   | `margin: 8px/16px/24px;`              |
+| 圆角     | `rounded-sm/DEFAULT/lg/full`    | 边角圆润度   | `border-radius: 4px/8px/12px/9999px;` |
+| 字号     | `text-xs/sm/base/lg/xl/2xl/3xl` | 字号规范     | `font-size: 0.75rem~1.875rem;`        |
+| 间距单位 | `xs/sm/md/lg/xl/2xl`            | 统一间距单位 | `padding / margin` 统一规范           |
+| 圆角单位 | `sm/DEFAULT/lg/full`            | 统一圆角     | `border-radius` 统一规范              |
+| 字号单位 | `xs/sm/base/lg/xl/2xl/3xl`      | 统一字体大小 | `font-size` 统一规范                  |
+
+> 使用尺寸体系的价值：
+>
+> 1. **统一间距、圆角、字号**：保持整个项目风格一致；
+> 2. **设计稿对齐**：方便与设计稿 px / rem 尺寸映射；
+> 3. **可扩展性强**：新增尺寸只需修改 token，无需修改每个组件。
 
 ### 字体体系
 
-- 主字体
-- 标题字体
-- 等宽字体
+```ts
+// uno.config.ts 字体体系示例
+import { defineConfig, presetUno } from 'unocss'
+
+export default defineConfig({
+  presets: [presetUno()],
+  theme: {
+    fontFamily: {
+      // 主字体
+      sans: ['"Helvetica Neue"', 'Arial', 'sans-serif'],
+      // 标题专用
+      heading: ['"PingFang SC"', 'Microsoft YaHei', 'sans-serif'],
+      // 等宽字体
+      mono: ['"Fira Code"', 'Consolas', 'monospace'],
+    },
+  },
+})
+```
+
+```vue
+<template>
+  <div p="6" bg="background" class="space-y-4">
+
+    <!-- 主字体示例 -->
+    <p font-sans text="base">
+      主字体 (sans) - 用于正文内容
+    </p>
+
+    <!-- 标题字体示例 -->
+    <h1 font-heading text="2xl">
+      标题字体 (heading) - 用于标题
+    </h1>
+    <h2 font-heading text="xl">
+      副标题字体 (heading)
+    </h2>
+
+    <!-- 等宽字体示例 -->
+    <pre font-mono p="4" bg="gray-200 rounded">
+      等宽字体 (mono) - 代码或表格内容
+      const a = 123;
+      console.log(a);
+    </pre>
+
+  </div>
+</template>
+```
+
+| 属性 / 类名    | 作用                     | 等价 CSS                                                     |
+| -------------- | ------------------------ | ------------------------------------------------------------ |
+| `font-sans`    | 主字体，用于正文内容     | `font-family: "Helvetica Neue", Arial, sans-serif;`          |
+| `font-heading` | 标题字体，用于页面标题   | `font-family: "PingFang SC", "Microsoft YaHei", sans-serif;` |
+| `font-mono`    | 等宽字体，用于代码或表格 | `font-family: "Fira Code", Consolas, monospace;`             |
+| `text-base`    | 正文字号                 | `font-size: 1rem;`                                           |
+| `text-xl/2xl`  | 标题字号                 | `font-size: 1.25rem / 1.5rem;`                               |
+| `p-4`          | 内边距                   | `padding: 1rem;`                                             |
+| `bg-gray-200`  | 背景色                   | `background-color: #e5e7eb;`                                 |
+| `rounded`      | 圆角                     | `border-radius: 0.25rem;`                                    |
+
+> 字体体系核心价值：
+>
+> 1. **正文 / 标题 / 代码区分开**：增强视觉层次感；
+> 2. **统一项目字体**：无论页面多少组件，字体风格一致；
+> 3. **易于维护**：修改 token 即可全局替换字体。
 
 ------
 
-## 九、暗黑模式
+## 暗黑模式
 
 ### 模式前缀
 
-- `dark:*`
+```vue
+<template>
+  <div
+    class="min-h-screen transition-colors duration-300
+           bg-gray-100 text-gray-900
+           dark:bg-gray-900 dark:text-gray-100"
+  >
+    <!-- 顶部栏 -->
+    <header
+      class="flex items-center justify-between p-4
+             bg-white dark:bg-gray-800
+             shadow dark:shadow-gray-700"
+    >
+      <span class="font-bold text-lg">UnoCSS Dark Mode</span>
+      <button
+        class="px-4 py-2 rounded
+               bg-blue-500 text-white
+               hover:bg-blue-600
+               dark:bg-blue-400 dark:hover:bg-blue-500
+               transition"
+      >
+        切换主题
+      </button>
+    </header>
+
+    <!-- 内容区 -->
+    <main class="p-6 space-y-4">
+      <div
+        class="p-4 rounded
+               bg-white text-gray-800
+               dark:bg-gray-800 dark:text-gray-100
+               shadow"
+      >
+        普通卡片内容
+      </div>
+
+      <div
+        class="p-4 rounded
+               bg-green-100 text-green-700
+               dark:bg-green-900 dark:text-green-300"
+      >
+        成功提示
+      </div>
+
+      <div
+        class="p-4 rounded
+               bg-red-100 text-red-700
+               dark:bg-red-900 dark:text-red-300"
+      >
+        错误提示
+      </div>
+    </main>
+  </div>
+</template>
+```
+
+| 类名 / 前缀            | 作用                   | 等价 CSS / 说明                             |
+| ---------------------- | ---------------------- | ------------------------------------------- |
+| `dark:*`               | 暗黑模式下生效的样式   | `.dark .xxx { ... }`                        |
+| `dark:bg-gray-900`     | 暗黑模式背景色         | `background-color: #111827;`                |
+| `dark:text-gray-100`   | 暗黑模式文字颜色       | `color: #f3f4f6;`                           |
+| `dark:bg-gray-800`     | 暗黑模式卡片背景       | `background-color: #1f2937;`                |
+| `dark:shadow-gray-700` | 暗黑模式阴影色调整     | `box-shadow: ... #374151`                   |
+| `transition-colors`    | 主题切换时平滑过渡颜色 | `transition: color, background-color 0.3s;` |
+| `duration-300`         | 过渡时间 300ms         | `transition-duration: 300ms;`               |
+| `bg-gray-100`          | 亮色模式背景           | `background-color: #f3f4f6;`                |
+| `text-gray-900`        | 亮色模式文字颜色       | `color: #111827;`                           |
+| `bg-white`             | 亮色卡片背景           | `background-color: #ffffff;`                |
+| `shadow`               | 默认阴影               | `box-shadow: 0 1px 3px rgba(0,0,0,0.1);`    |
+
+> 使用说明：
+>
+> 1. UnoCSS 的暗黑模式通常基于 `class="dark"` 控制，在 `<html>` 或 `<body>` 上切换：
+>
+>    ```ts
+>    document.documentElement.classList.toggle('dark')
+>    ```
+> 2. 所有带 `dark:` 前缀的原子类，只会在 `.dark` 存在时生效。
+> 3. 推荐所有页面都写「亮色 + dark 对应色」，从一开始就支持双主题，避免后期补样式的灾难。
 
 ### 常见用法
 
-- `dark:bg-black`
-- `dark:text-white`
-- `dark:border-gray-700`
+```vue
+<template>
+  <div
+    class="min-h-screen p-6 transition-colors duration-300
+           bg-white text-gray-900
+           dark:bg-black dark:text-white"
+  >
+    <!-- 卡片 -->
+    <div
+      class="p-4 rounded border
+             bg-gray-50 border-gray-200 text-gray-800
+             dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
+    >
+      暗黑模式下背景、文字、边框都会发生变化
+    </div>
+
+    <!-- 按钮 -->
+    <button
+      class="mt-4 px-4 py-2 rounded border
+             bg-white text-gray-800 border-gray-300
+             hover:bg-gray-100
+             dark:bg-black dark:text-white dark:border-gray-700 dark:hover:bg-gray-800
+             transition"
+    >
+      操作按钮
+    </button>
+  </div>
+</template>
+```
+
+| 类名                   | 作用                 | 等价 CSS                                    |
+| ---------------------- | -------------------- | ------------------------------------------- |
+| `dark:bg-black`        | 暗黑模式下背景为黑色 | `.dark .xxx { background-color: #000000; }` |
+| `dark:text-white`      | 暗黑模式下文字为白色 | `.dark .xxx { color: #ffffff; }`            |
+| `dark:border-gray-700` | 暗黑模式下边框为深灰 | `.dark .xxx { border-color: #374151; }`     |
+| `bg-white`             | 亮色模式背景白色     | `background-color: #ffffff;`                |
+| `text-gray-900`        | 亮色模式文字深色     | `color: #111827;`                           |
+| `border-gray-200`      | 亮色模式浅色边框     | `border-color: #e5e7eb;`                    |
+| `dark:bg-gray-900`     | 暗黑模式卡片背景     | `background-color: #111827;`                |
+| `dark:text-gray-100`   | 暗黑模式卡片文字色   | `color: #f3f4f6;`                           |
+| `transition-colors`    | 主题切换颜色平滑过渡 | `transition: background-color, color 0.3s;` |
+| `duration-300`         | 过渡时长 300ms       | `transition-duration: 300ms;`               |
+
+> 实战建议：
+>
+> * 所有组件都写「亮色 + dark 对应样式」，形成固定模板；
+> * 背景、文字、边框三件套是暗黑模式必配项：
+>   `bg-* + text-* + border-*` ↔ `dark:bg-* + dark:text-* + dark:border-*`；
+> * 这样切换主题时，视觉不会出现“半暗半亮”的割裂感。
 
 ### 切换策略
 
-- 跟随系统
-- 手动切换
-- 持久化存储
+```vue
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue'
+
+const isDark = ref(false)
+
+/**
+ * 应用主题
+ */
+const applyTheme = (dark: boolean): void => {
+  const root = document.documentElement
+  root.classList.toggle('dark', dark)
+}
+
+/**
+ * 跟随系统主题
+ */
+const followSystem = (): void => {
+  const media = window.matchMedia('(prefers-color-scheme: dark)')
+  isDark.value = media.matches
+  applyTheme(isDark.value)
+
+  media.onchange = (e) => {
+    isDark.value = e.matches
+    applyTheme(isDark.value)
+  }
+}
+
+/**
+ * 手动切换主题
+ */
+const toggleTheme = (): void => {
+  isDark.value = !isDark.value
+  applyTheme(isDark.value)
+  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+}
+
+/**
+ * 初始化主题（优先本地存储，其次系统）
+ */
+onMounted(() => {
+  const saved = localStorage.getItem('theme')
+  if (saved) {
+    isDark.value = saved === 'dark'
+    applyTheme(isDark.value)
+  } else {
+    followSystem()
+  }
+})
+</script>
+
+<template>
+  <div
+    class="min-h-screen p-6
+           bg-white text-gray-900
+           dark:bg-black dark:text-white
+           transition-colors duration-300"
+  >
+    <div class="flex items-center gap-4">
+      <button
+        class="px-4 py-2 rounded
+               bg-blue-500 text-white
+               hover:bg-blue-600
+               transition"
+        @click="toggleTheme"
+      >
+        切换主题
+      </button>
+
+      <span class="text-sm text-gray-600 dark:text-gray-400">
+        当前模式：{{ isDark ? '暗黑' : '明亮' }}
+      </span>
+    </div>
+  </div>
+</template>
+```
+
+| 策略       | 实现方式                                            | 关键点           | 说明                     |
+| ---------- | --------------------------------------------------- | ---------------- | ------------------------ |
+| 跟随系统   | `matchMedia('(prefers-color-scheme: dark)')`        | 监听系统主题变化 | 自动适配操作系统暗黑模式 |
+| 手动切换   | 切换 `.dark` 类                                     | 用户可控         | 适合后台系统             |
+| 持久化存储 | `localStorage.setItem('theme', value)`              | 页面刷新不丢失   | 优先级高于系统主题       |
+| 初始化顺序 | 本地存储 → 系统主题                                 | 保证用户选择优先 | 常见最佳实践             |
+| 应用方式   | `document.documentElement.classList.toggle('dark')` | UnoCSS 标准用法  | 所有 `dark:*` 生效       |
+
+> 推荐组合策略：
+> **首次访问跟随系统 → 用户手动切换 → 写入 localStorage → 后续始终使用用户选择**。
+> 这是目前 Web 项目中暗黑模式体验最好的实现方案。
 
 ------
 
-## 十、动画系统
+## 动画系统
 
 ### 内置动画
 
-- `animate-spin`
-- `animate-pulse`
-- `animate-bounce`
+```vue
+<template>
+  <div class="p-6 bg-gray-100 space-y-6">
+
+    <!-- 旋转动画 -->
+    <div class="flex items-center gap-4">
+      <i-mdi-loading class="text-3xl text-blue-500 animate-spin"></i-mdi-loading>
+      <span>加载中（旋转）</span>
+    </div>
+
+    <!-- 呼吸动画 -->
+    <div class="flex items-center gap-4">
+      <div class="w-10 h-10 bg-green-500 rounded animate-pulse"></div>
+      <span>状态提示（呼吸效果）</span>
+    </div>
+
+    <!-- 弹跳动画 -->
+    <div class="flex items-center gap-4">
+      <div class="w-10 h-10 bg-red-500 rounded animate-bounce"></div>
+      <span>新消息提醒（弹跳）</span>
+    </div>
+
+  </div>
+</template>
+```
+
+| 类名             | 作用                               | 等价 CSS                                          |
+| ---------------- | ---------------------------------- | ------------------------------------------------- |
+| `animate-spin`   | 元素持续旋转                       | `animation: spin 1s linear infinite;`             |
+| `animate-pulse`  | 透明度与缩放交替变化，产生呼吸效果 | `animation: pulse 2s cubic-bezier(...) infinite;` |
+| `animate-bounce` | 上下弹跳动画                       | `animation: bounce 1s infinite;`                  |
+| `text-3xl`       | 图标/文字放大                      | `font-size: 1.875rem;`                            |
+| `w-10`           | 宽度 2.5rem                        | `width: 2.5rem;`                                  |
+| `h-10`           | 高度 2.5rem                        | `height: 2.5rem;`                                 |
+| `rounded`        | 圆角                               | `border-radius: 0.25rem;`                         |
+| `bg-green-500`   | 绿色背景                           | `background-color: #22c55e;`                      |
+| `bg-red-500`     | 红色背景                           | `background-color: #ef4444;`                      |
+| `space-y-6`      | 子元素垂直间距                     | `> * + * { margin-top: 1.5rem; }`                 |
+
+> 实际项目中最常见的用途：
+>
+> * `animate-spin`：加载中图标、接口请求状态；
+> * `animate-pulse`：占位骨架屏、弱提醒；
+> * `animate-bounce`：新消息、红点提醒、引导提示。
 
 ### 过渡动画
 
-- 弹窗出现消失
-- 折叠展开
-- 悬浮反馈
+```vue
+<template>
+  <div p="6" bg="gray-100" class="space-y-6">
+
+    <!-- 1. 弹窗出现 / 消失 -->
+    <div>
+      <button
+        class="px-4 py-2 rounded bg-blue-500 text-white transition"
+        @click="showModal = !showModal"
+      >
+        切换弹窗
+      </button>
+
+      <div
+        v-if="showModal"
+        class="fixed inset-0 flex items-center justify-center
+               bg-black/40"
+      >
+        <div
+          class="bg-white p-6 rounded shadow-lg
+                 transform transition-all duration-300 ease-in-out
+                 scale-100 opacity-100"
+        >
+          弹窗内容
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 折叠 / 展开 -->
+    <div>
+      <button
+        class="px-4 py-2 rounded bg-green-500 text-white transition"
+        @click="open = !open"
+      >
+        切换折叠
+      </button>
+
+      <div
+        class="overflow-hidden transition-all duration-300 ease-in-out"
+        :class="open ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'"
+      >
+        <div class="p-4 bg-white rounded shadow mt-2">
+          这是可折叠内容区域
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 悬浮反馈 -->
+    <div
+      class="p-4 bg-white rounded shadow
+             transition transform duration-200
+             hover:shadow-lg hover:scale-105"
+    >
+      鼠标悬浮时放大并增强阴影
+    </div>
+
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const showModal = ref(false)
+const open = ref(false)
+</script>
+```
+
+| 场景     | 类名                        | 作用                | 等价 CSS                                   |
+| -------- | --------------------------- | ------------------- | ------------------------------------------ |
+| 弹窗动画 | `transition-all`            | 所有属性参与过渡    | `transition: all 0.3s;`                    |
+| 弹窗动画 | `duration-300`              | 动画时间 300ms      | `transition-duration: 300ms;`              |
+| 弹窗动画 | `ease-in-out`               | 缓入缓出曲线        | `transition-timing-function: ease-in-out;` |
+| 弹窗动画 | `scale-100`                 | 正常缩放            | `transform: scale(1);`                     |
+| 弹窗动画 | `opacity-100`               | 完全显示            | `opacity: 1;`                              |
+| 折叠动画 | `max-h-0` / `max-h-40`      | 控制展开高度        | `max-height: 0 / 10rem;`                   |
+| 折叠动画 | `overflow-hidden`           | 隐藏溢出内容        | `overflow: hidden;`                        |
+| 折叠动画 | `opacity-0` / `opacity-100` | 透明度渐变          | `opacity: 0 / 1;`                          |
+| 悬浮反馈 | `hover:shadow-lg`           | 悬浮时增强阴影      | `box-shadow: ...;`                         |
+| 悬浮反馈 | `hover:scale-105`           | 悬浮时放大          | `transform: scale(1.05);`                  |
+| 悬浮反馈 | `transform`                 | 启用 transform 过渡 | `will-change: transform;`                  |
+| 通用     | `transition`                | 启用基础过渡动画    | `transition: all 0.15s ease;`              |
+
+> 这三类过渡是后台系统和业务系统最常用的：
+>
+> * **弹窗**：`opacity + scale`
+> * **折叠**：`max-height + opacity`
+> * **悬浮**：`shadow + scale`
+>   组合起来几乎覆盖 80% 的交互动效需求，而且性能好、实现简单。
 
 ------
 
-## 十一、与组件库混用策略
+## 与组件库混用策略
 
 ### 角色分工
 
-- UnoCSS：布局 + 间距 + 结构
-- 组件库：交互 + 复杂 UI
+* **UnoCSS**：负责布局、间距、排版、结构骨架
+* **组件库（Element Plus / Ant Design / Naive UI 等）**：负责交互逻辑、复杂 UI 组件、可访问性
 
-### 常见组合点
+一句话原则：
 
-- 页面容器
-- 弹窗 padding
-- 表单项间距
-- 表格外层布局
+> UnoCSS 管“壳子”，组件库管“内容”。
+
+---
+
+### 常见组合点示例
+
+```vue
+<template>
+  <!-- 页面容器由 UnoCSS 控制 -->
+  <div
+    class="min-h-screen"
+    p="6"
+    bg="gray-100"
+    flex="~ col"
+    gap="4"
+  >
+    <!-- 页面标题 -->
+    <div
+      flex="~"
+      justify="between"
+      items="center"
+    >
+      <h2 text="xl bold">用户管理</h2>
+      <!-- 按钮交给组件库 -->
+      <el-button type="primary">新增用户</el-button>
+    </div>
+
+    <!-- 表单区域 -->
+    <el-card>
+      <div
+        grid="~ cols-2 gap-4"
+      >
+        <el-form-item label="用户名">
+          <el-input />
+        </el-form-item>
+        <el-form-item label="邮箱">
+          <el-input />
+        </el-form-item>
+      </div>
+    </el-card>
+
+    <!-- 表格区域 -->
+    <el-card>
+      <div
+        class="overflow-auto"
+      >
+        <el-table :data="tableData" style="width: 100%">
+          <el-table-column prop="name" label="姓名" />
+          <el-table-column prop="email" label="邮箱" />
+          <el-table-column prop="role" label="角色" />
+        </el-table>
+      </div>
+    </el-card>
+
+    <!-- 弹窗 -->
+    <el-dialog v-model="dialogVisible" title="新增用户" width="500px">
+      <!-- 弹窗内边距用 UnoCSS 控制 -->
+      <div p="4" flex="~ col" gap="4">
+        <el-input placeholder="用户名" />
+        <el-input placeholder="邮箱" />
+        <el-select placeholder="角色">
+          <el-option label="管理员" value="admin" />
+          <el-option label="普通用户" value="user" />
+        </el-select>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const dialogVisible = ref(false)
+
+const tableData = [
+  { name: 'Tom', email: 'tom@test.com', role: 'admin' },
+  { name: 'Jack', email: 'jack@test.com', role: 'user' },
+]
+</script>
+```
+
+---
+
+| 场景         | UnoCSS 负责                            | 组件库负责                 | 好处                   |
+| ------------ | -------------------------------------- | -------------------------- | ---------------------- |
+| 页面容器     | `p-*`, `bg-*`, `flex`, `grid`, `gap-*` | 无                         | 页面结构清晰、样式可控 |
+| 弹窗 padding | `p="4"`、`flex="~ col"`、`gap="4"`     | `el-dialog` 弹窗逻辑       | 弹窗内容布局更灵活     |
+| 表单项间距   | `grid="~ cols-* gap-*"`                | `el-form-item`、`el-input` | 表单更整齐、可响应式   |
+| 表格外层布局 | `overflow-auto`, `p-*`, `bg-*`         | `el-table`                 | 表格滚动、间距更好控制 |
+| 页面标题区   | `flex justify-between items-center`    | `el-button`                | 结构语义清晰           |
+| 卡片容器     | `p-* bg-* rounded shadow`              | `el-card`                  | 视觉风格可统一         |
+
+---
+
+### 推荐最佳实践
+
+1. **组件库组件外面一定包一层 UnoCSS 容器**
+
+```html
+<div p="4" bg="white" rounded shadow>
+  <el-table />
+</div>
+```
+
+2. **不要用组件库的 layout 系统（Row/Col）做全局布局**
+
+* 全局布局用 UnoCSS
+* 组件内部结构用组件库
+
+3. **统一“间距、圆角、背景”全部走 UnoCSS**
+
+* 组件库负责功能
+* UnoCSS 负责风格
+
+4. **大型后台最稳定的组合是：**
+
+```text
+UnoCSS = 布局引擎
+组件库 = 交互引擎
+```
+
+这样你会得到一个非常干净的工程结构：
+
+| 层级     | 职责                                 |
+| -------- | ------------------------------------ |
+| UnoCSS   | 设计系统 + 布局系统 + 主题系统       |
+| 组件库   | 表单 / 表格 / 弹窗 / 上传 / 日期选择 |
+| 业务组件 | 组合二者，形成页面能力               |
+
+这套模式几乎是目前 Vue3 + UnoCSS + 组件库最“工业化”的用法。
 
 ------
 
-## 十二、工程级能力
+## 工程级能力
 
 ### 构建特性
 
-- 按需生成 CSS
-- 零冗余样式
-- 构建速度快
+* **按需生成 CSS**
+
+  * 扫描模板中真实使用到的原子类
+  * 只生成必要的样式，不会有多余代码
+  * 非常适合大型后台和组件多的项目
+
+* **零冗余样式**
+
+  * 不像传统 CSS / SCSS 会随着页面增多无限膨胀
+  * 不存在“写了但没用”的样式
+  * 天然避免样式污染与历史包袱
+
+* **构建速度快**
+
+  * 规则是预编译 + 原子映射
+  * 比 Tailwind 更轻量
+  * 对 CI/CD 非常友好
+
+---
 
 ### 开发体验
 
-- Vite 极速热更新
-- 类名即样式
-- 无需维护巨大 CSS 文件
+* **Vite 极速热更新**
+
+  * 修改 class 或 attributify 属性立即生效
+  * 不需要等待整体样式重编译
+  * 视觉反馈接近“所见即所得”
+
+* **类名即样式**
+
+  * 看到模板就知道样式
+  * 不再来回跳 CSS 文件定位
+  * 逻辑和样式高度内聚
+
+* **无需维护巨大 CSS 文件**
+
+  * 基本告别 `index.scss`、`global.css` 这种“万行文件”
+  * 大部分页面可以做到 0 自定义 CSS
+  * 样式碎片化问题完全消失
+
+---
+
+### 工程层面的真实收益
+
+| 维度       | 传统 CSS / SCSS | UnoCSS               |
+| ---------- | --------------- | -------------------- |
+| 样式体积   | 越来越大        | 永远最小             |
+| 维护成本   | 高              | 极低                 |
+| 定位问题   | 多文件跳转      | 模板即答案           |
+| 重构风险   | 极高            | 极低                 |
+| 设计统一性 | 难控制          | 通过 tokens 天然统一 |
+
+---
+
+### 团队协作价值
+
+* 新人上手快
+
+  * 不用熟悉整个 CSS 体系
+  * 只要会用原子类即可
+
+* 风格高度统一
+
+  * 设计 Token + Shortcuts = 设计规范自动落地
+
+* 减少样式争议
+
+  * 不再讨论“这个 class 写在哪个文件”
+  * 所见即最终效果
+
+---
+
+### 本质总结
+
+UnoCSS 在工程级别带来的并不是“写样式方式的改变”，而是：
+
+> 把 CSS 从“资产文件”变成“即时编译结果”。
+
+你不再维护样式文件，你只是在“描述界面结构”，样式是编译器自动生成的副产品。
