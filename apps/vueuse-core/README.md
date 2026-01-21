@@ -374,6 +374,49 @@ pnpm add @vueuse/core@14.1.0
 
 ---
 
+### 数字滚动：`useTransition`
+
+数字滚动（类似大屏数字翻牌效果）
+
+适用场景：
+
+- 金额增长
+- 统计数字动画
+- 仪表盘数据变化
+
+```vue
+<template>
+  <div class="counter">
+    {{ Math.floor(displayValue) }}
+  </div>
+
+  <button @click="changeValue">变更数字</button>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useTransition } from '@vueuse/core';
+
+const source = ref(0);
+
+const displayValue = useTransition(source, {
+  duration: 1000,
+  easing: [0.4, 0, 0.2, 1],
+});
+
+const changeValue = () => {
+  source.value = Math.floor(Math.random() * 10000);
+};
+</script>
+
+<style scoped>
+.counter {
+  font-size: 48px;
+  font-weight: bold;
+}
+</style>
+```
+
 ### 窗口大小：`useWindowSize`
 
 这个 Hook 用来实时获取浏览器窗口的宽度和高度，是做：
@@ -2887,7 +2930,7 @@ const { isFullscreen, enter, exit, toggle } = useFullscreen(target)
 
 ## 时间 / 定时器 / 节流防抖（时间相关）
 
-**useNow（实时 Date 对象，自动更新）**
+### useNow（实时 Date 对象，自动更新）
 
 📌 **说明**：`useNow()` 会返回一个响应式的 `Date()` 对象，每秒自动更新。
 
@@ -2913,7 +2956,7 @@ const now = useNow()
 <div>{{ now.toLocaleTimeString() }}</div>
 ```
 
-**useTimestamp（实时毫秒时间戳）**
+### useTimestamp（实时毫秒时间戳）
 
 📌 返回 `number`，每毫秒更新
 
@@ -2933,7 +2976,7 @@ const ts = useTimestamp()
 
 ------
 
-**useDateFormat（格式化时间）**
+### useDateFormat（格式化时间）
 
 📌 类似 dayjs.format()
 
@@ -2948,7 +2991,7 @@ const formatted = useDateFormat(now, 'YYYY-MM-DD HH:mm:ss')
 
 ------
 
-**useTimeAgo（多久以前）**
+### useTimeAgo（多久以前）
 
 📌 转换时间
 
@@ -2986,7 +3029,7 @@ const ago = useTimeAgo(Date.now() - 5 * 60 * 1000, {
 
 ------
 
-**useTimeout（延时执行一次）**
+### useTimeout（延时执行一次）
 
 📌 指定时间后 `ready = true`
 
@@ -3000,7 +3043,7 @@ const ready = useTimeout(2000) // 2秒后变true
 
 ------
 
-**useTimeoutFn（延时执行函数）**
+### useTimeoutFn（延时执行函数）
 
 📌 指定时间后执行回调
 
@@ -3016,7 +3059,7 @@ start()
 
 ------
 
-**useInterval（固定间隔计数）**
+### useInterval（固定间隔计数）
 
 📌 `counter++` 间隔执行
 
@@ -3028,7 +3071,7 @@ const counter = useInterval(1000) // 每秒+1
 
 ------
 
-**useIntervalFn（定时执行回调）**
+### useIntervalFn（定时执行回调）
 
 📌 类似 `setInterval`，可暂停
 
@@ -3044,7 +3087,7 @@ resume()
 
 ------
 
-**useRafFn（requestAnimationFrame）**
+### useRafFn（requestAnimationFrame）
 
 📌 高性能 UI 动画/渲染循环
 
@@ -3059,7 +3102,7 @@ useRafFn(() => {
 
 ------
 
-**useToNumber（值转数字）**
+### useToNumber（值转数字）
 
 📌 用于时间戳、输入框校验
 
@@ -3075,7 +3118,7 @@ const num = useToNumber(input)
 
 ------
 
-**useToString（值转字符串）**
+### useToString（值转字符串）
 
 📌 和上面相反
 
@@ -3088,6 +3131,161 @@ const str = useToString(timestamp)
 
 // str.value = "1700000000000"
 ```
+
+### 时间倒计时
+
+时间型倒计时（算还剩多少时间）
+
+```vue
+<template>
+  <div class="countdown">
+    剩余时间：{{ format }}
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useNow } from '@vueuse/core';
+
+// 结束时间：比如 1 分钟后
+const endTime = Date.now() + 60 * 1000;
+
+// 每秒更新一次当前时间
+const now = useNow({ interval: 1000 });
+
+// 剩余秒数
+const remain = computed(() => {
+  const diff = endTime - now.value.getTime();
+  return Math.max(0, Math.ceil(diff / 1000));
+});
+
+// 格式化成 mm:ss
+const format = computed(() => {
+  const m = Math.floor(remain.value / 60);
+  const s = remain.value % 60;
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+});
+</script>
+```
+
+### 倒计时
+
+计数器型倒计时（减 1、减 1、减 1）
+
+**基础使用**
+
+```vue
+<template>
+  <div>
+    剩余：{{ remaining }}
+    <div>
+      <button @click="start()">开始</button>
+      <button @click="pause()">暂停</button>
+      <button @click="resume()">继续</button>
+      <button @click="reset()">重置</button>
+      <button @click="stop()">停止</button>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useCountdown } from '@vueuse/core';
+
+const {
+  remaining,
+  start,
+  pause,
+  resume,
+  reset,
+  stop,
+} = useCountdown(10); // 10 秒倒计时
+</script>
+```
+
+**完整使用**
+
+```vue
+<template>
+  <div class="panel">
+    <h3>useCountdown 全量示例</h3>
+
+    <div>剩余秒数：{{ remaining }}</div>
+    <div>格式化：{{ format }}</div>
+    <div>是否运行中：{{ isActive }}</div>
+
+    <div class="buttons">
+      <button @click="start()">start()</button>
+      <button @click="start(20)">start(20)</button>
+
+      <button @click="pause()">pause()</button>
+      <button @click="resume()">resume()</button>
+
+      <button @click="reset()">reset()</button>
+      <button @click="reset(5)">reset(5)</button>
+
+      <button @click="stop()">stop()</button>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import { useCountdown } from '@vueuse/core';
+
+const tickCount = ref(0);
+
+/**
+ * useCountdown 完整参数示例
+ */
+const {
+  remaining,
+  start,
+  pause,
+  resume,
+  reset,
+  stop,
+  isActive,
+} = useCountdown(10, {
+  interval: 1000,         // 每 1 秒递减一次（支持 ref / computed）
+  immediate: false,      // 不自动启动，手动 start()
+  onTick: () => {
+    tickCount.value++;
+    console.log(`⏱ tick：第 ${tickCount.value} 次，剩余 ${remaining.value}s`);
+  },
+  onComplete: () => {
+    console.log('🎯 倒计时结束');
+  },
+});
+
+/**
+ * mm:ss 格式化
+ */
+const format = computed(() => {
+  const m = Math.floor(remaining.value / 60);
+  const s = remaining.value % 60;
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+});
+</script>
+
+<style scoped>
+.panel {
+  padding: 16px;
+  border: 1px solid #ccc;
+  width: 300px;
+}
+.buttons {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+button {
+  padding: 4px 6px;
+}
+</style>
+```
+
+
 
 ------
 
