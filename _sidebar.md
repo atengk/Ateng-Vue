@@ -30,10 +30,12 @@
     - [autofit.js 窗口自适应工具](/apps/autofit/)
     - [v-scale-screen 大屏自适应容器组件](/apps/v-scale-screen/)
     - [screenfull 全屏组件](/apps/screenfull/)
+- PDF 插件
+    - [EmbedPDF PDF嵌入](/apps/embedpdf/)
+    - [VuePDF PDF预览](/apps/embedpdf[vue-pdf](apps/vue-pdf)/)
 - 插件
     - [Number-Flow 数字流动动画](/apps/number-flow/)
     - [vue-offce 文档预览](/apps/vue-office/)
-    - [EmbedPDF PDF嵌入](/apps/embedpdf/)
     - [VueDraggablePlus 拖拽组件](/apps/vue‑draggable‑plus/)
     - [Signature Pad 签名绘制组件](/apps/signature-pad/)
     - [Canvas Drawing Editor画布编辑器](/apps/canvas-drawing-editor/)
