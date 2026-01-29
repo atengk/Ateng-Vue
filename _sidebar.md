@@ -44,6 +44,7 @@
     - [SimplebarVue 滚动条](/apps/simplebar/)
     - [Vue Json Pretty JSON树视图组件](/apps/vue-json-pretty/)
     - [Monaco Editor 代码编辑器](/apps/monaco-editor/)
+    - [emoji-picker-element 表情符号选择器](/apps/emoji-picker-element/)
 - 文本编辑器
     - [WangEditor v5 富文本编辑器](/apps/wangeditor/)
     - [UEditorPlus 富文本编辑器](/apps/ueditor-plus/)
