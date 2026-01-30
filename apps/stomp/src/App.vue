@@ -7,13 +7,16 @@ const stomp = provideStomp({
   url: 'http://localhost:18002/ws',
 
   connectHeaders: {
-    // Authorization: 'Bearer xxx'
+    Authorization: 'Bearer Admin@123',
+    userId: '10001'
   },
-
-  reconnectDelay: 5000,
   heartbeatIncoming: 10000,
   heartbeatOutgoing: 10000,
-  heartbeatTimeout: 30000,
+  reconnectDelay: 5000,
+
+  // 应用层心跳（可选）
+  heartbeatDestination: '/app/heartbeat',
+  heartbeatSendInterval: 30000,
 
   debug: true
 })
@@ -33,7 +36,7 @@ onMounted(() => {
 })
 
 const sendMessage = () => {
-  stomp.publish('/app/public', {
+  stomp.publish('/app/public.send', {
     text: '你好！' + new Date().toLocaleTimeString()
   })
 }

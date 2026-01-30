@@ -4,7 +4,7 @@ STOMP 是一种基于文本的简单消息传输协议，建立在 WebSocket 之
 
 - [官网地址](https://stomp.github.io/)
 
-- [后端参考](https://atengk.github.io/dev/#/work/Ateng-Java/realtime/stomp/)
+- [后端参考](https://atengk.github.io/dev/#/work/Ateng-Java/realtime/stomp-cluster/)
 
 
 
@@ -43,11 +43,17 @@ export default defineConfig({
 ```ts
 // src/composables/useStomp.ts
 import { ref, shallowRef, onUnmounted } from 'vue'
-import {Client, type  StompSubscription, type IMessage, type IFrame} from '@stomp/stompjs'
+import {
+    Client,
+    type StompSubscription,
+    type IMessage,
+    type IFrame
+} from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
 
 export interface UseStompOptions {
     url: string
+
     /**
      * 连接时使用的 header，例如：
      * {
@@ -56,13 +62,31 @@ export interface UseStompOptions {
      * }
      */
     connectHeaders?: Record<string, string>
+
+    /**
+     * STOMP 自动重连间隔（ms）
+     */
     reconnectDelay?: number
+
+    /**
+     * STOMP 协议级心跳（推荐开启）
+     */
     heartbeatIncoming?: number
     heartbeatOutgoing?: number
+
     /**
-     * 心跳超时时间，超过该时间未收到心跳认为连接已失效（ms）
+     * 应用层心跳发送 destination，例如：
+     * /app/heartbeat
+     *
+     * 不配置则不发送应用层心跳
      */
-    heartbeatTimeout?: number
+    heartbeatDestination?: string
+
+    /**
+     * 应用层心跳发送间隔（ms）
+     */
+    heartbeatSendInterval?: number
+
     debug?: boolean
 }
 
@@ -84,17 +108,12 @@ export function useStomp(options: UseStompOptions) {
     const error = ref<Error | null>(null)
 
     /**
-     * 最近一次收到服务端消息或心跳的时间戳
+     * 应用层心跳发送定时器
      */
-    const lastHeartbeatTime = ref<number>(0)
+    let appHeartbeatTimer: number | null = null
 
     /**
-     * 心跳检测定时器
-     */
-    let heartbeatTimer: number | null = null
-
-    /**
-     * 所有订阅的缓存，用于断线重连后自动恢复
+     * 所有订阅缓存（用于断线重连自动恢复）
      */
     const subscriptions = new Map<string, InnerSubscription>()
 
@@ -123,19 +142,18 @@ export function useStomp(options: UseStompOptions) {
             connected.value = true
             connecting.value = false
             error.value = null
-            lastHeartbeatTime.value = Date.now()
 
             restoreSubscriptions()
-            startHeartbeatCheck()
+            startAppHeartbeat()
         }
 
         stompClient.onDisconnect = () => {
             log('Disconnected')
             connected.value = false
-            stopHeartbeatCheck()
+            stopAppHeartbeat()
         }
 
-        stompClient.onStompError = (frame: IFrame ) => {
+        stompClient.onStompError = (frame: IFrame) => {
             const msg = frame.headers['message'] || 'STOMP error'
             error.value = new Error(msg)
             console.error('[STOMP ERROR]', frame.body)
@@ -145,21 +163,12 @@ export function useStomp(options: UseStompOptions) {
             log('WebSocket closed')
             connected.value = false
             connecting.value = false
-            stopHeartbeatCheck()
+            stopAppHeartbeat()
         }
 
         stompClient.onWebSocketError = (evt) => {
             console.error('[STOMP WS ERROR]', evt)
             error.value = new Error('WebSocket connection error')
-        }
-
-        /**
-         * 任何服务端数据帧都会更新心跳时间
-         */
-        const originOnUnhandledMessage = stompClient.onUnhandledMessage
-        stompClient.onUnhandledMessage = (msg) => {
-            lastHeartbeatTime.value = Date.now()
-            originOnUnhandledMessage?.(msg)
         }
 
         client.value = stompClient
@@ -177,7 +186,7 @@ export function useStomp(options: UseStompOptions) {
     }
 
     function disconnect() {
-        stopHeartbeatCheck()
+        stopAppHeartbeat()
 
         subscriptions.forEach((sub) => {
             sub.stompSub?.unsubscribe()
@@ -203,9 +212,7 @@ export function useStomp(options: UseStompOptions) {
             return
         }
 
-        subscriptions.set(destination, {
-            options
-        })
+        subscriptions.set(destination, { options })
 
         if (connected.value) {
             doSubscribe(destination)
@@ -218,11 +225,9 @@ export function useStomp(options: UseStompOptions) {
 
         const { options } = item
 
-        const stompSub = client.value.subscribe(
+        item.stompSub = client.value.subscribe(
             options.destination,
             (message) => {
-                lastHeartbeatTime.value = Date.now()
-
                 let payload: any = message.body
                 try {
                     payload = JSON.parse(message.body)
@@ -233,7 +238,6 @@ export function useStomp(options: UseStompOptions) {
             options.headers
         )
 
-        item.stompSub = stompSub
         log(`Subscribed: ${destination}`)
     }
 
@@ -271,35 +275,34 @@ export function useStomp(options: UseStompOptions) {
     }
 
     /**
-     * 心跳丢失检测
+     * 应用层心跳（只用于后端 Redis 续期 / 在线态维护）
      */
-    function startHeartbeatCheck() {
-        stopHeartbeatCheck()
+    function startAppHeartbeat() {
+        stopAppHeartbeat()
 
-        const timeout = options.heartbeatTimeout ?? 30000
+        const destination = options.heartbeatDestination
+        if (!destination) {
+            return
+        }
 
-        heartbeatTimer = window.setInterval(() => {
-            const now = Date.now()
-            const diff = now - lastHeartbeatTime.value
+        const interval = options.heartbeatSendInterval ?? 30000
 
-            if (diff > timeout) {
-                console.warn('[STOMP] Heartbeat lost, reconnecting...')
-                error.value = new Error('Heartbeat timeout')
+        appHeartbeatTimer = window.setInterval(() => {
+            if (!client.value || !connected.value) return
 
-                stopHeartbeatCheck()
+            client.value.publish({
+                destination,
+                body: ''
+            })
 
-                if (client.value) {
-                    client.value.deactivate()
-                    client.value.activate()
-                }
-            }
-        }, timeout / 2)
+            log('App heartbeat sent')
+        }, interval)
     }
 
-    function stopHeartbeatCheck() {
-        if (heartbeatTimer) {
-            clearInterval(heartbeatTimer)
-            heartbeatTimer = null
+    function stopAppHeartbeat() {
+        if (appHeartbeatTimer) {
+            clearInterval(appHeartbeatTimer)
+            appHeartbeatTimer = null
         }
     }
 
@@ -321,6 +324,7 @@ export function useStomp(options: UseStompOptions) {
         publish
     }
 }
+
 ```
 
 ## 使用示例
@@ -467,26 +471,64 @@ export function useGlobalStomp(): StompInstance {
 
 ```vue
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+
 import { provideStomp } from '@/composables/useStompProvider'
 
 const stomp = provideStomp({
   url: 'http://localhost:18002/ws',
 
   connectHeaders: {
-    // Authorization: 'Bearer xxx'
+    Authorization: 'Bearer Admin@123',
+    userId: '10001'
   },
-
-  reconnectDelay: 5000,
   heartbeatIncoming: 10000,
   heartbeatOutgoing: 10000,
-  heartbeatTimeout: 30000,
+  reconnectDelay: 5000,
+
+  // 应用层心跳（可选）
+  heartbeatDestination: '/app/heartbeat',
+  heartbeatSendInterval: 30000,
 
   debug: true
+})
+
+const messages = ref<any[]>([])
+
+onMounted(() => {
+  stomp.connect()
+
+  stomp.subscribe({
+    destination: '/topic/public',
+    callback: (data) => {
+      console.log('收到消息:', data)
+      messages.value.push(data)
+    }
+  })
+})
+
+const sendMessage = () => {
+  stomp.publish('/app/public.send', {
+    text: '你好！' + new Date().toLocaleTimeString()
+  })
+}
+
+onUnmounted(() => {
+  stomp.disconnect()
 })
 </script>
 
 <template>
-  <router-view />
+  <div>
+    <button @click="sendMessage">发送消息</button>
+
+    <h3>订阅收到的消息：</h3>
+    <ul>
+      <li v-for="(msg, index) in messages" :key="index">
+        {{ msg }}
+      </li>
+    </ul>
+  </div>
 </template>
 ```
 
@@ -496,10 +538,11 @@ const stomp = provideStomp({
 
 ```
 VITE_STOMP_URL=http://localhost:18002/ws
-VITE_STOMP_RECONNECT_DELAY=5000
 VITE_STOMP_HEARTBEAT_IN=10000
 VITE_STOMP_HEARTBEAT_OUT=10000
-VITE_STOMP_HEARTBEAT_TIMEOUT=30000
+VITE_STOMP_RECONNECT_DELAY=5000
+VITE_STOMP_HEARTBEAT_DESTINATION=/app/heartbeat
+VITE_STOMP_HEARTBEAT_SEND_INTERVAL=30000
 VITE_STOMP_DEBUG=true
 ```
 
@@ -511,48 +554,5 @@ const stomp = provideStomp({
 }
 ```
 
-### 页面订阅和发布
 
-```vue
-<script setup lang="ts">
-import { useGlobalStomp } from '@/composables/useStompProvider'
-import { ref, onMounted, onUnmounted } from 'vue'
-
-const stomp = useGlobalStomp()
-
-const messages = ref<any[]>([])
-
-onMounted(() => {
-  stomp.subscribe({
-    destination: '/topic/public',
-    callback: (data) => {
-      messages.value.push(data)
-    }
-  })
-})
-
-onUnmounted(() => {
-  stomp.unsubscribe('/topic/public')
-})
-
-function send() {
-  stomp.publish('/app/public', {
-    text: 'hello ' + Date.now()
-  })
-}
-</script>
-
-<template>
-  <div>
-    <button @click="send">发送</button>
-
-    <h4>订阅消息：</h4>
-    <ul>
-      <li v-for="(m, i) in messages" :key="i">
-        {{ m }}
-      </li>
-    </ul>
-  </div>
-</template>
-```
 
