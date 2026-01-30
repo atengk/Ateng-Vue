@@ -1,90 +1,56 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useWebWorkerFn } from '@vueuse/core'
-
-// 定义一个计算密集型函数（例如大数组求和）
-function heavySum(n: number) {
-  let sum = 0
-  for (let i = 0; i < n; i++) {
-    sum += i
-  }
-  return sum
-}
-
-// 将函数包装为 Web Worker 版本
-const { workerFn } = useWebWorkerFn(heavySum)
-
-const input = ref(100000000)
-const result = ref<number | null>(null)
-const loading = ref(false)
-
-async function handleCompute() {
-  loading.value = true
-  result.value = await workerFn(input.value)
-  loading.value = false
-}
-</script>
-
 <template>
-  <div class="container">
-    <h1>useWebWorkerFn（Worker 多线程）</h1>
+  <div class="app">
+    <h1>VueUse - useBase64（图片）</h1>
 
-    <div class="card">
-      <label>输入数字：</label>
-      <input type="number" v-model.number="input" />
+    <input type="file" accept="image/*" @change="onImageChange" />
+    <img v-if="imgSrc" ref="imgEl" :src="imgSrc" alt="preview" class="preview" />
 
-      <button @click="handleCompute" :disabled="loading">
-        {{ loading ? '计算中...' : '开始计算' }}
-      </button>
-
-      <p v-if="result !== null">计算结果：{{ result }}</p>
-    </div>
-
-    <div class="card result">
-      <h2>说明</h2>
-      <p>heavySum 函数在 Web Worker 中执行，不阻塞主线程。</p>
-      <p>即使计算大量数据，页面依然可以响应用户操作。</p>
+    <div class="result" v-if="base64">
+      <p><b>图片 Base64:</b></p>
+      <textarea :value="base64" rows="40" readonly></textarea>
     </div>
   </div>
 </template>
 
+<script setup lang="ts">
+import { nextTick, ref } from 'vue'
+import { useBase64 } from '@vueuse/core'
+
+// 初始化为 {} as HTMLImageElement 保证 TS 不报错
+const imgEl = ref<HTMLImageElement>({} as HTMLImageElement)
+const { base64, execute } = useBase64(imgEl)
+
+// 图片 src
+const imgSrc = ref('')
+
+// 图片选择事件
+const onImageChange = async (e: Event) => {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  imgSrc.value = URL.createObjectURL(file)
+
+  // 等待 img 渲染完成再执行 Base64
+  await nextTick()
+  // imgEl.value 已绑定到 template 中的 ref
+  await execute()
+}
+</script>
+
 <style scoped>
-.container {
+.app {
   padding: 24px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: sans-serif;
 }
-
-.card {
-  border: 1px solid #dcdcdc;
-  border-radius: 6px;
-  padding: 16px;
-  margin-bottom: 16px;
+.preview {
+  display: block;
+  max-width: 200px;
+  margin: 12px 0;
 }
-
-input {
+textarea {
   width: 100%;
-  padding: 6px 8px;
-  margin: 8px 0;
-  border-radius: 4px;
-  border: 1px solid #dcdcdc;
-}
-
-button {
-  margin-right: 6px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  background-color: #409eff;
-  color: #ffffff;
-  cursor: pointer;
-}
-
-button:disabled {
-  background-color: #a0cfff;
-  cursor: not-allowed;
-}
-
-.result {
-  background-color: #f8f8f8;
+  padding: 6px;
+  font-size: 12px;
 }
 </style>

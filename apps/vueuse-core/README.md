@@ -1060,6 +1060,191 @@ const changeValue = () => {
 
 ---
 
+### Base64：`useBase64`
+
+#### 文本 Base64：`useBase64`（字符串编码）
+
+`useBase64` 可以将响应式字符串实时转换为 Base64，适用于：
+
+- 数据加密展示
+- API 调试
+- 剪贴板操作
+- 实时编码预览
+
+```vue
+<template>
+  <div class="app">
+    <h1>VueUse - useBase64（文本）</h1>
+
+    <input v-model="text" placeholder="输入文本" />
+
+    <div class="result">
+      <p><b>原文:</b> {{ text }}</p>
+      <p><b>Base64:</b> {{ base64 }}</p>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useBase64 } from '@vueuse/core'
+
+// 响应式文本
+const text = ref('Hello VueUse!')
+
+// 将文本转换为 Base64
+const { base64 } = useBase64(text)
+</script>
+
+<style scoped>
+.app {
+  padding: 24px;
+  font-family: sans-serif;
+}
+input {
+  width: 300px;
+  padding: 6px 12px;
+  margin-bottom: 12px;
+}
+.result p {
+  margin: 4px 0;
+}
+</style>
+```
+
+![image-20260130173816408](./assets/image-20260130173816408.png)
+
+------
+
+#### 文件 Base64：`useBase64`（File/Blob 编码）
+
+可以将用户上传的文件转换成 Base64，常用于：
+
+- 文件预览
+- 上传前编码
+- 图片剪贴板操作
+
+```vue
+<template>
+  <div class="app">
+    <h1>VueUse - useBase64（文件）</h1>
+
+    <input type="file" @change="onFileChange" />
+    <div class="result" v-if="base64">
+      <p><b>文件 Base64:</b></p>
+      <textarea :value="base64" rows="40" readonly></textarea>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useBase64 } from '@vueuse/core'
+
+// 这里用 Ref<File>，初始化为空对象，但保证 TS 不报错
+const file = ref<File>({} as File)
+const { base64, execute } = useBase64(file)
+
+// 用户选择文件
+const onFileChange = async (e: Event) => {
+  const input = e.target as HTMLInputElement
+  const selectedFile = input.files?.[0]
+  if (!selectedFile) return
+
+  // 更新 Ref
+  file.value = selectedFile
+  await execute()
+}
+</script>
+
+<style scoped>
+.app {
+  padding: 24px;
+  font-family: sans-serif;
+}
+textarea {
+  width: 100%;
+  padding: 6px;
+  font-size: 12px;
+}
+</style>
+```
+
+![image-20260130174301677](./assets/image-20260130174301677.png)
+
+------
+
+#### 图片预览 Base64：`useBase64`（Image 元素）
+
+可以将 `<img>` 或 `<canvas>` 元素转 Base64，用于：
+
+- 图片上传前预览
+- 图像处理
+- 保存到 localStorage
+
+```vue
+<template>
+  <div class="app">
+    <h1>VueUse - useBase64（图片）</h1>
+
+    <input type="file" accept="image/*" @change="onImageChange" />
+    <img v-if="imgSrc" ref="imgEl" :src="imgSrc" alt="preview" class="preview" />
+
+    <div class="result" v-if="base64">
+      <p><b>图片 Base64:</b></p>
+      <textarea :value="base64" rows="40" readonly></textarea>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { nextTick, ref } from 'vue'
+import { useBase64 } from '@vueuse/core'
+
+// 初始化为 {} as HTMLImageElement 保证 TS 不报错
+const imgEl = ref<HTMLImageElement>({} as HTMLImageElement)
+const { base64, execute } = useBase64(imgEl)
+
+// 图片 src
+const imgSrc = ref('')
+
+// 图片选择事件
+const onImageChange = async (e: Event) => {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  imgSrc.value = URL.createObjectURL(file)
+
+  // 等待 img 渲染完成再执行 Base64
+  await nextTick()
+  // imgEl.value 已绑定到 template 中的 ref
+  await execute()
+}
+</script>
+
+<style scoped>
+.app {
+  padding: 24px;
+  font-family: sans-serif;
+}
+.preview {
+  display: block;
+  max-width: 200px;
+  margin: 12px 0;
+}
+textarea {
+  width: 100%;
+  padding: 6px;
+  font-size: 12px;
+}
+</style>
+```
+
+![image-20260130174423612](./assets/image-20260130174423612.png)
+
+------
+
 ### 请求封装：`useFetch`
 
 `useFetch` 是 VueUse 中非常“工程化”的一个 Hook，用来做：
