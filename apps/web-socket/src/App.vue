@@ -29,7 +29,7 @@ if (token) {
 }
 
 console.info('[WebSocket] 最终连接地址：', wsUrl)
-provideWebSocket(WS_URL)
+provideWebSocket(wsUrl)
 
 </script>
 

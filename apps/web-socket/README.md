@@ -4,7 +4,7 @@ WebSocket 是一种在单个 TCP 连接上进行全双工通信的协议，允�
 
 - [官网地址](https://vueuse.org/core/useWebSocket])
 
-- [后端参考](https://atengk.github.io/dev/#/work/Ateng-Java/realtime/websocket/)
+- [后端参考](https://atengk.github.io/dev/#/work/Ateng-Java/realtime/websocket-single/)
 
 
 
