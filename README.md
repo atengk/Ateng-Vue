@@ -57,6 +57,7 @@
     - [Vue Json Pretty JSON树视图组件](/apps/vue-json-pretty/)
     - [Monaco Editor 代码编辑器](/apps/monaco-editor/)
     - [emoji-picker-element 表情符号选择器](/apps/emoji-picker-element/)
+    - [Vue 3 Carousel 轮播组件](/apps/vue3-carousel/)
 - 文本编辑器
     - [WangEditor v5 富文本编辑器](/apps/wangeditor/)
     - [UEditorPlus 富文本编辑器](/apps/ueditor-plus/)
