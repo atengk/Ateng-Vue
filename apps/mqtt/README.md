@@ -8,6 +8,12 @@ MQTT 是一种基于发布/订阅模式的轻量级消息传输协议，专为�
 
 ## 服务端
 
+### EMQX
+
+参考文档：- [服务端EMQX安装文档](https://atengk.github.io/ops/#/work/docker/service/emqx/)
+
+### RabbitMQ
+
 参考 [安装RabbitMQ](https://atengk.github.io/ops/#/work/service/rabbitmq/) 文档，然后开启 MQTT 插件
 
 ```
@@ -42,7 +48,7 @@ pnpm add mqtt@5.14.1
 
 ```ts
 import { ref, onBeforeUnmount } from 'vue'
-import mqtt, { MqttClient, type IClientOptions } from 'mqtt'
+import mqtt, { type MqttClient, type IClientOptions } from 'mqtt'
 
 interface ConnectOptions extends IClientOptions {
     url: string
@@ -52,48 +58,73 @@ export function useMqttClient() {
     const client = ref<MqttClient | null>(null)
     const isConnected = ref(false)
 
+    const pendingTopics = new Set<string>()
+    const messageHandlers = new Set<(topic: string, payload: string) => void>()
+
+    let connectedOnce = false
+
     const connect = (options: ConnectOptions) => {
-        client.value = mqtt.connect(options.url, options)
+        if (client.value) return
+
+        const { url, ...mqttOptions } = options
+        client.value = mqtt.connect(url, mqttOptions)
 
         client.value.on('connect', () => {
             isConnected.value = true
-            console.log('[MQTT] connected')
+
+            pendingTopics.forEach(topic => {
+                client.value?.subscribe(topic)
+            })
+
+            connectedOnce = true
         })
 
-        client.value.on('error', (err) => {
-            console.error('[MQTT] error:', err)
+        client.value.on('reconnect', () => {
+            isConnected.value = false
         })
 
         client.value.on('close', () => {
             isConnected.value = false
-            console.warn('[MQTT] disconnected')
+        })
+
+        client.value.on('error', () => {
+            isConnected.value = false
+        })
+
+        client.value.on('message', (topic, message) => {
+            const payload = message.toString()
+            messageHandlers.forEach(cb => cb(topic, payload))
         })
     }
 
     const publish = (topic: string, message: string | Buffer) => {
-        if (client.value && isConnected.value) {
-            client.value.publish(topic, message)
-        }
+        if (!client.value) return
+        client.value.publish(topic, message, { qos: 1 })
     }
 
     const subscribe = (topic: string) => {
+        pendingTopics.add(topic)
+
         if (client.value && isConnected.value) {
             client.value.subscribe(topic)
         }
     }
 
     const onMessage = (cb: (topic: string, payload: string) => void) => {
-        if (!client.value) return
-        client.value.on('message', (topic, message) => {
-            cb(topic, message.toString())
-        })
+        messageHandlers.add(cb)
+        return () => messageHandlers.delete(cb)
     }
 
     const disconnect = () => {
-        client.value?.end()
+        client.value?.end(true)
+        client.value = null
+        isConnected.value = false
+        pendingTopics.clear()
+        messageHandlers.clear()
+        connectedOnce = false
     }
 
-    onBeforeUnmount(() => disconnect())
+    onBeforeUnmount(disconnect)
 
     return {
         connect,
@@ -162,7 +193,7 @@ const mqtt = useMqttClientInject()
 const list = ref<string[]>([])
 
 onMounted(() => {
-  mqtt.subscribe('ateng/vue/topic')
+  mqtt.subscribe('test/#')
 
   mqtt.onMessage((topic, payload) => {
     list.value.unshift(`[${topic}] ${payload}`)
@@ -170,7 +201,7 @@ onMounted(() => {
 })
 
 const send = () => {
-  mqtt.publish('ateng/vue/topic', 'Hello MQTT!')
+  mqtt.publish('test/hello', 'Hello MQTT!')
 }
 </script>
 
@@ -208,9 +239,9 @@ const mqtt = provideMqttClient()
 
 onMounted(() => {
   mqtt.connect({
-    url: 'ws://175.178.193.128:20014/ws',
+    url: 'ws://192.168.1.12:8083/mqtt',
     username: 'admin',
-    password: 'Admin@123',
+    password: 'public',
     clientId: 'vue-' + Math.random().toString(16).slice(2),
     clean: true,
   })
@@ -222,4 +253,4 @@ onMounted(() => {
 </template>
 ```
 
-![image-20260115090836844](./assets/image-20260115090836844.png)
+![image-20260204104948079](./assets/image-20260204104948079.png)

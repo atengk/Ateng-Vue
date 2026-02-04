@@ -1,5 +1,5 @@
 import { ref, onBeforeUnmount } from 'vue'
-import mqtt, { MqttClient, type IClientOptions } from 'mqtt'
+import mqtt, { type MqttClient, type IClientOptions } from 'mqtt'
 
 interface ConnectOptions extends IClientOptions {
     url: string
@@ -9,48 +9,73 @@ export function useMqttClient() {
     const client = ref<MqttClient | null>(null)
     const isConnected = ref(false)
 
+    const pendingTopics = new Set<string>()
+    const messageHandlers = new Set<(topic: string, payload: string) => void>()
+
+    let connectedOnce = false
+
     const connect = (options: ConnectOptions) => {
-        client.value = mqtt.connect(options.url, options)
+        if (client.value) return
+
+        const { url, ...mqttOptions } = options
+        client.value = mqtt.connect(url, mqttOptions)
 
         client.value.on('connect', () => {
             isConnected.value = true
-            console.log('[MQTT] connected')
+
+            pendingTopics.forEach(topic => {
+                client.value?.subscribe(topic)
+            })
+
+            connectedOnce = true
         })
 
-        client.value.on('error', (err) => {
-            console.error('[MQTT] error:', err)
+        client.value.on('reconnect', () => {
+            isConnected.value = false
         })
 
         client.value.on('close', () => {
             isConnected.value = false
-            console.warn('[MQTT] disconnected')
+        })
+
+        client.value.on('error', () => {
+            isConnected.value = false
+        })
+
+        client.value.on('message', (topic, message) => {
+            const payload = message.toString()
+            messageHandlers.forEach(cb => cb(topic, payload))
         })
     }
 
     const publish = (topic: string, message: string | Buffer) => {
-        if (client.value && isConnected.value) {
-            client.value.publish(topic, message)
-        }
+        if (!client.value) return
+        client.value.publish(topic, message, { qos: 1 })
     }
 
     const subscribe = (topic: string) => {
+        pendingTopics.add(topic)
+
         if (client.value && isConnected.value) {
             client.value.subscribe(topic)
         }
     }
 
     const onMessage = (cb: (topic: string, payload: string) => void) => {
-        if (!client.value) return
-        client.value.on('message', (topic, message) => {
-            cb(topic, message.toString())
-        })
+        messageHandlers.add(cb)
+        return () => messageHandlers.delete(cb)
     }
 
     const disconnect = () => {
-        client.value?.end()
+        client.value?.end(true)
+        client.value = null
+        isConnected.value = false
+        pendingTopics.clear()
+        messageHandlers.clear()
+        connectedOnce = false
     }
 
-    onBeforeUnmount(() => disconnect())
+    onBeforeUnmount(disconnect)
 
     return {
         connect,

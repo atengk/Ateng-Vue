@@ -8,9 +8,9 @@ const mqtt = provideMqttClient()
 
 onMounted(() => {
   mqtt.connect({
-    url: 'ws://175.178.193.128:20014/ws',
+    url: 'ws://192.168.1.12:8083/mqtt',
     username: 'admin',
-    password: 'Admin@123',
+    password: 'public',
     clientId: 'vue-' + Math.random().toString(16).slice(2),
     clean: true,
   })

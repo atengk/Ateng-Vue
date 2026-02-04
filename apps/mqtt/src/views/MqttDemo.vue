@@ -8,7 +8,7 @@ const mqtt = useMqttClientInject()
 const list = ref<string[]>([])
 
 onMounted(() => {
-  mqtt.subscribe('ateng/vue/mqtt/topic')
+  mqtt.subscribe('test/#')
 
   mqtt.onMessage((topic, payload) => {
     list.value.unshift(`[${topic}] ${payload}`)
@@ -16,7 +16,7 @@ onMounted(() => {
 })
 
 const send = () => {
-  mqtt.publish('ateng/vue/mqtt/topic', 'Hello MQTT!')
+  mqtt.publish('test/hello', 'Hello MQTT!')
 }
 </script>
 
