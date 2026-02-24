@@ -57,6 +57,8 @@
     - [Vue Json Pretty JSON树视图组件](/apps/vue-json-pretty/)
     - [Monaco Editor 代码编辑器](/apps/monaco-editor/)
     - [emoji-picker-element 表情符号选择器](/apps/emoji-picker-element/)
+    - [org-chart 组织架构图](/apps/d3-org-chart/)
+    - [vue3-tree-org 组织架构图](/apps/vue3-tree-org/)
 - 轮播库
     - [Embla Carousel 轮播库](/apps/embla-carousel/)
     - [Swiper 轮播库](/apps/swiper/)
@@ -86,6 +88,7 @@
 - VueUse 工具库
     - [core](/apps/vueuse-core/)
     - [integrations](/apps/vueuse-integrations/)
+    - [motion](/apps/vueuse-motion/)
 - 实时通信
     - [WebSocket](/apps/web-socket/)
     - [STOMP](/apps/stomp/)

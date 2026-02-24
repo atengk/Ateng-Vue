@@ -76,6 +76,7 @@
 - VueUse 工具库
     - [core](/apps/vueuse-core/)
     - [integrations](/apps/vueuse-integrations/)
+    - [motion](/apps/vueuse-motion/)
 - 实时通信
     - [WebSocket](/apps/web-socket/)
     - [STOMP](/apps/stomp/)
