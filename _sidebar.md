@@ -47,6 +47,7 @@
     - [emoji-picker-element 表情符号选择器](/apps/emoji-picker-element/)
     - [org-chart 组织架构图](/apps/d3-org-chart/)
     - [vue3-tree-org 组织架构图](/apps/vue3-tree-org/)
+    - [Vue3 二维码](/apps/qrcode-vue3/)
 - 轮播库
     - [Embla Carousel 轮播库](/apps/embla-carousel/)
     - [Swiper 轮播库](/apps/swiper/)
@@ -63,6 +64,7 @@
     - [DPlayer视频播放器](/apps/dplayer/)
 - 地图
     - [vue-baidu-map-3x 百度地图](/apps/vue-baidu-map-3x/)
+    - [高德地图](/apps/amap/)
 - 图片工具
     - [SnapDOM HTML渲染器](/apps/snapdom/)
     - [html2canvas HTML渲染器](/apps/html2canvas/)
