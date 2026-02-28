@@ -54,6 +54,7 @@
     - [vue-offce 文档预览](/apps/vue-office/)
     - [VueDraggablePlus 拖拽组件](/apps/vue‑draggable‑plus/)
     - [Signature Pad 签名绘制组件](/apps/signature-pad/)
+    - [Vue3 Signature 电子签名组件](/apps/vue3-signature/)
     - [Canvas Drawing Editor画布编辑器](/apps/canvas-drawing-editor/)
     - [Vue Print Next打印库](/apps/vue-print-next/)
     - [Vue 图标库](/apps/iconify/)
