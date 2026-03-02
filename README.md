@@ -22,6 +22,7 @@
     - [Vue3组件](/apps/vue3-component/)
     - [TypeScript](/apps/typescript/)
 - 应用框架
+    - [搭建 monorepo 项目](/deploy.md)
     - [VBen Admin v5](/docs/vben-admin-v5.md)
     - [Electron](/docs/electron.md)
     - [Uni App](/docs/uni-app.md)
