@@ -35,6 +35,7 @@
     - [Element Plus](/apps/element-plus/)
     - [Element Plus 全局使用](/apps/element-plus/global.md)
     - [Element Plus 示例使用](/apps/element-plus/examples.md)
+    - [Antdv Next](/apps/antdv-next/)
 - 图表
     - [Apache ECharts](/apps/apache-echarts/)
     - [Vue3 ECharts](/apps/vue-echarts/)
