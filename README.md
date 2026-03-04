@@ -33,6 +33,7 @@
     - [UnoCSS](/apps/unocss/)
 - UI
     - [Element Plus](/apps/element-plus/)
+    - [Element Plus 快速开始](/apps/element-plus/quick-start.md)
     - [Element Plus 全局使用](/apps/element-plus/global.md)
     - [Element Plus 示例使用](/apps/element-plus/examples.md)
     - [Antdv Next](/apps/antdv-next/)
