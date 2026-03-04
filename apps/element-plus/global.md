@@ -1,5 +1,35 @@
 # 全局配置
 
+## 基础配置
+
+安装依赖
+
+```
+pnpm add element-plus@2.13.0 @element-plus/icons-vue@2.3.2
+```
+
+配置 main.ts
+
+```ts
+import { createApp } from 'vue'
+import App from './App.vue'
+import ElementPlus from 'element-plus'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+
+const app = createApp(App);
+
+app.use(ElementPlus, {
+    locale: zhCn,
+})
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+}
+app.mount('#app')
+```
+
+
+
 ## 按需导入
 
 安装插件
