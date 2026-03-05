@@ -16,7 +16,7 @@
     - [Uni App](/docs/uni-app.md)
 - 样式
     - [CSS](/apps/css/)
-    - [SCSS](/apps/scss/)
+    - [SASS](/apps/sass/)
     - [TailwindCSS](/apps/tailwindcss/)
     - [UnoCSS](/apps/unocss/)
 - UI
