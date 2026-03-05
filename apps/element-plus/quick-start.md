@@ -45,7 +45,7 @@ app.mount('#app')
 安装插件
 
 ```
-pnpm add unplugin-vue-components@30.0.0 unplugin-auto-import@20.3.0
+pnpm add -D unplugin-vue-components@30.0.0 unplugin-auto-import@20.3.0
 ```
 
 配置vite.config.ts
