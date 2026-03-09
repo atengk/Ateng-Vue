@@ -52,7 +52,8 @@
     - [screenfull 全屏组件](/apps/screenfull/)
 - PDF 插件
     - [EmbedPDF PDF嵌入](/apps/embedpdf/)
-    - [VuePDF PDF预览](/apps/embedpdf[vue-pdf](apps/vue-pdf)/)
+    - [VuePDF PDF预览](/apps/vue-pdf/)
+    - [dompdf 导出矢量 PDF](/apps/dompdf/)
 - 插件
     - [Number-Flow 数字流动动画](/apps/number-flow/)
     - [vue-offce 文档预览](/apps/vue-office/)
