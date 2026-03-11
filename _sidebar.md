@@ -1,3 +1,10 @@
+- 基础
+    - [Vue3基础](/apps/vue3-basic/)
+    - [Vue3组件](/apps/vue3-component/)
+    - [TypeScript](/apps/typescript/)
+    - [Sass基础](/docs/sass-basics/)
+    - [动态样式](/docs/dynamic-styles/)
+    - [组件通信](/docs/component-communication/)
 - 网络请求
     - [Axios](/apps/axios/)
 - 状态管理
@@ -5,10 +12,6 @@
 - Vue 路由
     - [Vue3 Router](/apps/vue-router/)
     - [Vue3 Layout](/apps/layout/)
-- Vue
-    - [Vue3基础](/apps/vue3-basic/)
-    - [Vue3组件](/apps/vue3-component/)
-    - [TypeScript](/apps/typescript/)
 - 应用框架
     - [搭建 monorepo 项目](/deploy.md)
     - [VBen Admin v5](/docs/vben-admin-v5.md)
