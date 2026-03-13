@@ -23,6 +23,7 @@
     - [SASS](/apps/sass/)
     - [TailwindCSS](/apps/tailwindcss/)
     - [UnoCSS](/apps/unocss/)
+    - [SVG](/apps/svg/)
 - UI
     - [Element Plus](/apps/element-plus/)
     - [Element Plus 快速开始](/apps/element-plus/quick-start.md)
