@@ -55,6 +55,114 @@ pnpm run dev:ele
 
 
 
+## 修改配置
+
+### 修改 ESLint 配置
+
+编辑 `eslint.config.mjs`
+
+```js
+// @ts-check
+
+import { defineConfig } from '@vben/eslint-config';
+
+export default defineConfig({
+  vue: true,
+  typescript: true,
+  rules: {
+
+    /**
+     * ========================
+     * JavaScript / 通用
+     * ========================
+     */
+
+    'no-console': 'warn',
+
+    'no-debugger': 'warn',
+
+
+
+    /**
+     * ========================
+     * TypeScript
+     * ========================
+     */
+
+    // 允许 any
+    '@typescript-eslint/no-explicit-any': 'off',
+
+    // 未使用变量仅警告
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_'
+      }
+    ],
+
+    // 不强制函数返回类型
+    '@typescript-eslint/explicit-function-return-type': 'off',
+
+    // 允许空函数
+    '@typescript-eslint/no-empty-function': 'off',
+
+    // 不强制 type import
+    '@typescript-eslint/consistent-type-imports': 'off',
+
+
+
+    /**
+     * ========================
+     * Vue
+     * ========================
+     */
+
+    // 允许单词组件名
+    'vue/multi-word-component-names': 'off',
+
+    // 不强制 props 默认值
+    'vue/require-default-prop': 'off',
+
+    // 允许 v-html
+    'vue/no-v-html': 'off',
+
+    // 组件顺序不强制
+    'vue/component-tags-order': 'off',
+
+
+
+    /**
+     * ========================
+     * Import
+     * ========================
+     */
+
+    // 不强制 import 排序
+    'import/order': 'off',
+
+    // 关闭 perfectionist 排序
+    'perfectionist/sort-imports': 'off',
+
+
+
+    /**
+     * ========================
+     * 代码风格
+     * ========================
+     */
+
+    'max-lines': 'off',
+
+    'max-params': 'off',
+
+  }
+
+});
+```
+
+
+
 ## 应用精简
 
 参考文档：[链接](https://doc.vben.pro/guide/introduction/thin.html)
