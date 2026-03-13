@@ -75,6 +75,7 @@
     - [videojs播放器](/apps/videojs-player/)
     - [西瓜视频播放器](/apps/xgplayer/)
     - [DPlayer视频播放器](/apps/dplayer/)
+    - [VideoJS V10](/apps/videojs-v10/)
 - 地图
     - [vue-baidu-map-3x 百度地图](/apps/vue-baidu-map-3x/)
     - [高德地图](/apps/amap/)
