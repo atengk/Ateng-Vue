@@ -6,6 +6,10 @@
     - [Sass基础](/docs/sass-basics/)
     - [动态样式](/docs/dynamic-styles/)
     - [组件通信](/docs/component-communication/)
+    - [表单布局](/docs/form-layout/)
+    - [动态组件](/docs/dynamic-components/)
+    - [全局样式](/docs/global-styles/)
+    - [组件封装](/docs/component-encapsulation/)
 - 网络请求
     - [Axios](/apps/axios/)
 - 状态管理
