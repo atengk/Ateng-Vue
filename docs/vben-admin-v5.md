@@ -55,40 +55,6 @@ pnpm run dev:ele
 
 
 
-## 修改配置
-
-### 修改 ESLint 配置
-
-编辑 `eslint.config.mjs`
-
-```js
-// @ts-check
-import { defineConfig } from '@vben/eslint-config';
-
-export default defineConfig([
-  {
-    rules: {
-      'no-console': 'off',
-      'no-debugger': 'off',
-
-      '@typescript-eslint/no-explicit-any': 'off',
-
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        {
-          argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-        },
-      ],
-
-      'vue/multi-word-component-names': 'off',
-    },
-  },
-]);
-```
-
-
-
 ## 应用精简
 
 参考文档：[链接](https://doc.vben.pro/guide/introduction/thin.html)
@@ -166,128 +132,6 @@ pnpm run dev:web
 
 
 
-## 组件适配
-
-修改文件：`/src/adapter/component/index.ts`
-
-1️⃣ **异步引入组件**
-2️⃣ **在 ComponentType 中声明类型**
-3️⃣ **在 components 映射中注册**
-
-### 1. 引入 ElementPlus 组件
-
-在文件顶部，和 `ElInput`、`ElSelectV2` 一样写。
-
-```ts
-const ElSlider = defineAsyncComponent(() =>
-  Promise.all([
-    import('element-plus/es/components/slider/index'),
-    import('element-plus/es/components/slider/style/css'),
-  ]).then(([res]) => res.ElSlider),
-);
-```
-
-这里做了两件事：
-
-1. **按需加载组件**
-2. **按需加载样式**
-
-这是 **Vben 推荐写法**，防止 UI 库打包过大。
-
-------
-
-### 2. 在 ComponentType 中声明
-
-找到这里：
-
-```ts
-export type ComponentType =
-```
-
-添加一个类型：
-
-```ts
-| 'Slider'
-```
-
-变成：
-
-```ts
-export type ComponentType =
-  | 'ApiSelect'
-  | 'ApiTreeSelect'
-  | 'Checkbox'
-  | 'CheckboxGroup'
-  | 'DatePicker'
-  | 'Divider'
-  | 'IconPicker'
-  | 'Input'
-  | 'InputNumber'
-  | 'RadioGroup'
-  | 'Select'
-  | 'Slider'        // 新增
-  | 'Space'
-  | 'Switch'
-  | 'TimePicker'
-  | 'TreeSelect'
-  | 'Upload'
-  | BaseFormComponentType;
-```
-
-否则 **vben-form / vben-table** 会报类型错误。
-
-------
-
-### 3. 在 components 中注册
-
-找到：
-
-```ts
-const components: Partial<Record<ComponentType, Component>> = {
-```
-
-加入：
-
-```ts
-Slider: ElSlider,
-```
-
-完整示例：
-
-```ts
-const components: Partial<Record<ComponentType, Component>> = {
-
-  Input: withDefaultPlaceholder(ElInput, 'input'),
-
-  InputNumber: withDefaultPlaceholder(ElInputNumber, 'input'),
-
-  Slider: ElSlider,
-
-  Select: (props, { attrs, slots }) => {
-    return h(ElSelectV2, { ...props, attrs }, slots);
-  },
-
-}
-```
-
-------
-
-### 4. 在 Vben Form 中使用
-
-适配后可以直接在 **Vben Form** 使用：
-
-```ts
-{
-  fieldName: 'progress',
-  label: '进度',
-  component: 'Slider',
-  componentProps: {
-    min: 0,
-    max: 100,
-  },
-}
-```
-
 
 
 ## 添加页面
@@ -342,6 +186,1323 @@ const routes: RouteRecordRaw[] = [
 
 export default routes;
 ```
+
+
+
+## 修改配置
+
+### 修改 ESLint 配置
+
+编辑 `eslint.config.mjs`
+
+```js
+// @ts-check
+
+import { defineConfig } from '@vben/eslint-config';
+
+export default defineConfig([
+  {
+    rules: {
+      /**
+       * =========================================================
+       * JavaScript 通用规则
+       * =========================================================
+       */
+
+      'no-console': 'off', // 开发日志允许
+      'no-debugger': 'warn', // 调试代码提醒即可
+      complexity: 'off', // 函数复杂度限制关闭
+      'max-lines': 'off', // 文件最大行数关闭
+      'max-params': 'off', // 函数最大参数关闭
+      'max-depth': 'off', // 嵌套深度关闭
+
+      /**
+       * =========================================================
+       * TypeScript 规则
+       * =========================================================
+       */
+
+      '@typescript-eslint/no-explicit-any': 'off', // 允许 any
+      '@typescript-eslint/explicit-function-return-type': 'off', // 不强制函数返回类型
+      '@typescript-eslint/consistent-type-imports': 'off', // type import 不强制
+      '@typescript-eslint/ban-ts-comment': 'off', // 允许临时 ts-ignore
+      '@typescript-eslint/ban-types': 'off', // 允许使用一些 TS 类型
+
+      /**
+       * =========================================================
+       * Vue3 规则
+       * =========================================================
+       */
+
+      'vue/multi-word-component-names': 'off', // 单文件组件名允许单词
+      'vue/require-default-prop': 'off', // props 默认值不强制
+      'vue/no-v-html': 'off', // v-html 允许
+      'vue/no-mutating-props': 'warn', // 保留警告，防止常见 bug
+
+      /**
+       * =========================================================
+       * perfectionist / import 排序
+       * =========================================================
+       */
+
+      'perfectionist/sort-imports': 'off', // import 排序关闭
+      'perfectionist/sort-objects': 'off', // object key 排序关闭
+      'perfectionist/sort-union-types': 'off', // union 类型排序关闭
+      'import/order': 'off', // import 排序关闭
+
+      /**
+       * =========================================================
+       * 代码风格交给 Prettier 管理
+       * =========================================================
+       */
+
+      semi: 'off',
+      quotes: 'off',
+      'max-len': 'off',
+    },
+  },
+]);
+```
+
+
+
+## 组件适配（Element Plus）
+
+### 适配步骤
+
+修改文件：`/src/adapter/component/index.ts`
+
+1️⃣ **异步引入组件**
+2️⃣ **在 ComponentType 中声明类型**
+3️⃣ **在 components 映射中注册**
+
+#### 1. 引入 ElementPlus 组件
+
+在文件顶部，和 `ElInput`、`ElSelectV2` 一样写。
+
+```ts
+const ElSlider = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/slider/index'),
+    import('element-plus/es/components/slider/style/css'),
+  ]).then(([res]) => res.ElSlider),
+);
+```
+
+这里做了两件事：
+
+1. **按需加载组件**
+2. **按需加载样式**
+
+这是 **Vben 推荐写法**，防止 UI 库打包过大。
+
+------
+
+#### 2. 在 ComponentType 中声明
+
+找到这里：
+
+```ts
+export type ComponentType =
+```
+
+添加一个类型：
+
+```ts
+| 'Slider'
+```
+
+变成：
+
+```ts
+export type ComponentType =
+  | 'ApiSelect'
+  | 'ApiTreeSelect'
+  | 'Checkbox'
+  | 'CheckboxGroup'
+  | 'DatePicker'
+  | 'Divider'
+  | 'IconPicker'
+  | 'Input'
+  | 'InputNumber'
+  | 'RadioGroup'
+  | 'Select'
+  | 'Slider'        // 新增
+  | 'Space'
+  | 'Switch'
+  | 'TimePicker'
+  | 'TreeSelect'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+否则 **vben-form / vben-table** 会报类型错误。
+
+------
+
+#### 3. 在 components 中注册
+
+找到：
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+```
+
+加入：
+
+```ts
+Slider: ElSlider,
+```
+
+完整示例：
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Input: withDefaultPlaceholder(ElInput, 'input'),
+
+  InputNumber: withDefaultPlaceholder(ElInputNumber, 'input'),
+
+  Slider: ElSlider,
+
+  Select: (props, { attrs, slots }) => {
+    return h(ElSelectV2, { ...props, attrs }, slots);
+  },
+
+}
+```
+
+------
+
+#### 4. 在 Vben Form 中使用
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'progress',
+  label: '进度',
+  component: 'Slider',
+  componentProps: {
+    min: 0,
+    max: 100,
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-slider v-model="progress" :min="0" :max="100"/>
+```
+
+
+
+### 组件适配
+
+#### Slider 滑块
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElSlider = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/slider/index'),
+    import('element-plus/es/components/slider/style/css'),
+  ]).then(([res]) => res.ElSlider),
+);
+```
+
+------
+
+2. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Slider'        // 新增
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+3. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Slider: ElSlider,
+
+}
+```
+
+------
+
+4. **在 Vben Form 中使用**
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'progress',
+  label: '进度',
+  component: 'Slider',
+  componentProps: {
+    min: 0,
+    max: 100,
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-slider v-model="progress" :min="0" :max="100"/>
+```
+
+
+
+#### ColorPicker 主题颜色
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElColorPicker = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/color-picker/index'),
+    import('element-plus/es/components/color-picker/style/css'),
+  ]).then(([res]) => res.ElColorPicker),
+);
+```
+
+------
+
+2. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'ColorPicker'   // 新增
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+3. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  ColorPicker: ElColorPicker,
+
+}
+```
+
+------
+
+4. **在 Vben Form 中使用**
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'color',
+  label: '主题颜色',
+  component: 'ColorPicker',
+  componentProps: {
+    showAlpha: true,      // 支持透明度
+    predefine: [          // 预设颜色
+      '#ff4500',
+      '#ff8c00',
+      '#ffd700',
+      '#90ee90',
+      '#00ced1',
+      '#1e90ff',
+      '#c71585'
+    ]
+  }
+}
+```
+
+等价于：
+
+```vue
+<el-color-picker v-model="color" :show-alpha="true" />
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- 🎨 **主题颜色设置**
+- 🧩 **组件样式配置**
+- 🖌 **页面设计器 / 低代码平台**
+- 🖼 **图表颜色配置**
+
+#### Rate 评分
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElRate = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/rate/index'),
+    import('element-plus/es/components/rate/style/css'),
+  ]).then(([res]) => res.ElRate),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Rate'        // 新增
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Rate: ElRate,
+
+}
+```
+
+------
+
+1. **在 Vben Form 中使用**
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'score',
+  label: '评分',
+  component: 'Rate',
+  componentProps: {
+    max: 5,
+    allowHalf: true,
+    showScore: true,
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-rate v-model="score" :max="5" :allow-half="true" show-score />
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- ⭐ **商品评分**
+- 📝 **用户评价**
+- 📊 **满意度调查**
+- 🧾 **服务质量评分**
+
+#### Cascader 级联
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElCascader = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/cascader/index'),
+    import('element-plus/es/components/cascader/style/css'),
+  ]).then(([res]) => res.ElCascader),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Cascader'     // 新增
+  | 'Rate'
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Cascader: ElCascader,
+
+}
+```
+
+------
+
+1. **在 Vben Form 中使用**
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'region',
+  label: '地区',
+  component: 'Cascader',
+  componentProps: {
+    options: [
+      {
+        value: 'zhejiang',
+        label: '浙江',
+        children: [
+          { value: 'hangzhou', label: '杭州' },
+          { value: 'ningbo', label: '宁波' },
+        ],
+      },
+      {
+        value: 'jiangsu',
+        label: '江苏',
+        children: [
+          { value: 'nanjing', label: '南京' },
+          { value: 'suzhou', label: '苏州' },
+        ],
+      },
+    ],
+    props: {
+      checkStrictly: true, // 可选任意层级
+    },
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-cascader v-model="region" :options="options" />
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- 🌏 **省市区选择**
+- 🏢 **组织架构选择**
+- 📁 **多级分类选择**
+- 🗂 **树形数据层级选择**
+
+#### Transfer 穿梭框
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElTransfer = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/transfer/index'),
+    import('element-plus/es/components/transfer/style/css'),
+  ]).then(([res]) => res.ElTransfer),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Transfer'     // 新增
+  | 'Cascader'
+  | 'Rate'
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Transfer: ElTransfer,
+
+}
+```
+
+------
+
+1. **在 Vben Form 中使用**
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'roles',
+  label: '角色分配',
+  component: 'Transfer',
+  componentProps: {
+    data: [
+      { key: 1, label: '管理员' },
+      { key: 2, label: '编辑' },
+      { key: 3, label: '访客' },
+    ],
+    filterable: true,
+    titles: ['可选角色', '已选角色'],
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-transfer
+  v-model="roles"
+  :data="data"
+  filterable
+  :titles="['可选角色','已选角色']"
+/>
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- 👥 **用户角色分配**
+- 🔐 **权限分配**
+- 📦 **资源选择**
+- 🧩 **多项数据批量选择**
+
+#### Autocomplete 自动完成
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElAutocomplete = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/autocomplete/index'),
+    import('element-plus/es/components/autocomplete/style/css'),
+  ]).then(([res]) => res.ElAutocomplete),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Autocomplete'   // 新增
+  | 'Transfer'
+  | 'Cascader'
+  | 'Rate'
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Autocomplete: ElAutocomplete,
+
+}
+```
+
+------
+
+1. **在 Vben Form 中使用**
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'keyword',
+  label: '关键词',
+  component: 'Autocomplete',
+  componentProps: {
+    fetchSuggestions(queryString, cb) {
+      const results = [
+        { value: 'Vue' },
+        { value: 'React' },
+        { value: 'Angular' },
+      ].filter(item =>
+        item.value.toLowerCase().includes(queryString.toLowerCase())
+      );
+      cb(results);
+    },
+    placeholder: '请输入关键词',
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-autocomplete
+  v-model="keyword"
+  :fetch-suggestions="fetchSuggestions"
+  placeholder="请输入关键词"
+/>
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- 🔎 **搜索建议**
+- 👤 **用户选择**
+- 🏷 **标签推荐**
+- 📦 **商品名称快速输入**
+
+#### Mention @用户
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElMention = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/mention/index'),
+    import('element-plus/es/components/mention/style/css'),
+  ]).then(([res]) => res.ElMention),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Mention'       // 新增
+  | 'Autocomplete'
+  | 'Transfer'
+  | 'Cascader'
+  | 'Rate'
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Mention: ElMention,
+
+}
+```
+
+------
+
+1. **在 Vben Form 中使用**
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'content',
+  label: '评论内容',
+  component: 'Mention',
+  componentProps: {
+    options: [
+      { label: '张三', value: 'zhangsan' },
+      { label: '李四', value: 'lisi' },
+      { label: '王五', value: 'wangwu' },
+    ],
+    placeholder: '输入 @ 选择用户',
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-mention
+  v-model="content"
+  :options="options"
+  placeholder="输入 @ 选择用户"
+/>
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- 👥 **评论 @用户**
+- 💬 **聊天消息 @成员**
+- 📢 **任务指派**
+- 📝 **协作编辑提醒成员**
+
+#### Avatar 头像
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElAvatar = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/avatar/index'),
+    import('element-plus/es/components/avatar/style/css'),
+  ]).then(([res]) => res.ElAvatar),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Avatar'       // 新增
+  | 'Mention'
+  | 'Autocomplete'
+  | 'Transfer'
+  | 'Cascader'
+  | 'Rate'
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Avatar: ElAvatar,
+
+}
+```
+
+------
+
+1. **在 Vben Form 中使用**
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'avatar',
+  label: '用户头像',
+  component: 'Avatar',
+  componentProps: {
+    size: 60,
+    src: 'https://example.com/avatar.png',
+    shape: 'circle',
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-avatar
+  :size="60"
+  src="https://example.com/avatar.png"
+  shape="circle"
+/>
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- 👤 **用户头像展示**
+- 🧑‍💻 **系统用户列表**
+- 💬 **聊天头像**
+- 🧾 **评论用户头像**
+
+#### Progress 进度条
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElProgress = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/progress/index'),
+    import('element-plus/es/components/progress/style/css'),
+  ]).then(([res]) => res.ElProgress),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Progress'     // 新增
+  | 'Avatar'
+  | 'Mention'
+  | 'Autocomplete'
+  | 'Transfer'
+  | 'Cascader'
+  | 'Rate'
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Progress: ElProgress,
+
+}
+```
+
+------
+
+1. **在 Vben Form 中使用**
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'taskProgress',
+  label: '任务进度',
+  component: 'Progress',
+  componentProps: {
+    percentage: 75,
+    status: 'success', // success / exception / warning
+    strokeWidth: 10,
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-progress
+  :percentage="75"
+  status="success"
+  :stroke-width="10"
+/>
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- 📦 **文件上传进度**
+- ⏳ **任务执行进度**
+- 📝 **数据导入/导出进度**
+- ⚙️ **系统处理状态可视化**
+
+#### Tag 标签
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElTag = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/tag/index'),
+    import('element-plus/es/components/tag/style/css'),
+  ]).then(([res]) => res.ElTag),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Tag'          // 新增
+  | 'Progress'
+  | 'Avatar'
+  | 'Mention'
+  | 'Autocomplete'
+  | 'Transfer'
+  | 'Cascader'
+  | 'Rate'
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Tag: ElTag,
+
+}
+```
+
+------
+
+1. **在 Vben Form 中使用**
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'status',
+  label: '状态',
+  component: 'Tag',
+  componentProps: {
+    type: 'success',   // success / warning / info / danger / primary
+    effect: 'dark',    // light / dark / plain
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-tag type="success" effect="dark">启用</el-tag>
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- 🔖 **状态标签（启用/禁用）**
+- 📌 **分类或标记**
+- ⚠️ **告警或提示**
+- 🏷 **标签展示、列表标识**
+
+#### Badge 徽标
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElBadge = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/badge/index'),
+    import('element-plus/es/components/badge/style/css'),
+  ]).then(([res]) => res.ElBadge),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Badge'        // 新增
+  | 'Tag'
+  | 'Progress'
+  | 'Avatar'
+  | 'Mention'
+  | 'Autocomplete'
+  | 'Transfer'
+  | 'Cascader'
+  | 'Rate'
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Badge: ElBadge,
+
+}
+```
+
+------
+
+1. **在 Vben Form 中使用**
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'notifications',
+  label: '消息数量',
+  component: 'Badge',
+  componentProps: {
+    value: 12,         // 徽标数值
+    max: 99,           // 超过显示 99+
+    type: 'danger',    // success / warning / info / danger / primary
+    isDot: false,      // 是否仅显示小红点
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-badge :value="12" max="99" type="danger">
+  <template #default>
+    <el-button>消息</el-button>
+  </template>
+</el-badge>
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- 🔔 **消息数量提示**
+- 🆕 **未读通知**
+- 📌 **任务提醒徽标**
+- ⚠️ **状态或警告标识**
+
+#### Result 结果页
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElResult = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/result/index'),
+    import('element-plus/es/components/result/style/css'),
+  ]).then(([res]) => res.ElResult),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Result'       // 新增
+  | 'Badge'
+  | 'Tag'
+  | 'Progress'
+  | 'Avatar'
+  | 'Mention'
+  | 'Autocomplete'
+  | 'Transfer'
+  | 'Cascader'
+  | 'Rate'
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Result: ElResult,
+
+}
+```
+
+------
+
+1. **在 Vben Form 或页面中使用**
+
+适配后可以直接使用 **Result 组件** 显示操作结果：
+
+```ts
+{
+  fieldName: 'operationResult',
+  label: '操作结果',
+  component: 'Result',
+  componentProps: {
+    status: 'success',    // success / error / warning / info
+    title: '提交成功',
+    subTitle: '您的表单已成功提交。',
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-result
+  status="success"
+  title="提交成功"
+  sub-title="您的表单已成功提交。"
+/>
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- ✅ **表单提交成功提示**
+- ❌ **操作失败提示**
+- ⚠️ **警告或异常状态**
+- ℹ️ **信息提示页面**
+
+#### Empty 空状态
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElEmpty = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/empty/index'),
+    import('element-plus/es/components/empty/style/css'),
+  ]).then(([res]) => res.ElEmpty),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Empty'        // 新增
+  | 'Result'
+  | 'Badge'
+  | 'Tag'
+  | 'Progress'
+  | 'Avatar'
+  | 'Mention'
+  | 'Autocomplete'
+  | 'Transfer'
+  | 'Cascader'
+  | 'Rate'
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Empty: ElEmpty,
+
+}
+```
+
+------
+
+1. **在 Vben Form 或页面中使用**
+
+适配后可以直接使用 **Empty 组件** 显示无数据状态：
+
+```ts
+{
+  fieldName: 'noData',
+  label: '空状态展示',
+  component: 'Empty',
+  componentProps: {
+    description: '暂无数据',   // 自定义提示文字
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-empty description="暂无数据" />
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- 📭 **无数据列表提示**
+- 🗂 **空表格占位**
+- 📦 **资源或任务为空提示**
+- 🖼 **页面或模块空状态展示**
+
+#### Skeleton 骨架屏
+
+1. **引入 ElementPlus 组件**
+
+```ts
+const ElSkeleton = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/skeleton/index'),
+    import('element-plus/es/components/skeleton/style/css'),
+  ]).then(([res]) => res.ElSkeleton),
+);
+```
+
+------
+
+1. **在 ComponentType 中声明**
+
+```ts
+export type ComponentType =
+  | 'Skeleton'      // 新增
+  | 'Empty'
+  | 'Result'
+  | 'Badge'
+  | 'Tag'
+  | 'Progress'
+  | 'Avatar'
+  | 'Mention'
+  | 'Autocomplete'
+  | 'Transfer'
+  | 'Cascader'
+  | 'Rate'
+  | 'ColorPicker'
+  | 'Slider'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+------
+
+1. **在 components 中注册**
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Skeleton: ElSkeleton,
+
+}
+```
+
+------
+
+1. **在 Vben Form 或页面中使用**
+
+适配后可以直接使用 **Skeleton 组件** 显示加载占位：
+
+```ts
+{
+  fieldName: 'loadingPlaceholder',
+  label: '加载占位',
+  component: 'Skeleton',
+  componentProps: {
+    rows: 3,              // 显示 3 行骨架
+    animated: true,       // 动画效果
+    loading: true,        // 是否显示骨架
+  },
+}
+```
+
+等价于：
+
+```vue
+<el-skeleton :rows="3" animated loading />
+```
+
+该组件来自 **Element Plus**，常用于：
+
+- ⏳ **数据加载占位**
+- 📄 **列表、表格加载状态**
+- 🖼 **图片或卡片加载占位**
+- 🛠 **异步内容加载提示**
 
 
 
@@ -734,15 +1895,15 @@ const [BaseForm, baseFormApi] = useVbenForm({
       fieldName: 'files',
       label: '文件上传',
       componentProps: {
-        listType: 'picture-card',
-        maxCount: 1,
-        /**
-         * 本地模拟上传成功
-         */
-        onSuccess(_response: any, file: UploadUserFile) {
-          file.status = 'success';
-          file.url =
-            'https://unpkg.com/@vbenjs/static-source@0.1.7/source/logo-v1.webp';
+        action: '#', // 上传接口（此示例没有真正上传）
+        listType: 'picture-card', // 图片卡片风格
+        autoUpload: false, // 不自动上传
+        limit: 1, // 文件数量限制
+        onChange: (file: UploadFile) => {
+          console.log('选择的文件：', file);
+        },
+        onRemove: (file: UploadFile) => {
+          console.log('删除的文件：', file);
         },
       },
       rules: 'selectRequired',
