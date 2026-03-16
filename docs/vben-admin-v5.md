@@ -26,10 +26,10 @@ cd vue-vben-admin
 
 **切换到指定版本**
 
-切换到 tag `v5.5.9` 并创建分支
+切换到 tag `v5.6.0` 并创建分支
 
 ```
-git checkout -b v5.5.9_branch v5.5.9
+git checkout -b v5.6.0_branch v5.6.0
 ```
 
 **安装依赖**
@@ -63,102 +63,28 @@ pnpm run dev:ele
 
 ```js
 // @ts-check
-
 import { defineConfig } from '@vben/eslint-config';
 
-export default defineConfig({
-  vue: true,
-  typescript: true,
-  rules: {
+export default defineConfig([
+  {
+    rules: {
+      'no-console': 'off',
+      'no-debugger': 'off',
 
-    /**
-     * ========================
-     * JavaScript / 通用
-     * ========================
-     */
+      '@typescript-eslint/no-explicit-any': 'off',
 
-    'no-console': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
 
-    'no-debugger': 'warn',
-
-
-
-    /**
-     * ========================
-     * TypeScript
-     * ========================
-     */
-
-    // 允许 any
-    '@typescript-eslint/no-explicit-any': 'off',
-
-    // 未使用变量仅警告
-    '@typescript-eslint/no-unused-vars': [
-      'warn',
-      {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_'
-      }
-    ],
-
-    // 不强制函数返回类型
-    '@typescript-eslint/explicit-function-return-type': 'off',
-
-    // 允许空函数
-    '@typescript-eslint/no-empty-function': 'off',
-
-    // 不强制 type import
-    '@typescript-eslint/consistent-type-imports': 'off',
-
-
-
-    /**
-     * ========================
-     * Vue
-     * ========================
-     */
-
-    // 允许单词组件名
-    'vue/multi-word-component-names': 'off',
-
-    // 不强制 props 默认值
-    'vue/require-default-prop': 'off',
-
-    // 允许 v-html
-    'vue/no-v-html': 'off',
-
-    // 组件顺序不强制
-    'vue/component-tags-order': 'off',
-
-
-
-    /**
-     * ========================
-     * Import
-     * ========================
-     */
-
-    // 不强制 import 排序
-    'import/order': 'off',
-
-    // 关闭 perfectionist 排序
-    'perfectionist/sort-imports': 'off',
-
-
-
-    /**
-     * ========================
-     * 代码风格
-     * ========================
-     */
-
-    'max-lines': 'off',
-
-    'max-params': 'off',
-
-  }
-
-});
+      'vue/multi-word-component-names': 'off',
+    },
+  },
+]);
 ```
 
 
@@ -213,7 +139,7 @@ rm -rf .changeset .github .vscode scripts/deploy
 {
   "scripts": {
     "build:web": "pnpm run build --filter=@apps/ateng-web",
-    "dev:web": "pnpm -F @apps/ateng-web run dev"
+    "dev:web": "pnpm -F @apps/ateng-web run dev",
   }
 }
 ```
@@ -221,7 +147,7 @@ rm -rf .changeset .github .vscode scripts/deploy
 **清理依赖**
 
 ```
-pnpm prune
+pnpm clean
 ```
 
 **安装依赖**
@@ -237,6 +163,130 @@ pnpm run dev:web
 ```
 
 ![image-20260109075158376](./assets/image-20260109075158376.png)
+
+
+
+## 组件适配
+
+修改文件：`/src/adapter/component/index.ts`
+
+1️⃣ **异步引入组件**
+2️⃣ **在 ComponentType 中声明类型**
+3️⃣ **在 components 映射中注册**
+
+### 1. 引入 ElementPlus 组件
+
+在文件顶部，和 `ElInput`、`ElSelectV2` 一样写。
+
+```ts
+const ElSlider = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/slider/index'),
+    import('element-plus/es/components/slider/style/css'),
+  ]).then(([res]) => res.ElSlider),
+);
+```
+
+这里做了两件事：
+
+1. **按需加载组件**
+2. **按需加载样式**
+
+这是 **Vben 推荐写法**，防止 UI 库打包过大。
+
+------
+
+### 2. 在 ComponentType 中声明
+
+找到这里：
+
+```ts
+export type ComponentType =
+```
+
+添加一个类型：
+
+```ts
+| 'Slider'
+```
+
+变成：
+
+```ts
+export type ComponentType =
+  | 'ApiSelect'
+  | 'ApiTreeSelect'
+  | 'Checkbox'
+  | 'CheckboxGroup'
+  | 'DatePicker'
+  | 'Divider'
+  | 'IconPicker'
+  | 'Input'
+  | 'InputNumber'
+  | 'RadioGroup'
+  | 'Select'
+  | 'Slider'        // 新增
+  | 'Space'
+  | 'Switch'
+  | 'TimePicker'
+  | 'TreeSelect'
+  | 'Upload'
+  | BaseFormComponentType;
+```
+
+否则 **vben-form / vben-table** 会报类型错误。
+
+------
+
+### 3. 在 components 中注册
+
+找到：
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+```
+
+加入：
+
+```ts
+Slider: ElSlider,
+```
+
+完整示例：
+
+```ts
+const components: Partial<Record<ComponentType, Component>> = {
+
+  Input: withDefaultPlaceholder(ElInput, 'input'),
+
+  InputNumber: withDefaultPlaceholder(ElInputNumber, 'input'),
+
+  Slider: ElSlider,
+
+  Select: (props, { attrs, slots }) => {
+    return h(ElSelectV2, { ...props, attrs }, slots);
+  },
+
+}
+```
+
+------
+
+### 4. 在 Vben Form 中使用
+
+适配后可以直接在 **Vben Form** 使用：
+
+```ts
+{
+  fieldName: 'progress',
+  label: '进度',
+  component: 'Slider',
+  componentProps: {
+    min: 0,
+    max: 100,
+  },
+}
+```
 
 
 
