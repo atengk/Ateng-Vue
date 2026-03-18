@@ -25,6 +25,7 @@
     - [自定义指令](/docs/custom-directive/)
     - [数据监听](/docs/data-watch/)
     - [键鼠事件](/docs/keyboard-mouse-events/)
+    - [Composables 可复用的组合式逻辑函数](/docs/composables/)
 - 网络请求
     - [Axios](/apps/axios/)
 - 状态管理
