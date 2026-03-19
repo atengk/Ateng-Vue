@@ -1,5 +1,9 @@
 # 样式布局
 
+- 开源 UI 库：https://uiverse.io/loaders
+
+![image-20260319160642643](./assets/image-20260319160642643.png)
+
 
 
 ## 经典后台管理布局（Header + Sidebar + Main）
