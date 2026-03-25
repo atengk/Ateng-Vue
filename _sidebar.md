@@ -15,6 +15,7 @@
     - [键鼠事件](/docs/keyboard-mouse-events/)
     - [Composables 可复用的组合式逻辑函数](/docs/composables/)
     - [TailwindCSS](/docs/tailwind-css/)
+    - [Vue Router](/docs/vue-router/)
 - 网络请求
     - [Axios](/apps/axios/)
 - 状态管理
