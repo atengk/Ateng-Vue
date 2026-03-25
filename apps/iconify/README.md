@@ -12,7 +12,7 @@
 **安装依赖**
 
 ```
-pnpm add @iconify/vue@5.0.0 scss@0.2.4
+pnpm add @iconify/vue@5.0.0
 ```
 
 在 `main.ts` 中注册插件：
@@ -54,7 +54,7 @@ app.mount('#app')
 **添加依赖**
 
 ```
-pnpm add @iconify/json
+pnpm add @iconify/json@2.2.425
 ```
 
 **封装组件**
