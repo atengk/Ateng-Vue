@@ -270,178 +270,521 @@ features:
 
 
 
-## 编辑文章
+## 常用配置
 
-### 第一步：先把首页改成你自己的（必须做）
-
-打开：
-
-```md
-docs/index.md
-```
-
-改成这样👇（最简单实用版本）
-
-```md
-# 🚀 我的技术文档
-
-欢迎来到我的 VitePress 网站！
-
-## 📚 内容
-
-- Java 后端
-- Vue3 前端
-- 中间件
-- 实战项目
-
-## 🔥 快速开始
-
-👉 点击左侧菜单开始阅读
-```
-
-👉 保存后浏览器自动刷新
+官网配置：[链接](https://vitejs.cn/vitepress/reference/default-theme-config)
 
 ------
 
-### 第二步：配置导航栏（顶部菜单）
-
-打开：
+### 网站基础信息（必须有）
 
 ```ts
-docs/.vitepress/config.ts
-```
-
-找到 `themeConfig`，改成👇
-
-```ts
-import { defineConfig } from 'vitepress'
-
 export default defineConfig({
-  title: '我的文档',
-  description: '学习笔记',
-
-  themeConfig: {
-    nav: [
-      { text: '首页', link: '/' },
-      { text: '前端', link: '/frontend/' },
-      { text: '后端', link: '/backend/' }
-    ]
-  }
+  title: '阿腾技术文档',
+  description: 'Java / Vue / 中间件学习笔记',
 })
 ```
 
-------
+👉 作用：
 
-### 第三步：创建页面目录（核心）
-
-在 `docs` 下新建结构：
-
-```bash
-docs/
-├─ frontend/
-│  └─ index.md
-├─ backend/
-│  └─ index.md
-```
-
-frontend/index.md
-
-```md
-# 前端
-
-## Vue3
-- 组合式 API
-- 路由
-
-## UI
-- Element Plus
-```
-
-backend/index.md
-
-```md
-# 后端
-
-## Java
-- JDK8
-- 并发
-
-## 数据库
-- MySQL
-- Redis
-```
+- 浏览器标题
+- SEO 描述
 
 ------
 
-### 第四步：配置侧边栏（重点）
-
-继续改 `config.ts`：
+### 导航栏（nav）
 
 ```ts
 themeConfig: {
   nav: [
     { text: '首页', link: '/' },
-    { text: '前端', link: '/frontend/' },
-    { text: '后端', link: '/backend/' }
-  ],
+    { text: 'Java', link: '/java/' },
+    { text: '前端', link: '/vue/' },
+    { text: '关于', link: '/about' }
+  ]
+}
+```
 
-  sidebar: {
-    '/frontend/': [
-      {
-        text: '前端',
-        items: [
-          { text: '介绍', link: '/frontend/' }
-        ]
-      }
-    ],
-    '/backend/': [
-      {
-        text: '后端',
-        items: [
-          { text: '介绍', link: '/backend/' }
-        ]
-      }
-    ]
+👉 核心作用：
+
+- 顶部导航
+- 控制模块入口
+
+------
+
+### 侧边栏（sidebar）【最重要】
+
+```ts
+sidebar: {
+  '/java/': [
+    {
+      text: 'Java',
+      items: [
+        { text: '介绍', link: '/java/' },
+        { text: 'JDK8', link: '/java/jdk8' },
+        { text: '并发', link: '/java/concurrent' }
+      ]
+    }
+  ]
+}
+```
+
+👉 控制：
+
+- 左侧菜单
+- 文档结构
+
+------
+
+### 社交链接（右上角）
+
+```ts
+socialLinks: [
+  { icon: 'github', link: 'https://github.com/xxx' }
+]
+```
+
+👉 常见：
+
+- GitHub
+- Gitee
+
+自定义 SVG（推荐）
+
+```ts
+socialLinks: [
+    {
+        icon: {
+            svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="30" fill="#6366f1"/>
+</svg>`
+        },
+        link: 'https://gitee.com/xxx'
+    }
+]
+```
+
+------
+
+### 页脚（footer）
+
+```ts
+footer: {
+  message: 'Released under MIT License',
+  copyright: 'Copyright © 2026 阿腾'
+}
+```
+
+👉 放版权信息
+
+------
+
+### 上一页 / 下一页（Prev / Next）导航
+
+```ts
+themeConfig: {
+  docFooter: {
+    prev: '上一页',
+    next: '下一页'
   }
 }
 ```
 
-------
+---
 
-### 第五步：新增文章（你真正要做的事）
-
-比如你要写 Vue3：
-
-新建：
-
-```bash
-docs/frontend/vue3.md
-```
-
-内容：
-
-~~~md
-# Vue3 入门
-
-## 响应式
+### 编辑链接（非常实用）
 
 ```ts
-import { ref } from 'vue'
-
-const count = ref(0)
-```
-~~~
-
-然后在 sidebar 加：
-
-```
-{
-  text: 'Vue3',
-  link: '/frontend/vue3'
+editLink: {
+  pattern: 'https://github.com/xxx/docs/:path',
+  text: '在 GitHub 上编辑此页'
 }
 ```
 
-![image-20260325171903559](./assets/image-20260325171903559.png)
+👉 每页底部会出现：
+
+> ✏️ 编辑此页
 
 ------
 
+### 文档目录（右侧大纲）
+
+```ts
+outline: {
+  level: [2, 3],
+  label: '目录'
+}
+```
+
+👉 控制：
+
+- 右侧 TOC（Table of Contents）
+- 显示 h2 / h3
+
+```
+outline: 'deep'   // h2 ~ h6 全部显示
+```
+
+------
+
+### 搜索（默认就有）
+
+```ts
+search: {
+  provider: 'local'
+}
+```
+
+👉 VitePress 内置本地搜索（够用了）
+
+------
+
+### 最后更新时间（Git）
+
+```ts
+lastUpdated: {
+  text: '最后更新',
+  formatOptions: {
+    dateStyle: 'short',
+    timeStyle: 'short'
+  }
+}
+```
+
+👉 页面会显示：
+
+> Last updated: xxxx
+
+------
+
+### 返回顶部
+
+```ts
+returnToTopLabel: '返回顶部'
+```
+
+------
+
+### 侧边栏折叠
+
+```ts
+sidebarMenuLabel: '菜单'
+```
+
+------
+
+### 代码块复制按钮（默认有）
+
+👉 不用配置，但你要知道：
+```java
+System.out.println("Hello");
+👉 会自动带复制按钮
+```
+
+### Markdown增强（稍微进阶）
+
+和 themeConfig 配置同级
+
+```ts
+markdown: {
+  lineNumbers: true
+}
+```
+
+👉 代码行号：
+
+```java
+1  public class Test {}
+```
+
+
+
+### logo（网站 Logo）
+
+文件放在 `docs/public/` 目录下
+
+```ts
+themeConfig: {
+  logo: '/logo.png'
+}
+```
+
+👉 显示在左上角
+👉 支持深色模式：
+
+```ts
+logo: {
+  light: '/logo-light.png',
+  dark: '/logo-dark.png'
+}
+```
+
+📌 官网明确支持 ([VitePress](https://vitepress.dev/reference/default-theme-config.html?utm_source=chatgpt.com))
+
+------
+
+### siteTitle（控制标题显示）
+
+```ts
+siteTitle: '阿腾文档'
+```
+
+👉 或者隐藏：
+
+```ts
+siteTitle: false
+```
+
+👉 用 logo 替代文字
+
+------
+
+### aside（右侧目录位置）
+
+```ts
+aside: true        // 默认右侧
+aside: 'left'      // 左侧
+aside: false       // 关闭
+```
+
+📌 控制右边“目录栏” ([VitePress](https://vitepress.dev/reference/default-theme-config?utm_source=chatgpt.com))
+
+------
+
+### sidebar 折叠（很实用）
+
+```ts
+sidebar: {
+  '/java/': [
+    {
+      text: 'Java',
+      collapsed: true, // 默认折叠
+      items: [...]
+    }
+  ]
+}
+```
+
+📌 官方支持 `collapsed` ([VitePress](https://vitepress.dev/reference/default-theme-config?utm_source=chatgpt.com))
+
+------
+
+### externalLinkIcon（外链图标）
+
+```ts
+externalLinkIcon: true
+```
+
+👉 Markdown 中外链显示小图标
+
+------
+
+### darkMode 文案
+
+```ts
+darkModeSwitchLabel: '主题'
+darkModeSwitchTitle: '切换暗黑模式'
+lightModeSwitchTitle: '切换亮色模式'
+```
+
+------
+
+
+
+## 首页配置
+
+`docs/index.md`
+
+```markdown
+---
+layout: home
+
+hero:
+  name: "阿腾技术文档"
+  text: "Java · Vue · 中间件"
+  tagline: 记录学习、沉淀经验、持续成长
+  image:
+    src: /logo.svg
+    alt: logo
+    width: 400
+    height: 400
+  actions:
+    - theme: brand
+      text: 🚀 开始阅读
+      link: /java/
+    - theme: alt
+      text: 🎨 前端模块
+      link: /vue/
+
+features:
+  - title: 🚀 后端
+    details: Java / SpringBoot / MySQL / Redis 等技术总结
+    link: /java/
+
+  - title: 🎨 前端
+    details: Vue3 / Vite / Element Plus 实战经验
+    link: /vue/
+
+  - title: ⚙️ 中间件
+    details: Redis / MQ / 分布式 / 高并发方案
+    link: /middleware/
+---
+
+## 📚 快速导航
+
+### 🚀 后端
+- 👉 [Java 基础](/java/)
+- 👉 [JDK8 新特性](/java/jdk8)
+- 👉 [并发编程](/java/concurrent)
+
+### 🎨 前端
+- 👉 [Vue3 入门](/vue/)
+- 👉 [响应式原理](/vue/reactivity)
+- 👉 [Vue Router](/vue/router)
+
+### ⚙️ 中间件
+- 👉 [Redis](/middleware/redis)
+- 👉 [消息队列](/middleware/mq)
+- 👉 [分布式](/middleware/distributed)
+
+---
+
+## 🔥 最近更新
+
+- 🆕 [JDK8 新特性](/java/jdk8)
+- 🆕 [Vue3 响应式原理](/vue/reactivity)
+- 🆕 [Redis 基础](/middleware/redis)
+
+---
+
+## ✨ 关于本站
+
+这是一个用于记录技术成长的文档站点，涵盖：
+
+- 后端：Java / Spring / 数据库
+- 前端：Vue3 / Vite / UI 框架
+- 架构：中间件 / 分布式 / 高并发
+
+👉 持续更新中...
+```
+
+![image-20260325211432268](./assets/image-20260325211432268.png)
+
+
+
+---
+
+
+
+## 集成 Element Plus
+
+安装依赖
+
+```
+pnpm add element-plus@2.13.0 @element-plus/icons-vue@2.3.2
+pnpm add -D sass@1.97.3
+```
+
+扩展 VitePress 主题（.vitepress/theme/index.ts）
+
+```ts
+import DefaultTheme from 'vitepress/theme'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+
+export default {
+    ...DefaultTheme,
+    enhanceApp({ app }) {
+        app.use(ElementPlus, {
+            locale: zhCn,
+        })
+        for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+            app.component(key, component)
+        }
+    }
+}
+```
+
+在 Markdown 中直接用 Vue + Element Plus
+
+~~~markdown
+# JDK8 新特性
+
+## Lambda 表达式
+
+```java
+list.forEach(item -> System.out.println(item));
+```
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const count = ref(0)
+</script>
+
+<el-button type="primary" @click="count++">
+点击次数：{{ count }}
+</el-button>
+~~~
+
+![image-20260325212948791](./assets/image-20260325212948791.png)
+
+使用示例
+
+```markdown
+# 混合内容示例
+
+## 动态列表 + 过渡动画
+
+<script setup>
+import { ref } from 'vue'
+
+const list = ref(['Vue', 'VitePress', 'Element Plus'])
+
+const addItem = () => {
+  list.value.push('New Item ' + Date.now())
+}
+</script>
+
+<div class="list-box">
+  <el-button type="primary" @click="addItem">
+    添加
+  </el-button>
+  
+  <transition-group name="fade">
+    <div v-for="item in list" :key="item" class="item">
+      {{ item }}
+    </div>
+  </transition-group>
+</div>
+
+<style lang="scss">
+.list-box {
+  margin-top: 20px;
+
+  .item {
+    padding: 10px;
+    margin-top: 10px;
+    background: #f5f7fa;
+    border-radius: 6px;
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s;
+}
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>
+```
+
+![PixPin_2026-03-25_21-40-47](./assets/PixPin_2026-03-25_21-40-47.gif)
