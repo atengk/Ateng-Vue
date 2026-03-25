@@ -3,23 +3,22 @@
 layout: home
 
 hero:
-  name: "阿腾网站"
-  text: "阿腾网站描述"
-  tagline: My great project tagline
+  name: "阿腾技术文档"
+  text: "Java · Vue · 中间件"
+  tagline: 记录学习、沉淀经验、持续成长
   actions:
     - theme: brand
-      text: Markdown Examples
+      text: 开始阅读
       link: /markdown-examples
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Java模块
+      link: /java
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: 🚀 后端
+    details: Java / SpringBoot / MySQL / Redis 等技术总结
+  - title: 🎨 前端
+    details: Vue3 / Vite / Element Plus 实战经验
+  - title: ⚙️ 中间件
+    details: Redis / MQ / 分布式 / 高并发方案
 ---
-
