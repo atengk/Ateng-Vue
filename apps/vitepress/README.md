@@ -1,41 +1,47 @@
 # VitePress
 
-由 Vite 和 Vue 驱动的静态站点生成器
+**VitePress** 是由 Vue.js 团队打造的一款**静态站点生成器（SSG）**，基于 Vite 和 Vue 3。
 
-将 Markdown 变成优雅的文档，只需几分钟
+👉 核心定位：**写文档 / 博客 / 技术站点（极致轻量 + 超快）**
 
-- [官网地址](xxx/)
+- 官网地址：[链接](https://vitejs.cn/vitepress/)
 
 
 
 ## 基础配置
 
-**安装依赖**
+**初始化项目**
 
 ```
-pnpm add vitepress@1.6.4
+pnpm dlx create-vite@7.1.3 my-docs --template vue-ts
+cd my-docs
+```
+
+**安装 vitepress**
 
 ```
+pnpm add -D vitepress@1.6.4
+```
+
+**初始化 docs**
 
 ```
 pnpm vitepress init
 ```
 
-
+交互日志
 
 ```
-PS D:\sources\my\Ateng-Vue\apps\vitepress> pnpm vitepress init
-
 ┌  Welcome to VitePress!
 │
 ◇  Where should VitePress initialize the config?
-│  ./
+│  ./docs
 │
 ◇  Site title:
-│  My Awesome Project
+│  阿腾网站
 │
 ◇  Site description:
-│  A VitePress Site
+│  阿腾网站描述
 │
 ◇  Theme:
 │  Default Theme
@@ -49,10 +55,23 @@ PS D:\sources\my\Ateng-Vue\apps\vitepress> pnpm vitepress init
 └  Done! Now run pnpm run docs:dev and start writing.
 ```
 
-
-
-## 最简示例
-
-```vue
+会自动生成：
 
 ```
+.
+├─ docs
+│  ├─ .vitepress
+│  │  └─ config.js
+│  ├─ api-examples.md
+│  ├─ markdown-examples.md
+│  └─ index.md
+└─ package.json
+```
+
+**启动项目**
+
+```
+pnpm run docs:dev
+```
+
+![image-20260325162753669](./assets/image-20260325162753669.png)
