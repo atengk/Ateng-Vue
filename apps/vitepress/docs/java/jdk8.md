@@ -13,10 +13,10 @@ const addItem = () => {
 </script>
 
 <div class="list-box">
-  <el-button type="primary" @click="addItem">
+  <a-button type="primary" @click="addItem">
     添加
-  </el-button>
-  
+  </a-button>
+
   <transition-group name="fade">
     <div v-for="item in list" :key="item" class="item">
       {{ item }}

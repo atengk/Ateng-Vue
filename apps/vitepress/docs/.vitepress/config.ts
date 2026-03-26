@@ -2,6 +2,7 @@ import {defineConfig} from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+    base: '/',
     title: "阿腾网站",
     description: "阿腾网站描述",
     themeConfig: {

@@ -290,6 +290,16 @@ export default defineConfig({
 - 浏览器标题
 - SEO 描述
 
+### base URL
+
+站点将部署到的 base URL。如果计划在子路径例如 GitHub 页面下部署站点，则需要设置此项。如果计划将站点部署到 `https://foo.github.io/bar/`，那么应该将 `base` 设置为 `'/bar/'`。它应该始终以 `/` 开头和结尾。
+
+```ts
+export default {
+  base: '/base/'
+}
+```
+
 ------
 
 ### 导航栏（nav）
@@ -678,14 +688,23 @@ features:
 
 ## 集成 Element Plus
 
-安装依赖
+### 安装依赖和配置
+
+**安装依赖**
+
+安装 Element Plus
 
 ```
 pnpm add element-plus@2.13.0 @element-plus/icons-vue@2.3.2
+```
+
+安装 Sass
+
+```
 pnpm add -D sass@1.97.3
 ```
 
-扩展 VitePress 主题（.vitepress/theme/index.ts）
+**扩展 VitePress 主题（.vitepress/theme/index.ts）**
 
 ```ts
 import DefaultTheme from 'vitepress/theme'
@@ -707,7 +726,39 @@ export default {
 }
 ```
 
-在 Markdown 中直接用 Vue + Element Plus
+**按需引入**
+
+安装插件
+
+```
+pnpm add -D unplugin-vue-components@30.0.0 unplugin-auto-import@20.3.0
+```
+
+配置vite.config.ts
+
+```ts
+import { defineConfig } from 'vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
+export default defineConfig({
+  // ...
+  plugins: [
+    // ...
+    AutoImport({
+      resolvers: [ElementPlusResolver()],
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()],
+    }),
+  ],
+})
+```
+
+### 使用示例
+
+**在 Markdown 中直接用 Vue + Element Plus**
 
 ~~~markdown
 # JDK8 新特性
@@ -731,7 +782,7 @@ const count = ref(0)
 
 ![image-20260325212948791](./assets/image-20260325212948791.png)
 
-使用示例
+**混合内容示例**
 
 ```markdown
 # 混合内容示例
@@ -788,3 +839,156 @@ const addItem = () => {
 ```
 
 ![PixPin_2026-03-25_21-40-47](./assets/PixPin_2026-03-25_21-40-47.gif)
+
+
+
+## 集成 Antdv Next
+
+### 安装依赖和配置
+
+**安装依赖**
+
+安装 Antdv Next
+
+```
+pnpm add antdv-next@1.1.0
+```
+
+安装 Sass
+
+```
+pnpm add -D sass@1.97.3
+```
+
+**扩展 VitePress 主题（.vitepress/theme/index.ts）**
+
+```ts
+import DefaultTheme from 'vitepress/theme'
+import AntdvNext from 'antdv-next'
+
+export default {
+    ...DefaultTheme,
+    enhanceApp({ app }) {
+        app.use(AntdvNext)
+    }
+}
+```
+
+**按需引入**
+
+安装插件
+
+```
+pnpm add -D @antdv-next/auto-import-resolver unplugin-vue-components@30.0.0 unplugin-auto-import@20.3.0
+```
+
+配置vite.config.ts
+
+```ts
+import { defineConfig } from 'vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { AntdvNextResolver } from '@antdv-next/auto-import-resolver'
+
+export default defineConfig({
+  // ...
+  plugins: [
+    // ...
+    AutoImport({
+      resolvers: [AntdvNextResolver()]
+    }),
+    Components({
+      resolvers: [AntdvNextResolver()]
+    })
+  ],
+})
+```
+
+### 使用示例
+
+**在 Markdown 中直接用 Vue + Element Plus**
+
+~~~markdown
+# JDK8 新特性
+
+## Lambda 表达式
+
+```java
+list.forEach(item -> System.out.println(item));
+```
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const count = ref(0)
+</script>
+
+<a-button type="primary" @click="count++">
+点击次数：{{ count }}
+</a-button>
+~~~
+
+![image-20260325212948791](./assets/image-20260325212948791.png)
+
+**混合内容示例**
+
+```markdown
+# 混合内容示例
+
+## 动态列表 + 过渡动画
+
+<script setup>
+import { ref } from 'vue'
+
+const list = ref(['Vue', 'VitePress', 'Element Plus'])
+
+const addItem = () => {
+  list.value.push('New Item ' + Date.now())
+}
+</script>
+
+<div class="list-box">
+  <a-button type="primary" @click="addItem">
+    添加
+  </a-button>
+  
+  <transition-group name="fade">
+    <div v-for="item in list" :key="item" class="item">
+      {{ item }}
+    </div>
+  </transition-group>
+</div>
+
+<style lang="scss">
+.list-box {
+  margin-top: 20px;
+
+  .item {
+    padding: 10px;
+    margin-top: 10px;
+    background: #f5f7fa;
+    border-radius: 6px;
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s;
+}
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>
+```
+
+![PixPin_2026-03-25_21-40-47](./assets/PixPin_2026-03-25_21-40-47.gif)
+
+
+
+## 自定义主题
+
