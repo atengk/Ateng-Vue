@@ -456,7 +456,7 @@ lastUpdated: {
   text: '最后更新',
   formatOptions: {
     dateStyle: 'short',
-    timeStyle: 'short'
+    timeStyle: 'short' // short medium
   }
 }
 ```
@@ -464,14 +464,6 @@ lastUpdated: {
 👉 页面会显示：
 
 > Last updated: xxxx
-
-------
-
-### 返回顶部
-
-```ts
-returnToTopLabel: '返回顶部'
-```
 
 ------
 
@@ -589,13 +581,34 @@ externalLinkIcon: true
 
 ------
 
-### darkMode 文案
+### 导航与主题相关配置
 
 ```ts
-darkModeSwitchLabel: '主题'
-darkModeSwitchTitle: '切换暗黑模式'
-lightModeSwitchTitle: '切换亮色模式'
+themeConfig: {
+    langMenuLabel: '多语言',
+    returnToTopLabel: '回到顶部',
+    sidebarMenuLabel: '菜单',
+    darkModeSwitchLabel: '主题',
+    lightModeSwitchTitle: '切换到浅色模式',
+    darkModeSwitchTitle: '切换到深色模式'
+}
 ```
+
+### 404 页面定制
+
+```
+themeConfig: {
+  notFound: {
+    code: '404',
+    title: '页面未找到',
+    quote: '您访问的页面不存在',
+    linkLabel: '返回首页',
+    linkText: '点击这里返回主页'
+  }
+}
+```
+
+
 
 ------
 
@@ -990,5 +1003,99 @@ const addItem = () => {
 
 
 
-## 自定义主题
+## 部署 GitHub Pages
 
+### 创建部署文件
+
+在项目的 `.github/workflows` 目录中创建一个名为 `deploy.yml` 的文件，其中包含这样的内容：
+
+```yaml
+name: Deploy VitePress to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: vitepress-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 安装 pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      # Node + pnpm缓存
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # 安装依赖
+      - name: Install dependencies
+        run: pnpm install
+
+      # 构建
+      - name: Build VitePress
+        run: pnpm docs:build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+- **分支**：当前只部署 `main` 分支，其他分支不会触发。
+- **Node / pnpm 版本**：GitHub Actions 的版本要和本地一致，否则可能构建失败。
+- **dist 目录**：确保 `docs/.vitepress/dist` 路径正确，和项目结构匹配。
+- **依赖缓存**：使用 `pnpm` 缓存时，确保有 `pnpm-lock.yaml`，否则 `--frozen-lockfile` 会报错。
+- **自定义域 / base URL**：VitePress 配置需要同步修改，否则页面路径可能错。
+- **多文档 / 多分支**：如有测试分支或多个文档目录，需要单独配置 job 或 path。
+
+### GitHub Pages 设置
+
+构建和部署选择 `GitHub Actions`
+
+`Settings` → `Pages` → `Build and deployment`  → `GitHub Actions`
+
+![image-20260326154243816](./assets/image-20260326154243816.png)
+
+当推送代码到指定分支时，自动拉取代码、安装依赖、构建 VitePress，并将生成的静态文件部署到 GitHub Pages
+
+![image-20260326154502208](./assets/image-20260326154502208.png)
+
+![image-20260326154601082](./assets/image-20260326154601082.png)
