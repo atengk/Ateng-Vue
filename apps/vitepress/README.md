@@ -1446,3 +1446,55 @@ export default defineConfig({
 ```
 
 ![image-20260327174147757](./assets/image-20260327174147757.png)
+
+## 广告位
+
+**新建组件**
+
+`.vitepress/theme/components/AdBanner.vue`
+
+```vue
+<template>
+  <div class="ad">
+    <a href="https://your-link.com" target="_blank">
+      🚀 你的广告位（可投放合作）
+    </a>
+  </div>
+</template>
+
+<style scoped>
+.ad {
+  margin: 16px 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6366f1, #22c55e);
+  color: white;
+  text-align: center;
+  font-weight: 500;
+}
+</style>
+```
+
+**挂载页面**
+
+`.vitepress/theme/index.ts`
+
+- 文章底部：doc-after
+- 侧边栏：aside-bottom
+
+```ts
+import DefaultTheme from 'vitepress/theme'
+import AdBanner from './components/AdBanner.vue'
+import { h } from 'vue'
+
+export default {
+  ...DefaultTheme,
+  Layout: () => {
+    return h(DefaultTheme.Layout, null, {
+      'doc-after': () => h(AdBanner)
+    })
+  }
+}
+```
+
+![image-20260327175758532](./assets/image-20260327175758532.png)
