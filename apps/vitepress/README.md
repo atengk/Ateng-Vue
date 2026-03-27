@@ -1170,6 +1170,120 @@ pnpm add medium-zoom
 **配置 index.css**
 
 ```css
+.vp-doc img:not(.no-zoom) {
+    cursor: zoom-in;
+    border-radius: 10px;
+    transform: translateZ(0);
+    transition: transform 0.25s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .vp-doc img:not(.no-zoom):hover {
+        transform: scale(1.02);
+    }
+}
+
+.medium-zoom-overlay {
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    pointer-events: auto;
+    backdrop-filter: blur(6px);
+}
+
+.medium-zoom-image {
+    transform: translateZ(0);
+}
+
+.medium-zoom-image--opened {
+    z-index: 10000;
+    border-radius: 14px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+    cursor: zoom-out;
+}
+
+@media (max-width: 768px) {
+    .vp-doc img:not(.no-zoom) {
+        transition: none;
+    }
+
+    .medium-zoom-overlay {
+        backdrop-filter: blur(4px);
+    }
+
+    .medium-zoom-image--opened {
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        max-width: 100vw !important;
+        max-height: 100vh !important;
+    }
+}
+```
+
+**配置 index.ts**
+
+`.vitepress/theme/index.ts`
+
+```ts
+import { useRoute } from 'vitepress'
+import DefaultTheme from 'vitepress/theme'
+import { nextTick, onMounted, watch } from 'vue'
+import mediumZoom from 'medium-zoom'
+import './index.css'
+
+let zoom: ReturnType<typeof mediumZoom> | null = null
+
+export default {
+    ...DefaultTheme,
+
+    setup() {
+        const route = useRoute()
+
+        const init = () => {
+            if (!zoom) {
+                // @ts-ignore
+                zoom = mediumZoom({
+                    background: 'rgba(0,0,0,0.85)',
+                    margin: window.innerWidth < 768 ? 0 : 24,
+                    scrollOffset: 0,
+                    animationDuration: window.innerWidth < 768 ? 200 : 260
+                })
+            }
+
+            zoom.detach()
+            zoom.attach('.vp-doc img:not(.no-zoom)')
+        }
+
+        const run = () => requestAnimationFrame(() => nextTick(init))
+
+        onMounted(run)
+        watch(() => route.path, run)
+    }
+}
+```
+
+**markdown图片配置**
+
+默认情况下，所有 Markdown 图片都支持点击放大。加了 `{.no-zoom}` 就不会放大
+
+```
+![image-20260327163654362](./assets/image-20260327163654362.png){.no-zoom}
+![Ateng_20260327_163728](./assets/Ateng_20260327_163728.gif)
+```
+
+![Ateng_20260327_170656](./assets/Ateng_20260327_170656.gif)
+
+### medium-zoom（加强版）
+
+**安装依赖**
+
+```
+pnpm add medium-zoom
+```
+
+**配置 index.css**
+
+```css
 /* .vitepress/theme/index.css */
 
 /* ===============================
