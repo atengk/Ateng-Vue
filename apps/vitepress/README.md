@@ -77,6 +77,57 @@ pnpm run docs:dev
 
 ![image-20260325162753669](./assets/image-20260325162753669.png)
 
+## 基础配置（纯净版）
+
+VitePress 天生支持在 Markdown 里直接写 Vue3 组件
+
+完全不需要创建 Vue 项目（安装 Vue），也照样能用 Vue。
+
+**创建目录**
+
+👉 **不要用 `create-vite`，不要创建 Vue 项目**
+
+```
+mkdir my-docs
+cd my-docs
+```
+
+**初始化 package.json**
+
+一路回车即可
+
+```
+pnpm init
+```
+
+**安装 VitePress**
+
+```
+pnpm add -D vitepress@1.6.4
+```
+
+**初始化 VitePress**
+
+👉 关键选择：
+
+- Where should VitePress initialize the config?
+  - 👉 选择：`.`（根目录）
+- 其他全部默认即可
+
+```
+pnpm vitepress init
+```
+
+**启动项目**
+
+```
+pnpm run docs:dev
+```
+
+![image-20260325162753669](./assets/image-20260325162753669.png)
+
+
+
 ## 添加目录和文档
 
 ### 创建目录和文档
