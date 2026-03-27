@@ -76,6 +76,7 @@
     - [vue3-tree-org 组织架构图](/apps/vue3-tree-org/)
     - [Vue3 二维码](/apps/qrcode-vue3/)
     - [Xterm.js 终端](/apps/xterm.js/)
+    - [Vuelor 颜色选择器](/apps/vuelor-picker/)
 - 轮播库
     - [Embla Carousel 轮播库](/apps/embla-carousel/)
     - [Swiper 轮播库](/apps/swiper/)
