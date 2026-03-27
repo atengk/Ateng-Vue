@@ -1172,60 +1172,178 @@ pnpm add medium-zoom
 ```css
 /* .vitepress/theme/index.css */
 
-/* 图片放大 */
+/* ===============================
+   图片基础交互
+================================= */
+.vp-doc img {
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-/* 背景层 */
+/* hover 微动效（高级感关键） */
+.vp-doc img:hover {
+    transform: scale(1.02);
+    filter: brightness(1.05);
+}
+
+/* 鼠标提示 */
+.vp-doc img:not(.no-zoom) {
+    cursor: zoom-in;
+}
+
+/* ===============================
+   放大遮罩层（核心视觉）
+================================= */
 .medium-zoom-overlay {
     z-index: 999;
-    backdrop-filter: blur(4px); /* 高级感 */
+
+    /* 毛玻璃 + 渐变 */
+    backdrop-filter: blur(12px);
+    background: radial-gradient(
+            circle at center,
+            rgba(0, 0, 0, 0.65) 0%,
+            rgba(0, 0, 0, 0.85) 100%
+    );
+
+    transition: all 0.3s ease;
 }
 
-/* 图片 */
+/* ===============================
+   放大图片
+================================= */
 .medium-zoom-image--opened {
     z-index: 1000;
-    border-radius: 12px; /* 圆角更现代 */
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+    border-radius: 16px;
+
+    /* 阴影增强立体感 */
+    box-shadow:
+            0 10px 40px rgba(0, 0, 0, 0.25),
+            0 30px 100px rgba(0, 0, 0, 0.45);
+
+    cursor: zoom-out;
 }
+
+/* ===============================
+   动画优化（丝滑）
+================================= */
+.medium-zoom-image {
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* ===============================
+   移动端优化
+================================= */
+@media (max-width: 768px) {
+    .medium-zoom-image--opened {
+        border-radius: 10px;
+    }
+
+    .medium-zoom-overlay {
+        backdrop-filter: blur(6px);
+    }
+}
+```
+
+**配置 Layout.vue**
+
+`.vitepress/theme/Layout.vue`
+
+```vue
+<script setup lang="ts">
+import { nextTick, onBeforeUnmount, onMounted, watch } from 'vue'
+import { useRoute } from 'vitepress'
+import DefaultTheme from 'vitepress/theme'
+import mediumZoom, { type Zoom } from 'medium-zoom'
+
+const { Layout } = DefaultTheme
+const route = useRoute()
+
+let zoom: Zoom | null = null
+let observer: MutationObserver | null = null
+
+const createZoom = () => {
+  if (!zoom) {
+    zoom = mediumZoom({
+      background: 'rgba(10, 10, 10, 0.75)',
+      margin: 32,
+      scrollOffset: 80
+    })
+
+    // 增强交互
+    zoom.on('open', () => {
+      document.body.style.overflow = 'hidden'
+    })
+
+    zoom.on('close', () => {
+      document.body.style.overflow = ''
+    })
+  }
+}
+
+const attachImages = () => {
+  const images = document.querySelectorAll(
+      '.vp-doc img:not(.no-zoom):not([data-no-zoom])'
+  )
+
+  zoom?.detach()
+  zoom?.attach(images)
+}
+
+const initZoom = async () => {
+  if (typeof window === 'undefined') return
+
+  await nextTick()
+
+  createZoom()
+  attachImages()
+
+  // 监听 DOM 变化（适配 VitePress 动态渲染）
+  observer?.disconnect()
+  observer = new MutationObserver(() => {
+    attachImages()
+  })
+
+  observer.observe(document.querySelector('.vp-doc')!, {
+    childList: true,
+    subtree: true
+  })
+}
+
+onMounted(initZoom)
+
+watch(
+    () => route.path,
+    async () => {
+      await initZoom()
+    }
+)
+
+onBeforeUnmount(() => {
+  zoom?.detach()
+  observer?.disconnect()
+  zoom = null
+})
+</script>
+
+<template>
+  <Layout />
+</template>
 ```
 
 **配置 index.ts**
 
 ```ts
-// .vitepress/theme/index.js
-import { useRoute } from 'vitepress'
+// .vitepress/theme/index.ts
+import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
-// @ts-ignore
-import { nextTick, onMounted, watch } from 'vue'
-import mediumZoom from 'medium-zoom'
+import Layout from './Layout.vue'
 import './index.css'
 
-let zoom: ReturnType<typeof mediumZoom> | null = null
-
 export default {
-    ...DefaultTheme,
-
-    setup() {
-        const route = useRoute()
-
-        const initZoom = () => {
-            if (zoom) {
-                zoom.detach()
-            }
-
-            zoom = mediumZoom('.vp-doc img:not(.no-zoom)', {
-                background: 'var(--vp-c-bg)',
-                margin: 24,
-                scrollOffset: 40
-            })
-        }
-
-        onMounted(() => {
-            nextTick(initZoom)
-        })
-
-        watch(() => route.path, () => nextTick(initZoom))
-    }
-}
+    extends: DefaultTheme,
+    Layout
+} satisfies Theme
 ```
 
 **markdown图片配置**
