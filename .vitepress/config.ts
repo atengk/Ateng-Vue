@@ -12,9 +12,28 @@ export default defineConfig({
         // https://vitepress.dev/reference/default-theme-config
         nav: [
             {text: '首页', link: '/'},
-            {text: '案例实操', link: '/docs/sass-basics/README'},
-            {text: 'yudao-cloud', link: '/yudao-cloud/'},
-            {text: 'yudao-ui', link: '/yudao-ui-admin-vue3/'},
+            {text: '基础', link: '/apps/basic/'},
+            {text: '静态网站', link: '/apps/website/'},
+            {text: '案例实操', link: '/apps/example/'},
+            {text: '网站请求', link: '/apps/request/'},
+            {text: '状态管理', link: '/apps/status/'},
+            {text: 'Vue 路由', link: '/apps/router/'},
+            {text: '应用框架', link: '/apps/project/'},
+            {text: '样式', link: '/apps/style/'},
+            {text: 'UI', link: '/apps/ui/'},
+            {text: '图表', link: '/apps/echarts/'},
+            {text: '工具', link: '/apps/util/'},
+            {text: '大屏自适应', link: '/apps/adaptive/'},
+            {text: 'PDF 插件', link: '/apps/pdf/'},
+            {text: '插件', link: '/apps/plugin/'},
+            {text: '轮播库', link: '/apps/carousel/'},
+            {text: '文本编辑器', link: '/apps/editor/'},
+            {text: '视频播放器', link: '/apps/video/'},
+            {text: '地图', link: '/apps/map/'},
+            {text: '图片工具', link: '/apps/image/'},
+            {text: 'Markdown渲染', link: '/apps/markdown/'},
+            {text: 'VueUse 工具库', link: '/apps/vueuse/'},
+            {text: '实时通信', link: '/apps/realtime/'},
             {
                 text: '关于',
                 items: [
@@ -28,30 +47,520 @@ export default defineConfig({
         ],
 
         sidebar: {
-            '/docs/sass-basics/README': [
+            '/apps/basic/': [
                 {
-                    text: '案例实操',
+                    text: 'Vue3基础',
                     collapsed: false,
-                    items: [
-                        {text: 'Sass基础', link: '/docs/sass-basics/README'},
-                        {text: '动态样式', link: '/docs/dynamic-styles/README'},
-                        {text: '组件通信', link: '/docs/component-communication/README'},
-                        {text: '表单布局', link: '/docs/form-layout/README'},
-                        {text: '动态组件', link: '/docs/dynamic-components/README'},
-                    ]
+                    link: '/apps/basic/vue3-basic/README'
                 },
                 {
-                    text: '开始使用2',
+                    text: 'Vue3组件',
                     collapsed: false,
-                    items: [
-                        {text: '基础配置', link: '/yudao-boot/basic3/'},
-                        {text: '基础配置', link: '/yudao-boot/basic4/'},
-                    ]
+                    link: '/apps/basic/vue3-component/README'
+                },
+                {
+                    text: 'TypeScript',
+                    collapsed: false,
+                    link: '/apps/basic/typescript/README'
+                },
+            ],
+            '/apps/website/': [
+                {
+                    text: 'VitePress',
+                    collapsed: false,
+                    link: '/apps/website/vitepress/README'
+                },
+            ],
+            '/apps/example/': [
+                {
+                    text: 'Sass基础',
+                    collapsed: false,
+                    link: '/apps/example/sass-basics/README'
+                },
+                {
+                    text: '动态样式',
+                    collapsed: false,
+                    link: '/apps/example/dynamic-styles/README'
+                },
+                {
+                    text: '组件通信',
+                    collapsed: false,
+                    link: '/apps/example/component-communication/README'
+                },
+                {
+                    text: '表单布局',
+                    collapsed: false,
+                    link: '/apps/example/form-layout/README'
+                },
+                {
+                    text: '动态组件',
+                    collapsed: false,
+                    link: '/apps/example/dynamic-components/README'
+                },
+                {
+                    text: '全局样式',
+                    collapsed: false,
+                    link: '/apps/example/global-styles/README'
+                },
+                {
+                    text: '组件封装',
+                    collapsed: false,
+                    link: '/apps/example/component-encapsulation/README'
+                },
+                {
+                    text: '自定义指令',
+                    collapsed: false,
+                    link: '/apps/example/custom-directive/README'
+                },
+                {
+                    text: '数据监听',
+                    collapsed: false,
+                    link: '/apps/example/data-watch/README'
+                },
+                {
+                    text: '键鼠事件',
+                    collapsed: false,
+                    link: '/apps/example/keyboard-mouse-events/README'
+                },
+                {
+                    text: 'Composables 可复用的组合式逻辑函数',
+                    collapsed: false,
+                    link: '/apps/example/composables/README'
+                },
+                {
+                    text: 'TailwindCSS',
+                    collapsed: false,
+                    link: '/apps/example/tailwind-css/README'
+                },
+                {
+                    text: 'Vue Router',
+                    collapsed: false,
+                    link: '/apps/example/vue-router/README'
+                },
+            ],
+            '/apps/request/': [
+                {
+                    text: 'Axios',
+                    collapsed: false,
+                    link: '/apps/request/axios/README'
+                },
+            ],
+            '/apps/status/': [
+                {
+                    text: 'Pinia',
+                    collapsed: false,
+                    link: '/apps/status/pinia/README'
+                },
+            ],
+            '/apps/router/': [
+                {
+                    text: 'Vue3 Router',
+                    collapsed: false,
+                    link: '/apps/router/vue-router/README'
+                },
+                {
+                    text: 'Vue3 Layout',
+                    collapsed: false,
+                    link: '/apps/router/layout/README'
+                },
+            ],
+            '/apps/project/': [
+                {
+                    text: 'VBen Admin v5',
+                    collapsed: false,
+                    link: '/apps/project/vben-admin-v5/README'
+                },
+                {
+                    text: 'Electron',
+                    collapsed: false,
+                    link: '/apps/project/electron/README'
+                },
+                {
+                    text: 'Uni App',
+                    collapsed: false,
+                    link: '/apps/project/uni-app/README'
+                },
+            ],
+            '/apps/style/': [
+                {
+                    text: 'CSS',
+                    collapsed: false,
+                    link: '/apps/style/css/README'
+                },
+                {
+                    text: 'SCSS',
+                    collapsed: false,
+                    link: '/apps/style/sass/README'
+                },
+                {
+                    text: 'TailwindCSS',
+                    collapsed: false,
+                    link: '/apps/style/tailwindcss/README'
+                },
+                {
+                    text: 'UnoCSS',
+                    collapsed: false,
+                    link: '/apps/style/unocss/README'
+                },
+                {
+                    text: 'SVG',
+                    collapsed: false,
+                    link: '/apps/style/svg/README'
+                },
+            ],
+            '/apps/ui/': [
+                {
+                    text: 'Element Plus',
+                    collapsed: false,
+                    link: '/apps/ui/css/README'
+                },
+                {
+                    text: 'Element Plus 快速开始',
+                    collapsed: false,
+                    link: '/apps/ui/element-plus/quick-start'
+                },
+                {
+                    text: 'Element Plus 全局使用',
+                    collapsed: false,
+                    link: '/apps/ui/element-plus/global'
+                },
+                {
+                    text: 'Element Plus 示例使用',
+                    collapsed: false,
+                    link: '/apps/ui/element-plus/examples'
+                },
+                {
+                    text: 'Antdv Next',
+                    collapsed: false,
+                    link: '/apps/ui/antdv-next/README'
+                },
+                {
+                    text: 'Naive UI',
+                    collapsed: false,
+                    link: '/apps/ui/naive-ui/README'
+                },
+            ],
+            '/apps/echarts/': [
+                {
+                    text: 'Apache ECharts',
+                    collapsed: false,
+                    link: '/apps/echarts/apache-echarts/README'
+                },
+                {
+                    text: 'Vue3 ECharts',
+                    collapsed: false,
+                    link: '/apps/echarts/vue-echarts/README'
+                },
+            ],
+            '/apps/util/': [
+                {
+                    text: 'Vite',
+                    collapsed: false,
+                    link: '/apps/util/vite/README'
+                },
+                {
+                    text: '自定义工具类',
+                    collapsed: false,
+                    link: '/apps/util/custom-utils/README'
+                },
+                {
+                    text: 'Day.js 时间处理库',
+                    collapsed: false,
+                    link: '/apps/util/dayjs/README'
+                },
+                {
+                    text: 'Lodash ES 工具库',
+                    collapsed: false,
+                    link: '/apps/util/lodash-es/README'
+                },
+            ],
+            '/apps/adaptive/': [
+                {
+                    text: 'autofit.js 窗口自适应工具',
+                    collapsed: false,
+                    link: '/apps/adaptive/autofit/README'
+                },
+                {
+                    text: 'v-scale-screen 大屏自适应容器组件',
+                    collapsed: false,
+                    link: '/apps/adaptive/v-scale-screen/README'
+                },
+                {
+                    text: 'screenfull 全屏组件',
+                    collapsed: false,
+                    link: '/apps/adaptive/screenfull/README'
+                },
+            ],
+            '/apps/pdf/': [
+                {
+                    text: 'EmbedPDF PDF嵌入',
+                    collapsed: false,
+                    link: '/apps/pdf/embedpdf/README'
+                },
+                {
+                    text: 'VuePDF PDF预览',
+                    collapsed: false,
+                    link: '/apps/pdf/vue-pdf/README'
+                },
+                {
+                    text: 'dompdf 导出矢量 PDF',
+                    collapsed: false,
+                    link: '/apps/pdf/dompdf/README'
+                },
+            ],
+            '/apps/plugin/': [
+                {
+                    text: 'Number-Flow 数字流动动画',
+                    collapsed: false,
+                    link: '/apps/plugin/number-flow/README'
+                },
+                {
+                    text: 'vue-offce 文档预览',
+                    collapsed: false,
+                    link: '/apps/plugin/vue-office/README'
+                },
+                {
+                    text: 'VueDraggablePlus 拖拽组件',
+                    collapsed: false,
+                    link: '/apps/plugin/vue‑draggable‑plus/README'
+                },
+                {
+                    text: 'Signature Pad 签名绘制组件',
+                    collapsed: false,
+                    link: '/apps/plugin/signature-pad/README'
+                },
+                {
+                    text: 'Vue3 Signature 电子签名组件',
+                    collapsed: false,
+                    link: '/apps/plugin/vue3-signature/README'
+                },
+                {
+                    text: 'Canvas Drawing Editor画布编辑器',
+                    collapsed: false,
+                    link: '/apps/plugin/canvas-drawing-editor/README'
+                },
+                {
+                    text: 'Vue Print Next打印库',
+                    collapsed: false,
+                    link: '/apps/plugin/vue-print-next/README'
+                },
+                {
+                    text: 'Vue 图标库',
+                    collapsed: false,
+                    link: '/apps/plugin/iconify/README'
+                },
+                {
+                    text: 'SimplebarVue 滚动条',
+                    collapsed: false,
+                    link: '/apps/plugin/simplebar/README'
+                },
+                {
+                    text: 'Vue Json Pretty JSON树视图组件',
+                    collapsed: false,
+                    link: '/apps/plugin/vue-json-pretty/README'
+                },
+                {
+                    text: 'Monaco Editor 代码编辑器',
+                    collapsed: false,
+                    link: '/apps/plugin/monaco-editor/README'
+                },
+                {
+                    text: 'emoji-picker-element 表情符号选择器',
+                    collapsed: false,
+                    link: '/apps/plugin/emoji-picker-element/README'
+                },
+                {
+                    text: 'org-chart 组织架构图',
+                    collapsed: false,
+                    link: '/apps/plugin/d3-org-chart/README'
+                },
+                {
+                    text: 'vue3-tree-org 组织架构图',
+                    collapsed: false,
+                    link: '/apps/plugin/vue3-tree-org/README'
+                },
+                {
+                    text: 'Vue3 二维码',
+                    collapsed: false,
+                    link: '/apps/plugin/qrcode-vue3/README'
+                },
+                {
+                    text: 'Xterm.js 终端',
+                    collapsed: false,
+                    link: '/apps/plugin/xterm.js/README'
+                },
+                {
+                    text: 'Vuelor 颜色选择器',
+                    collapsed: false,
+                    link: '/apps/plugin/vuelor-picker/README'
+                },
+                {
+                    text: 'vue-roller 滚动动画',
+                    collapsed: false,
+                    link: '/apps/plugin/vue-roller/README'
+                },
+            ],
+            '/apps/carousel/': [
+                {
+                    text: 'Embla Carousel 轮播库',
+                    collapsed: false,
+                    link: '/apps/carousel/embla-carousel/README'
+                },
+                {
+                    text: 'Swiper 轮播库',
+                    collapsed: false,
+                    link: '/apps/carousel/swiper/README'
+                },
+                {
+                    text: 'Vue 3 Carousel 轮播组件',
+                    collapsed: false,
+                    link: '/apps/carousel/vue3-carousel/README'
+                },
+            ],
+            '/apps/editor/': [
+                {
+                    text: 'WangEditor v5 富文本编辑器',
+                    collapsed: false,
+                    link: '/apps/editor/wangeditor/README'
+                },
+                {
+                    text: 'UEditorPlus 富文本编辑器',
+                    collapsed: false,
+                    link: '/apps/editor/ueditor-plus/README'
+                },
+                {
+                    text: 'Quill 富文本编辑器',
+                    collapsed: false,
+                    link: '/apps/editor/quill/README'
+                },
+                {
+                    text: 'Umo Editor 文档编辑器',
+                    collapsed: false,
+                    link: '/apps/editor/umo-editor/README'
+                },
+                {
+                    text: 'TinyEditor 富文本编辑器',
+                    collapsed: false,
+                    link: '/apps/editor/tiny-editor/README'
+                },
+            ],
+            '/apps/video/': [
+                {
+                    text: 'videojs播放器',
+                    collapsed: false,
+                    link: '/apps/video/videojs-player/README'
+                },
+                {
+                    text: '西瓜视频播放器',
+                    collapsed: false,
+                    link: '/apps/video/xgplayer/README'
+                },
+                {
+                    text: 'DPlayer视频播放器',
+                    collapsed: false,
+                    link: '/apps/video/dplayer/README'
+                },
+                {
+                    text: 'VideoJS V10',
+                    collapsed: false,
+                    link: '/apps/video/videojs-v10/README'
+                },
+            ],
+            '/apps/map/': [
+                {
+                    text: 'vue-baidu-map-3x 百度地图',
+                    collapsed: false,
+                    link: '/apps/map/vue-baidu-map-3x/README'
+                },
+                {
+                    text: '高德地图',
+                    collapsed: false,
+                    link: '/apps/map/amap/README'
                 }
             ],
-            '/yudao-cloud/': [
+            '/apps/image/': [
+                {
+                    text: 'SnapDOM HTML渲染器',
+                    collapsed: false,
+                    link: '/apps/image/snapdom/README'
+                },
+                {
+                    text: 'html2canvas HTML渲染器',
+                    collapsed: false,
+                    link: '/apps/image/html2canvas/README'
+                },
+                {
+                    text: 'DOM to Image 生成图像',
+                    collapsed: false,
+                    link: '/apps/image/dom-to-image/README'
+                },
+                {
+                    text: 'vue-cropper 图片裁剪',
+                    collapsed: false,
+                    link: '/apps/image/vue-cropper/README'
+                },
+                {
+                    text: 'Browser Image Compression 图像压缩',
+                    collapsed: false,
+                    link: '/apps/image/browser-image-compression/README'
+                }
             ],
-            '/yudao-ui-admin-vue3/': [
+            '/apps/markdown/': [
+                {
+                    text: 'markstream-vue',
+                    collapsed: false,
+                    link: '/apps/markdown/markstream-vue/README'
+                },
+                {
+                    text: 'markdown-it',
+                    collapsed: false,
+                    link: '/apps/markdown/markdown-it/README'
+                },
+                {
+                    text: 'Marked',
+                    collapsed: false,
+                    link: '/apps/markdown/marked/README'
+                }
+            ],
+            '/apps/vueuse/': [
+                {
+                    text: 'core',
+                    collapsed: false,
+                    link: '/apps/vueuse/vueuse-core/README'
+                },
+                {
+                    text: 'integrations',
+                    collapsed: false,
+                    link: '/apps/vueuse/vueuse-integrations/README'
+                },
+                {
+                    text: 'motion',
+                    collapsed: false,
+                    link: '/apps/vueuse/vueuse-motion/README'
+                }
+            ],
+
+            '/apps/realtime/': [
+                {
+                    text: 'WebSocket',
+                    collapsed: false,
+                    link: '/apps/realtime/web-socket/README'
+                },
+                {
+                    text: 'STOMP',
+                    collapsed: false,
+                    link: '/apps/realtime/stomp/README'
+                },
+                {
+                    text: 'SSE',
+                    collapsed: false,
+                    link: '/apps/realtime/sse/README'
+                },
+                {
+                    text: 'MQTT',
+                    collapsed: false,
+                    link: '/apps/realtime/mqtt/README'
+                }
             ],
         },
 
