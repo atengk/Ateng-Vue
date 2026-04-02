@@ -4,26 +4,32 @@ layout: home
 hero:
   name: "前端技术网站"
   text: "Ateng Frontend Docs"
-  tagline: 🚀 工程化 · 架构设计 · 企业级解决方案
+  tagline: 📚 专注 Vue3 与前端工程化的技术文档与实践总结
   image:
     src: /hero.svg
     alt: 技术图
   actions:
     - theme: brand
       text: 🚀 快速开始
-      link: /apps/vue3-basic/README
+      link: /apps/basic/vue3-basic/README
     - theme: alt
       text: 🏗️ 搭建 Monorepo
       link: /deploy
 
 features:
-  - title: 🧱 Yudao Boot（单体版）
-    details: 基于 Spring Boot + MyBatis Plus + Vue 的企业级后台系统，内置 RBAC 权限、多租户、工作流、支付、CRM、ERP 等核心模块。
-    link: /apps/antdv-next/README
+  - title: ⚡ Vue3 + TypeScript 基础
+    details: 从 Composition API 到组件设计，系统掌握 Vue3 核心能力，结合 TypeScript 提升代码质量与可维护性。
+    link: /apps/basic/
 
-  - title: ☁️ Yudao Cloud（微服务版）
-    details: 基于 Spring Cloud Alibaba 构建，集成 Gateway、Nacos、RocketMQ，实现高可用、可扩展的分布式系统架构。
+  - title: 🧩 组件库与 UI 体系
+    details: 深入 Element Plus、Ant Design Vue、Naive UI 等主流组件库，掌握后台系统 UI 架构设计。
+    link: /apps/ui/
 
-  - title: 🎨 Yudao Admin（Vue3）
-    details: 基于 Vue3 + Element Plus 的现代化前端，支持动态权限、数据权限、AI 集成，打造高效后台体验。
+  - title: 🛠️ 工程化与工具链
+    details: 覆盖 Vite、VueUse、自动化工具、代码规范等，打造高效的前端开发体验与工程体系。
+    link: /apps/util/
+
+  - title: 📊 可视化与实战能力
+    details: 包含 ECharts、地图、大屏适配、编辑器、图像处理等，提升实际项目开发与交付能力。
+    link: /apps/echarts/
 ---

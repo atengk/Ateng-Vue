@@ -300,4 +300,4 @@ const onEdit = () => {
 </style>
 ```
 
-![image-20260228174922198](../assets/image-20260228174922198.png)
+![image-20260228174922198](./assets/image-20260228174922198.png)

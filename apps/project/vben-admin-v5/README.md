@@ -128,7 +128,7 @@ pnpm install
 pnpm run dev:web
 ```
 
-![image-20260109075158376](../assets/image-20260109075158376.png)
+![image-20260109075158376](./assets/image-20260109075158376.png)
 
 
 

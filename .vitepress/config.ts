@@ -11,37 +11,74 @@ export default defineConfig({
 
         // https://vitepress.dev/reference/default-theme-config
         nav: [
-            {text: '首页', link: '/'},
-            {text: '基础', link: '/apps/basic/'},
-            {text: '静态网站', link: '/apps/website/'},
-            {text: '案例实操', link: '/apps/example/'},
-            {text: '网站请求', link: '/apps/request/'},
-            {text: '状态管理', link: '/apps/status/'},
-            {text: 'Vue 路由', link: '/apps/router/'},
-            {text: '应用框架', link: '/apps/project/'},
-            {text: '样式', link: '/apps/style/'},
-            {text: 'UI', link: '/apps/ui/'},
-            {text: '图表', link: '/apps/echarts/'},
-            {text: '工具', link: '/apps/util/'},
-            {text: '大屏自适应', link: '/apps/adaptive/'},
-            {text: 'PDF 插件', link: '/apps/pdf/'},
-            {text: '插件', link: '/apps/plugin/'},
-            {text: '轮播库', link: '/apps/carousel/'},
-            {text: '文本编辑器', link: '/apps/editor/'},
-            {text: '视频播放器', link: '/apps/video/'},
-            {text: '地图', link: '/apps/map/'},
-            {text: '图片工具', link: '/apps/image/'},
-            {text: 'Markdown渲染', link: '/apps/markdown/'},
-            {text: 'VueUse 工具库', link: '/apps/vueuse/'},
-            {text: '实时通信', link: '/apps/realtime/'},
+            { text: '首页', link: '/' },
+
+            {
+                text: '基础',
+                items: [
+                    { text: '基础知识', link: '/apps/basic/' },
+                    { text: '静态网站', link: '/apps/website/' },
+                    { text: '案例实操', link: '/apps/example/' }
+                ]
+            },
+
+            {
+                text: '核心能力',
+                items: [
+                    { text: '请求处理', link: '/apps/request/' },
+                    { text: '状态管理', link: '/apps/status/' },
+                    { text: '路由管理', link: '/apps/router/' },
+                    { text: '应用框架', link: '/apps/project/' }
+                ]
+            },
+
+            {
+                text: 'UI & 样式',
+                items: [
+                    { text: '样式方案', link: '/apps/style/' },
+                    { text: 'UI 组件库', link: '/apps/ui/' }
+                ]
+            },
+
+            {
+                text: '工具生态',
+                items: [
+                    { text: '工具库', link: '/apps/util/' },
+                    { text: 'VueUse', link: '/apps/vueuse/' },
+                    { text: '插件集合', link: '/apps/plugin/' }
+                ]
+            },
+
+            {
+                text: '多媒体 & 可视化',
+                items: [
+                    { text: '图表', link: '/apps/echarts/' },
+                    { text: '视频播放器', link: '/apps/video/' },
+                    { text: '地图', link: '/apps/map/' },
+                    { text: '图片处理', link: '/apps/image/' },
+                    { text: '轮播组件', link: '/apps/carousel/' }
+                ]
+            },
+
+            {
+                text: '扩展能力',
+                items: [
+                    { text: '大屏适配', link: '/apps/adaptive/' },
+                    { text: 'PDF 处理', link: '/apps/pdf/' },
+                    { text: 'Markdown 渲染', link: '/apps/markdown/' },
+                    { text: '文本编辑器', link: '/apps/editor/' },
+                    { text: '实时通信', link: '/apps/realtime/' }
+                ]
+            },
+
             {
                 text: '关于',
                 items: [
-                    {text: '运维技术网站', link: 'https://atengk.github.io/ops/'},
-                    {text: '后端技术网站', link: 'https://atengk.github.io/java/'},
-                    {text: '前端技术网站', link: 'https://atengk.github.io/vue/'},
-                    {text: '工程化框架技术网站', link: 'https://atengk.github.io/project/'},
-                    {text: 'VitePress', link: 'https://vitejs.cn/vitepress/'},
+                    { text: '运维技术网站', link: 'https://atengk.github.io/ops/' },
+                    { text: '后端技术网站', link: 'https://atengk.github.io/java/' },
+                    { text: '前端技术网站', link: 'https://atengk.github.io/vue/' },
+                    { text: '工程化框架技术网站', link: 'https://atengk.github.io/project/' },
+                    { text: 'VitePress', link: 'https://vitejs.cn/vitepress/' }
                 ]
             }
         ],
@@ -657,7 +694,10 @@ export default defineConfig({
         ['link', {rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg'}]
     ],
     markdown: {
-        lineNumbers: true
+        lineNumbers: true,
+        image: {
+            lazyLoading: true // 基于浏览器原生懒加载
+        }
     },
     // 死链处理策略
     ignoreDeadLinks: true,

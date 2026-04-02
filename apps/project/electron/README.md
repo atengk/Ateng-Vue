@@ -48,7 +48,7 @@ pnpm install
 pnpm run dev
 ```
 
-![image-20260228135417037](../assets/image-20260228135417037.png)
+![image-20260228135417037](./assets/image-20260228135417037.png)
 
 
 
@@ -239,7 +239,7 @@ const handleRefresh = () => {
 </style>
 ```
 
-![image-20260228140613049](../assets/image-20260228140613049.png)
+![image-20260228140613049](./assets/image-20260228140613049.png)
 
 
 
@@ -412,7 +412,7 @@ html, body, #app {
 </style>
 ```
 
-![image-20260228143223455](../assets/image-20260228143223455.png)
+![image-20260228143223455](./assets/image-20260228143223455.png)
 
 ------
 
@@ -587,7 +587,7 @@ onUnmounted(() => {
 </style>
 ```
 
-![image-20260228150111837](../assets/image-20260228150111837.png)
+![image-20260228150111837](./assets/image-20260228150111837.png)
 
 ------
 
@@ -748,7 +748,7 @@ const pushNotification = () => {
 
 ------
 
-![image-20260228150501343](../assets/image-20260228150501343.png)
+![image-20260228150501343](./assets/image-20260228150501343.png)
 
 
 
@@ -928,7 +928,7 @@ const handleShowInFolder = () => {
 </style>
 ```
 
-![image-20260228150957900](../assets/image-20260228150957900.png)
+![image-20260228150957900](./assets/image-20260228150957900.png)
 
 ------
 
@@ -1147,7 +1147,7 @@ const checkIdle = async () => {
 </style>
 ```
 
-![image-20260228151812740](../assets/image-20260228151812740.png)
+![image-20260228151812740](./assets/image-20260228151812740.png)
 
 ### 自定义窗口控制 (无边框窗口)
 
@@ -1388,7 +1388,7 @@ html, body, #app {
 3. **双击行为**：在设置了 `drag` 的区域，Windows 和 macOS 默认都会支持双击最大化/还原窗口。
 4. **边框重要性**：由于去掉了系统阴影和边框，建议在最外层 CSS 加一个 `1px` 的边框或阴影，否则你的应用在白色桌面背景下会变得“隐形”。
 
-![image-20260228153219206](../assets/image-20260228153219206.png)
+![image-20260228153219206](./assets/image-20260228153219206.png)
 
 ### 本地配置持久化 (electron-store)
 
@@ -1632,7 +1632,7 @@ const handleReset = () => {
 2. **安全性**：比起 `localStorage`，这种方式更难被用户误删，且支持更复杂的 JS 对象结构。
 3. **开发体验**：在开发过程中，你可以直接打开这个 `config.json` 文件查看数据，甚至手动修改它，应用读取时会自动同步。
 
-![image-20260228160702618](../assets/image-20260228160702618.png)
+![image-20260228160702618](./assets/image-20260228160702618.png)
 
 
 
@@ -1822,4 +1822,4 @@ onMounted(() => {
 2. **生命周期**：在 Vue 中，一旦你在 `onMounted` 开启了监听，它会一直运行。如果你有多个页面，记得在 `onUnmounted` 中清理监听器，防止重复绑定（通过 `ipcRenderer.removeAllListeners`）。
 3. **应用场景**：除了示例中的心跳和主题，最常用的场景包括：**检查更新进度**、**文件下载进度条**、**网络连通性监听**（主进程检测 `online/offline` 并通知前端）。
 
-![image-20260228161640136](../assets/image-20260228161640136.png)
+![image-20260228161640136](./assets/image-20260228161640136.png)
