@@ -652,7 +652,7 @@ export default defineConfig({
             next: '下一页'
         },
         editLink: {
-            pattern: 'https://github.com/atengk/Ateng-Vue/:path',
+            pattern: 'https://github.com/atengk/Ateng-Vue/edit/main/:path',
             text: '在 GitHub 上编辑此页'
         },
         outline: {
