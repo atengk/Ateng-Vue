@@ -217,6 +217,11 @@ export default defineConfig({
                     collapsed: false,
                     link: '/apps/project/uni-app/README'
                 },
+                {
+                    text: 'UniBest',
+                    collapsed: false,
+                    link: '/apps/project/unibest/README'
+                },
             ],
             '/apps/style/': [
                 {
