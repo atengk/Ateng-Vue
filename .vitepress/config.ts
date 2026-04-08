@@ -181,6 +181,11 @@ export default defineConfig({
                     collapsed: false,
                     link: '/apps/request/axios/README'
                 },
+                {
+                    text: 'Alova.js',
+                    collapsed: false,
+                    link: '/apps/request/alova/README'
+                },
             ],
             '/apps/status/': [
                 {
