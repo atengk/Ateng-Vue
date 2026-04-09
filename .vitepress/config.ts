@@ -446,6 +446,11 @@ export default defineConfig({
                     collapsed: false,
                     link: '/apps/plugin/vue-roller/README'
                 },
+                {
+                    text: 'Vue Virtual Scroller 虚拟滚动组件库',
+                    collapsed: false,
+                    link: '/apps/plugin/vue-virtual-scroller/README'
+                },
             ],
             '/apps/carousel/': [
                 {
