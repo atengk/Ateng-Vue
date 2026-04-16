@@ -45,7 +45,8 @@ export default defineConfig({
                 items: [
                     { text: '工具库', link: '/apps/util/' },
                     { text: 'VueUse', link: '/apps/vueuse/' },
-                    { text: '插件集合', link: '/apps/plugin/' }
+                    { text: '插件集合', link: '/apps/plugin/' },
+                    { text: '文件预览', link: '/apps/preview/' },
                 ]
             },
 
@@ -455,6 +456,13 @@ export default defineConfig({
                     text: 'SQL 格式化工具',
                     collapsed: false,
                     link: '/apps/plugin/sql-formatter/README'
+                },
+            ],
+            '/apps/preview/': [
+                {
+                    text: 'BaseMetas Fileview 在线文件预览',
+                    collapsed: false,
+                    link: '/apps/preview/basemetas-fileview/README'
                 },
             ],
             '/apps/carousel/': [
