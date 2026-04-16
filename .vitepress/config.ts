@@ -451,6 +451,11 @@ export default defineConfig({
                     collapsed: false,
                     link: '/apps/plugin/vue-virtual-scroller/README'
                 },
+                {
+                    text: 'SQL 格式化工具',
+                    collapsed: false,
+                    link: '/apps/plugin/sql-formatter/README'
+                },
             ],
             '/apps/carousel/': [
                 {
