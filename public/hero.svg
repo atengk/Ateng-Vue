@@ -1,1 +1,50 @@
-<svg viewBox="0 0 256 221" width="256" height="221" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid"><path d="M204.8 0H256L128 220.8 0 0h97.92L128 51.2 157.44 0h47.36Z" fill="#41B883"/><path d="m0 0 128 220.8L256 0h-51.2L128 132.48 50.56 0H0Z" fill="#41B883"/><path d="M50.56 0 128 133.12 204.8 0h-47.36L128 51.2 97.92 0H50.56Z" fill="#35495E"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 221" width="320" height="276" preserveAspectRatio="xMidYMid">
+    <defs>
+        <!-- 统一轮廓（用于裁剪） -->
+        <path id="shape" d="M204.8 0H256L128 220.8 0 0h97.92L128 51.2 157.44 0h47.36Z"/>
+
+        <!-- 裁剪 -->
+        <clipPath id="clip">
+            <use href="#shape"/>
+        </clipPath>
+
+        <!-- 主渐变（克制版） -->
+        <linearGradient id="grad-main" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#5FE3A1"/>
+            <stop offset="60%" stop-color="#41B883"/>
+            <stop offset="100%" stop-color="#2F8F68"/>
+        </linearGradient>
+
+        <!-- 扫光（弱化版） -->
+        <linearGradient id="grad-shine" x1="-100%" y1="0%" x2="200%" y2="0%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0)" />
+            <stop offset="50%" stop-color="rgba(255,255,255,0.35)" />
+            <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+            <animate attributeName="x1" from="-100%" to="100%" dur="3.2s" repeatCount="indefinite"/>
+            <animate attributeName="x2" from="0%" to="200%" dur="3.2s" repeatCount="indefinite"/>
+        </linearGradient>
+    </defs>
+
+    <!-- 绿色主体（带轻微呼吸） -->
+    <g>
+        <path d="M204.8 0H256L128 220.8 0 0h97.92L128 51.2 157.44 0h47.36Z" fill="url(#grad-main)"/>
+        <path d="m0 0 128 220.8L256 0h-51.2L128 132.48 50.56 0H0Z" fill="url(#grad-main)" opacity="0.9"/>
+
+        <!-- 呼吸动画（极弱） -->
+        <animateTransform
+                attributeName="transform"
+                type="scale"
+                values="1;1.012;1"
+                dur="3.4s"
+                repeatCount="indefinite"
+        />
+    </g>
+
+    <!-- 深色结构层（保持静态，提升高级感） -->
+    <path d="M50.56 0 128 133.12 204.8 0h-47.36L128 51.2 97.92 0H50.56Z" fill="#35495E"/>
+
+    <!-- 高光（整体裁剪，不破坏结构） -->
+    <g clip-path="url(#clip)">
+        <rect x="0" y="0" width="256" height="221" fill="url(#grad-shine)" opacity="0.25"/>
+    </g>
+</svg>
