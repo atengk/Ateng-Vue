@@ -1787,7 +1787,7 @@ export default defineComponent({
 
 ### `<script setup>`
 
-<script setup> 是 Vue3 提供的编译时语法糖。它让 Composition API 写法更简洁，不需要手动 return，定义的变量、方法、导入的组件都可以直接在模板中使用。
+`<script setup>` 是 Vue3 提供的编译时语法糖。它让 Composition API 写法更简洁，不需要手动 return，定义的变量、方法、导入的组件都可以直接在模板中使用。
 
 文件位置：`src/views/ScriptSetupView.vue`
 
@@ -1826,7 +1826,7 @@ const increase = () => {
 </style>
 ```
 
-<script setup> 的常见特点如下：
+`<script setup>` 的常见特点如下：
 
 | 特点              | 说明                                |
 | ----------------- | ----------------------------------- |

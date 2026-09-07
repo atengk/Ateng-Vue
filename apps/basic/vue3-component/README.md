@@ -468,7 +468,7 @@ defineOptions({
 
 ### `<script setup>` 基本结构
 
-<script setup> 是 Vue3 推荐的组件编写方式，语法更简洁，类型推导更直接，适合配合 TypeScript 使用。组件内部定义的变量、方法、计算属性可以直接在模板中使用，不需要手动 return。
+`<script setup>` 是 Vue3 推荐的组件编写方式，语法更简洁，类型推导更直接，适合配合 TypeScript 使用。组件内部定义的变量、方法、计算属性可以直接在模板中使用，不需要手动 return。
 
 推荐组件结构顺序如下：
 
@@ -545,7 +545,7 @@ const handleRefresh = () => {
 </style>
 ```
 
-<script setup> 中不需要写 export default。如果需要定义组件名称，可以使用 defineOptions，主要用于调试、递归组件或需要固定组件名的场景。
+`<script setup>` 中不需要写 export default。如果需要定义组件名称，可以使用 defineOptions，主要用于调试、递归组件或需要固定组件名的场景。
 
 ```vue
 <script setup lang="ts">
